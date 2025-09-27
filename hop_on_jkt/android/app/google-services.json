@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "889129636799",
+    "project_id": "hop-on-jkt",
+    "storage_bucket": "hop-on-jkt.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:889129636799:android:68326e205551c69493870a",
+        "android_client_info": {
+          "package_name": "com.example.hop_on_jkt"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDSb8_lbLZ6Dl6Jzx-dKM4ty-rjTJtHKCI"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
