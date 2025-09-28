@@ -38,6 +38,7 @@ dependencies:
   firebase_auth: ^6.1.0
   cloud_firestore: ^6.0.2
 
+
 dev_dependencies:
   flutter_test:
     sdk: flutter
@@ -60,7 +61,13 @@ flutter:
   # the material Icons class.
   uses-material-design: true
   assets:
-    - assets/images/
+    - assets/images/kereta.png
+    - assets/images/clouds.png
+
+  fonts:
+    - family: Coolvetica
+      fonts:
+        - asset: assets/fonts/CoolveticaRg.otf
 
   # To add assets to your application, add an assets section, like this:
   # assets:
