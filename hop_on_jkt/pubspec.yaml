@@ -37,6 +37,8 @@ dependencies:
   firebase_core: ^4.1.1
   firebase_auth: ^6.1.0
   cloud_firestore: ^6.0.2
+  provider: ^6.1.5+1
+  flutter_svg: ^2.2.1
 
 
 dev_dependencies:
@@ -63,6 +65,7 @@ flutter:
   assets:
     - assets/images/kereta.png
     - assets/images/clouds.png
+    - assets/images/logo.svg
 
   fonts:
     - family: Coolvetica
