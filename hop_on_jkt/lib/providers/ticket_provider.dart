@@ -25,4 +25,21 @@ class TicketProvider extends ChangeNotifier {
     await _ticketService.cancelTicket(ticketId);
     await fetchTickets(userId, status: _status);
   }
+
+  // buy ticket
+  Future<void> buyTicket({
+    required String userId,
+    required int price,
+    required Map<String, dynamic> ticketData,
+  }) async {
+    // panggil function di service
+    await _ticketService.buyTicket(
+      userId: userId,
+      price: price,
+      ticketData: ticketData,
+    );
+
+    // refresh daftar tiket
+    await fetchTickets(userId, status: _status); 
+  }
 }
