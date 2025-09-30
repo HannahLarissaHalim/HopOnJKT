@@ -462,33 +462,33 @@ class _RouteScreenState extends State<RouteScreen> {
         ],
       ),
 
-      //////////////// Navigator ///////////////////////////
-      bottomNavigationBar: BottomNavigationBar(
-        backgroundColor: Colors.white,
-        selectedItemColor: primaryColor, 
-        unselectedItemColor: Colors.grey,
-        currentIndex: 0, 
-        showSelectedLabels: false,
-        showUnselectedLabels: false,
-        type: BottomNavigationBarType.fixed, 
-        items: const [
-          BottomNavigationBarItem(
-            icon: Icon(Icons.home, size: 30),
-            label: 'Home',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.credit_card, size: 30),
-            label: 'Ticket',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.swap_horiz, size: 30),
-            label: 'Swap',
-          ),
-        ],
-        onTap: (index) {
-          ///////////// Implementasi navigasi bottom bar di sini ///////////////////
-        },
-      ),
+      // //////////////// Navigator ///////////////////////////
+      // bottomNavigationBar: BottomNavigationBar(
+      //   backgroundColor: Colors.white,
+      //   selectedItemColor: primaryColor, 
+      //   unselectedItemColor: Colors.grey,
+      //   currentIndex: 0, 
+      //   showSelectedLabels: false,
+      //   showUnselectedLabels: false,
+      //   type: BottomNavigationBarType.fixed, 
+      //   items: const [
+      //     BottomNavigationBarItem(
+      //       icon: Icon(Icons.home, size: 30),
+      //       label: 'Home',
+      //     ),
+      //     BottomNavigationBarItem(
+      //       icon: Icon(Icons.credit_card, size: 30),
+      //       label: 'Ticket',
+      //     ),
+      //     BottomNavigationBarItem(
+      //       icon: Icon(Icons.swap_horiz, size: 30),
+      //       label: 'Swap',
+      //     ),
+      //   ],
+      //   onTap: (index) {
+      //     ///////////// Implementasi navigasi bottom bar di sini ///////////////////
+      //   },
+      // ),
     );
   }
 }
