@@ -141,7 +141,8 @@ class _LoginScreenState extends State<LoginScreen> {
                                 );
                                 ScaffoldMessenger.of(context).showSnackBar(
                                   const SnackBar(
-                                      content: Text("Login Success ✅")),
+                                    content: Text("Login Success ✅"),
+                                  ),
                                 );
                                 Navigator.pushReplacementNamed(
                                     context, '/home');
@@ -161,12 +162,14 @@ class _LoginScreenState extends State<LoginScreen> {
                         ),
                       ),
                       child: isLoading
-                          ? const CircularProgressIndicator(color: Colors.white)
+                          ? const CircularProgressIndicator(
+                              color: Colors.white,
+                            )
                           : const Text("Login"),
                     ),
                     const SizedBox(height: 12),
 
-                    // 🔹 teks Sign Up
+                    // 🔹 tambahan link Sign Up
                     Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [

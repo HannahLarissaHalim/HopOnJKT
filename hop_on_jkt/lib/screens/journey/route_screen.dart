@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import '../../models/route_model.dart';
 import '../../services/journey_service.dart';
+import '../../widgets/bottom_navbar.dart';
+import '../ticket/buy_ticket_screen.dart';
+
 
 /////////////////// template Warna /////////////// //////////////
 const Color primaryColor = Color(0xFF1E4D6E); 
@@ -104,8 +107,18 @@ class _RouteScreenState extends State<RouteScreen> {
   }
 
   void _navigateToPurchase(RouteModel route) {
-    Navigator.pushNamed(context, '/purchase', arguments: route); //diarahin ke detail tiket
-  }
+  Navigator.push(
+    context,
+    MaterialPageRoute(
+      builder: (_) => BuyTicketScreen(
+        fromStation: route.departureStation,
+        toStation: route.arrivalStation,
+        price: int.tryParse(route.operator.split('|').last.trim()) ?? 0,
+      ),
+    ),
+  );
+}
+
 
   /////////////// Komponen Dropdown Stasiun //////////////
   Widget _buildStationDropdown({
@@ -313,20 +326,20 @@ class _RouteScreenState extends State<RouteScreen> {
                       ),
                       
                       //////////////////////////////////// Ikon Akun ////////////////////////////////////
-                      GestureDetector(
-                        onTap: () {
-                          Navigator.pushNamed(context, '/account'); //diarahin ke detail akun user
-                        },
-                        child: Container(
-                          width: 36,
-                          height: 36,
-                          decoration: BoxDecoration(
-                            color: Colors.grey.shade300,
-                            shape: BoxShape.circle,
-                          ),
-                          child: const Icon(Icons.person, color: Colors.grey),
-                        ),
-                      ),
+                      // GestureDetector(
+                      //   onTap: () {
+                      //     Navigator.pushNamed(context, '/account'); //diarahin ke detail akun user
+                      //   },
+                      //   child: Container(
+                      //     width: 36,
+                      //     height: 36,
+                      //     decoration: BoxDecoration(
+                      //       color: Colors.grey.shade300,
+                      //       shape: BoxShape.circle,
+                      //     ),
+                      //     child: const Icon(Icons.person, color: Colors.grey),
+                      //   ),
+                      // ),
                     ],
                   ),
                 ),
@@ -449,33 +462,33 @@ class _RouteScreenState extends State<RouteScreen> {
         ],
       ),
 
-      //////////////// Navigator ///////////////////////////
-      bottomNavigationBar: BottomNavigationBar(
-        backgroundColor: Colors.white,
-        selectedItemColor: primaryColor, 
-        unselectedItemColor: Colors.grey,
-        currentIndex: 0, 
-        showSelectedLabels: false,
-        showUnselectedLabels: false,
-        type: BottomNavigationBarType.fixed, 
-        items: const [
-          BottomNavigationBarItem(
-            icon: Icon(Icons.home, size: 30),
-            label: 'Home',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.credit_card, size: 30),
-            label: 'Ticket',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.swap_horiz, size: 30),
-            label: 'Swap',
-          ),
-        ],
-        onTap: (index) {
-          ///////////// Implementasi navigasi bottom bar di sini ///////////////////
-        },
-      ),
+      // //////////////// Navigator ///////////////////////////
+      // bottomNavigationBar: BottomNavigationBar(
+      //   backgroundColor: Colors.white,
+      //   selectedItemColor: primaryColor, 
+      //   unselectedItemColor: Colors.grey,
+      //   currentIndex: 0, 
+      //   showSelectedLabels: false,
+      //   showUnselectedLabels: false,
+      //   type: BottomNavigationBarType.fixed, 
+      //   items: const [
+      //     BottomNavigationBarItem(
+      //       icon: Icon(Icons.home, size: 30),
+      //       label: 'Home',
+      //     ),
+      //     BottomNavigationBarItem(
+      //       icon: Icon(Icons.credit_card, size: 30),
+      //       label: 'Ticket',
+      //     ),
+      //     BottomNavigationBarItem(
+      //       icon: Icon(Icons.swap_horiz, size: 30),
+      //       label: 'Swap',
+      //     ),
+      //   ],
+      //   onTap: (index) {
+      //     ///////////// Implementasi navigasi bottom bar di sini ///////////////////
+      //   },
+      // ),
     );
   }
 }
