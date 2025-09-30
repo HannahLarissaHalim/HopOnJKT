@@ -4,6 +4,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:uuid/uuid.dart'; 
 import '../../providers/ticket_provider.dart';
+import '../../widgets/bottom_navbar.dart';
 
 class BuyTicketScreen extends StatefulWidget {
   final String fromStation;  // stasiun asal
@@ -94,11 +95,11 @@ class _BuyTicketScreenState extends State<BuyTicketScreen> {
 
         // data tiket yang mau disimpan
         final ticketData = {
-          'id': const Uuid().v4(),          // id unik tiket
+          'id': const Uuid().v4(),
           'fromStation': widget.fromStation,
           'toStation': widget.toStation,
           'price': widget.price,
-          'userId': user.uid,               // id user pembeli
+          'userId': user.uid,
         };
 
         // panggil provider utk kurangi poin + simpan tiket 
@@ -116,13 +117,21 @@ class _BuyTicketScreenState extends State<BuyTicketScreen> {
           const SnackBar(content: Text("Payment Success ✅")),
         );
 
+        // setelah sukses, pindah ke tab My Orders (OrderHistory)
+        Navigator.pushAndRemoveUntil(
+          context,
+          MaterialPageRoute(
+            builder: (_) => const BottomNavBar(initialIndex: 1),
+          ),
+          (route) => false,
+        );
 
       } catch (e) {
-        // kalau ada error 
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text("Error: $e")),
         );
       }
+
     } else {
       // kalau pin salah
       ScaffoldMessenger.of(context).showSnackBar(
@@ -234,18 +243,7 @@ class _BuyTicketScreenState extends State<BuyTicketScreen> {
             ),
           ],
         ),
-      ),
-
-      // dummy bottom nav bar
-      bottomNavigationBar: BottomNavigationBar(
-        currentIndex: 1, // posisi tab yg aktif
-        items: const [
-          BottomNavigationBarItem(icon: Icon(Icons.home), label: "Home"),
-          BottomNavigationBarItem(
-              icon: Icon(Icons.confirmation_num), label: "Tickets"),
-          BottomNavigationBarItem(icon: Icon(Icons.person), label: "Account"),
-        ],
-      ),
+      ), 
     );
   }
 }
