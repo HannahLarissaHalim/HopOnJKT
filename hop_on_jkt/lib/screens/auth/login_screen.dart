@@ -236,7 +236,7 @@ class _LoginScreenState extends State<LoginScreen> {
     );
   }
 
- // forgot password pakai Get.defaultDialog
+ // forgot password pakai GetX
   void _showForgotPasswordDialog() {
     final resetEmailController = TextEditingController();
 
