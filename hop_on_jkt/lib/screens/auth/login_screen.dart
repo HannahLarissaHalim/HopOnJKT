@@ -15,6 +15,8 @@ class _LoginScreenState extends State<LoginScreen> {
 
   bool isLoading = false;
 
+  bool _obscurePassword = true;
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -105,6 +107,10 @@ class _LoginScreenState extends State<LoginScreen> {
                           borderRadius: BorderRadius.circular(10),
                           borderSide: BorderSide.none,
                         ),
+                        contentPadding: const EdgeInsets.symmetric(
+                          vertical: 16,
+                          horizontal: 12,
+                        ), // padding biar tinggi
                       ),
                     ),
                     const SizedBox(height: 12),
@@ -112,7 +118,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     // input pw
                     TextField(
                       controller: passwordController,
-                      obscureText: true,
+                      obscureText: _obscurePassword,
                       decoration: InputDecoration(
                         hintText: "Password",
                         filled: true,
@@ -120,6 +126,19 @@ class _LoginScreenState extends State<LoginScreen> {
                         border: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(10),
                           borderSide: BorderSide.none,
+                        ),
+                        suffixIcon: IconButton(
+                          icon: Icon(
+                            _obscurePassword
+                                ? Icons.visibility_off
+                                : Icons.visibility,
+                            color: const Color(0xFF1A3C6E), 
+                          ),
+                          onPressed: () {
+                            setState(() {
+                              _obscurePassword = !_obscurePassword;
+                            });
+                          },
                         ),
                       ),
                     ),
@@ -141,7 +160,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                 );
                                 ScaffoldMessenger.of(context).showSnackBar(
                                   const SnackBar(
-                                    content: Text("Login Success ✅"),
+                                    content: Text("Login Success!"),
                                   ),
                                 );
                                 Navigator.pushReplacementNamed(
@@ -169,7 +188,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     ),
                     const SizedBox(height: 12),
 
-                    // 🔹 tambahan link Sign Up
+                    // link sign up
                     Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
