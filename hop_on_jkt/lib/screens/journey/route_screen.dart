@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import '../../models/route_model.dart';
 import '../../services/journey_service.dart';
+import '../../widgets/bottom_navbar.dart';
+import '../ticket/buy_ticket_screen.dart';
+
 
 /////////////////// template Warna /////////////// //////////////
 const Color primaryColor = Color(0xFF1E4D6E); 
@@ -104,8 +107,18 @@ class _RouteScreenState extends State<RouteScreen> {
   }
 
   void _navigateToPurchase(RouteModel route) {
-    Navigator.pushNamed(context, '/purchase', arguments: route); //diarahin ke detail tiket
-  }
+  Navigator.push(
+    context,
+    MaterialPageRoute(
+      builder: (_) => BuyTicketScreen(
+        fromStation: route.departureStation,
+        toStation: route.arrivalStation,
+        price: int.tryParse(route.operator.split('|').last.trim()) ?? 0,
+      ),
+    ),
+  );
+}
+
 
   /////////////// Komponen Dropdown Stasiun //////////////
   Widget _buildStationDropdown({
