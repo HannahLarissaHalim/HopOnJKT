@@ -100,6 +100,8 @@ class _BuyTicketScreenState extends State<BuyTicketScreen> {
           'toStation': widget.toStation,
           'price': widget.price,
           'userId': user.uid,
+          'status': 'active', 
+          'date': DateTime.now().toIso8601String(), 
         };
 
         // panggil provider utk kurangi poin + simpan tiket 
