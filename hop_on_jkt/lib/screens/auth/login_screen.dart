@@ -53,12 +53,12 @@ class _LoginScreenState extends State<LoginScreen> {
           Align(
             alignment: Alignment.topCenter,
             child: Padding(
-              padding: const EdgeInsets.only(top: 150),
+              padding: const EdgeInsets.only(top: 120), // logo app ke atas (makin rendah angka makin naik)
               child: const Text(
                 "HopOnJKT",
                 style: TextStyle(
-                  fontFamily: "Coolvetica",
-                  fontSize: 44,
+                  fontFamily: "HeyComic",
+                  fontSize: 55,
                   color: Color(0xFF1A3C6E),
                   fontWeight: FontWeight.bold,
                 ),
@@ -71,7 +71,6 @@ class _LoginScreenState extends State<LoginScreen> {
             child: SingleChildScrollView(
               padding: const EdgeInsets.symmetric(horizontal: 20),
               child: Container(
-                margin: const EdgeInsets.only(top: 80),
                 padding: const EdgeInsets.all(20),
                 decoration: BoxDecoration(
                   color: Colors.white,
@@ -175,6 +174,7 @@ class _LoginScreenState extends State<LoginScreen> {
                             },
                       style: ElevatedButton.styleFrom(
                         backgroundColor: const Color(0xFF1A3C6E),
+                        foregroundColor: Colors.white,
                         padding: const EdgeInsets.symmetric(vertical: 14),
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(8),
