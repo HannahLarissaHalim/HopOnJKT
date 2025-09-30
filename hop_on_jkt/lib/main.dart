@@ -38,14 +38,14 @@ class MyApp extends StatelessWidget {
         routes: {
           '/login': (context) => const LoginScreen(),
           '/signup': (context) => const SignUpScreen(),
-          '/home': (context) => const BottomNavbar(),
+          '/home': (context) => const BottomNavBar(),
         },
       ),
     );
   }
 }
 
-/// 🔹 Wrapper: tentuin layar awal sesuai status login
+// Wrapper: tentuin layar awal sesuai status login
 class AuthWrapper extends StatelessWidget {
   const AuthWrapper({super.key});
 
@@ -60,12 +60,12 @@ class AuthWrapper extends StatelessWidget {
           );
         }
 
-        // ✅ Kalau user sudah login -> langsung ke home
+        // kalau user sudah login langsung ke home
         if (snapshot.hasData) {
-          return const BottomNavbar();
+          return const BottomNavBar();
         }
 
-        // ❌ Kalau belum login -> tampil login screen
+        // kalau belum login tampil login screen
         return const LoginScreen();
       },
     );
