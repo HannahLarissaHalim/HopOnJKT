@@ -125,21 +125,27 @@ class _LoginScreenState extends State<LoginScreen> {
                     ),
                     const SizedBox(height: 20),
 
-                    // login
+                    // tombol login
                     ElevatedButton(
                       onPressed: isLoading
                           ? null
                           : () async {
                               setState(() => isLoading = true);
                               try {
-                                await Provider.of<AuthProvider>(context, listen: false).login(
+                                await Provider.of<AuthProvider>(
+                                  context,
+                                  listen: false,
+                                ).login(
                                   emailController.text.trim(),
                                   passwordController.text.trim(),
                                 );
                                 ScaffoldMessenger.of(context).showSnackBar(
-                                  const SnackBar(content: Text("Login Success ✅")),
+                                  const SnackBar(
+                                    content: Text("Login Success ✅"),
+                                  ),
                                 );
-                                Navigator.pushReplacementNamed(context, '/home');
+                                Navigator.pushReplacementNamed(
+                                    context, '/home');
                               } catch (e) {
                                 ScaffoldMessenger.of(context).showSnackBar(
                                   SnackBar(content: Text("Error: $e")),
@@ -156,8 +162,31 @@ class _LoginScreenState extends State<LoginScreen> {
                         ),
                       ),
                       child: isLoading
-                          ? const CircularProgressIndicator(color: Colors.white)
+                          ? const CircularProgressIndicator(
+                              color: Colors.white,
+                            )
                           : const Text("Login"),
+                    ),
+                    const SizedBox(height: 12),
+
+                    // 🔹 tambahan link Sign Up
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        const Text("Don't have an account? "),
+                        GestureDetector(
+                          onTap: () {
+                            Navigator.pushNamed(context, '/signup');
+                          },
+                          child: const Text(
+                            "Sign Up",
+                            style: TextStyle(
+                              color: Color(0xFF1A3C6E),
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ),
+                      ],
                     ),
                   ],
                 ),
