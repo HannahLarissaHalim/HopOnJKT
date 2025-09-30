@@ -117,46 +117,46 @@ class _OrderHistoryScreenState extends State<OrderHistoryScreen> {
         ),
       ),
       // -------------------------------------------------------------------------
-      // BOTTOM NAVIGATION BAR (Sesuai dengan kode awal Anda)
+      // BOTTOM NAVIGATION BAR 
       // -------------------------------------------------------------------------
-      bottomNavigationBar: Container(
-        decoration: const BoxDecoration(
-          color: Color(0xFFE3F6FC), // Warna biru muda
-          boxShadow: [BoxShadow(color: Colors.white, blurRadius: 8)],
-          borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
-        ),
-        child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceAround,
-            children: const [
-              Icon(Icons.home, size: 50, color: Colors.black87),
-              Icon(Icons.confirmation_num, size: 50, color: Colors.black87),
-              // 2. Ikon Akun (Profil)
-              CircleAvatar(
-                radius: 22, // Ukuran lingkaran (sesuaikan agar pas)
-                backgroundColor: Color.fromARGB(
-                  255,
-                  210,
-                  208,
-                  208,
-                ), // Warna background abu-abu terang
-                child: Icon(
-                  Icons
-                      .person, // Ikon orang (person) terlihat lebih baik dari account_circle
-                  color: Color.fromARGB(
-                    255,
-                    139,
-                    138,
-                    138,
-                  ), // Warna ikon abu-abu gelap
-                  size: 36, // Ukuran ikon di dalam lingkaran
-                ),
-              ),
-            ],
-          ),
-        ),
-      ),
+      // bottomNavigationBar: Container(
+      //   decoration: const BoxDecoration(
+      //     color: Color(0xFFE3F6FC), // Warna biru muda
+      //     boxShadow: [BoxShadow(color: Colors.white, blurRadius: 8)],
+      //     borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+      //   ),
+      //   child: Padding(
+      //     padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+      //     child: Row(
+      //       mainAxisAlignment: MainAxisAlignment.spaceAround,
+      //       children: const [
+      //         Icon(Icons.home, size: 50, color: Colors.black87),
+      //         Icon(Icons.confirmation_num, size: 50, color: Colors.black87),
+      //         // 2. Ikon Akun (Profil)
+      //         CircleAvatar(
+      //           radius: 22, // Ukuran lingkaran (sesuaikan agar pas)
+      //           backgroundColor: Color.fromARGB(
+      //             255,
+      //             210,
+      //             208,
+      //             208,
+      //           ), // Warna background abu-abu terang
+      //           child: Icon(
+      //             Icons
+      //                 .person, // Ikon orang (person) terlihat lebih baik dari account_circle
+      //             color: Color.fromARGB(
+      //               255,
+      //               139,
+      //               138,
+      //               138,
+      //             ), // Warna ikon abu-abu gelap
+      //             size: 36, // Ukuran ikon di dalam lingkaran
+      //           ),
+      //         ),
+      //       ],
+      //     ),
+      //   ),
+      // ),
       // -------------------------------------------------------------------------
       // BODY (Judul, Tab, dan List Tiket)
       // -------------------------------------------------------------------------
