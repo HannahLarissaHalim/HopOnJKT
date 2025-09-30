@@ -59,14 +59,14 @@ class _SignUpScreenState extends State<SignUpScreen> {
 
             child: Padding(
               padding: const EdgeInsets.only(
-                top: 150, // jarak dari atas layar, biar teks agak ke bawah dan gak nempel sama awan
+                top: 120, // jarak dari atas layar, biar teks agak ke bawah dan gak nempel sama awan
               ),
 
               child: const Text(
                 "HopOnJKT",
                 style: TextStyle(
-                  fontFamily: "Coolvetica",
-                  fontSize: 50,
+                  fontFamily: "HeyComic",
+                  fontSize: 55,
                   color: Color(0xFF1A3C6E),
                   fontWeight: FontWeight.bold,
                 ),
@@ -86,11 +86,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
               ),
 
               child: Container(
-                // jarak form dari atas 
-                margin: const EdgeInsets.only(
-                  top: 50,                
-                ),
-                
+
                 padding: const EdgeInsets.all(20), // ruang di dalam form
 
                 decoration: BoxDecoration(
