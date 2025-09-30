@@ -31,6 +31,11 @@ class AuthProvider with ChangeNotifier {
     return _user != null;
   }
 
+  // RESET PASSWORD
+  Future<void> resetPassword(String email) async {
+    await _authService.resetPassword(email);
+  }
+
   // LOGOUT
   
 }
