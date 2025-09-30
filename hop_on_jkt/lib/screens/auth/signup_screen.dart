@@ -18,6 +18,10 @@ class _SignUpScreenState extends State<SignUpScreen> {
   // loading state biar tombol bisa nunjukin spinner loading
   bool isLoading = false;
 
+  // password/pin keliatan atau gak
+  bool _obscurePassword = true; 
+  bool _obscurePin = true;   
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -121,40 +125,70 @@ class _SignUpScreenState extends State<SignUpScreen> {
                           borderSide:
                               BorderSide.none, // hilangkan border hitam default
                         ),
-                      ),
-                    ),
-                    const SizedBox(height: 12),
-
-                    // Input Password
-                    TextField(
-                      controller: passwordController, // ambil nilai password yang diketik user
-                      obscureText: true,              // sembunyikan input password
-                      decoration: InputDecoration(
-                        hintText: "Password",         // placeholder
-                        filled: true,                 
-                        fillColor: Colors.grey[200], 
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(10),
-                          borderSide: BorderSide.none,
+                        contentPadding: const EdgeInsets.symmetric(
+                          vertical: 16,
+                          horizontal: 12,
                         ),
                       ),
                     ),
                     const SizedBox(height: 12),
 
-                    // input PIN
+                    // input pw
                     TextField(
-                      controller: pinController,
-                      obscureText: true, 
-                      keyboardType: TextInputType.number, // keyboard HP jd cuma angka doang
-                      maxLength: 4, 
+                      controller: passwordController,
+                      obscureText: _obscurePassword, // default true
                       decoration: InputDecoration(
-                        hintText: "Set 4-digit PIN",
-                        counterText: "", 
+                        hintText: "Password",
                         filled: true,
                         fillColor: Colors.grey[200],
                         border: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(10),
                           borderSide: BorderSide.none,
+                        ),
+                        suffixIcon: IconButton(
+                          icon: Icon(
+                            _obscurePassword
+                                ? Icons.visibility_off
+                                : Icons.visibility,
+                            color: const Color(0xFF1A3C6E),
+                          ),
+                          onPressed: () {
+                            setState(() {
+                              _obscurePassword = !_obscurePassword;
+                            });
+                          },
+                        ),
+                      ),
+                    ),
+                    const SizedBox(height: 12),
+
+                    // input pin
+                    TextField(
+                      controller: pinController,
+                      obscureText: _obscurePin, // default true
+                      keyboardType: TextInputType.number,
+                      maxLength: 4,
+                      decoration: InputDecoration(
+                        hintText: "Set 4-digit PIN",
+                        counterText: "",
+                        filled: true,
+                        fillColor: Colors.grey[200],
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(10),
+                          borderSide: BorderSide.none,
+                        ),
+                        suffixIcon: IconButton(
+                          icon: Icon(
+                            _obscurePin
+                                ? Icons.visibility_off
+                                : Icons.visibility,
+                            color: const Color(0xFF1A3C6E),
+                          ),
+                          onPressed: () {
+                            setState(() {
+                              _obscurePin = !_obscurePin;
+                            });
+                          },
                         ),
                       ),
                     ),
