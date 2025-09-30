@@ -68,4 +68,14 @@ class AuthService {
 
   // LOGOUT 
 
+  // RESET PASSWORD
+  Future<void> resetPassword(String email) async {
+    try {
+      await _auth.sendPasswordResetEmail(email: email);
+    } catch (e) {
+      print("Reset Password Error: $e");
+      throw Exception("Failed to reset password: $e"); // biar bisa ditangkap provider
+    }
+  }
+
 }
