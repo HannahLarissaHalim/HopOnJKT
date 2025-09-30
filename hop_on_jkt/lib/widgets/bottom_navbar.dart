@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import '../screens/journey/route_screen.dart';      
 import '../screens/ticket/ticket_tab.dart';        
-//import '../screens/profile/profile_screen.dart';   
+import '../screens/journey/route_screen.dart';
+import '../screens/ticket/order_history_screen.dart';
 
-class BottomNavbar extends StatefulWidget {
   const BottomNavbar({super.key});
 
   @override
