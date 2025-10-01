@@ -33,10 +33,8 @@ class AuthService extends ChangeNotifier {
       );
 
       await _db.collection('users').doc(user.uid).set(newUser.toMap());
-      
       _currentUser = newUser;
       notifyListeners();
-      
       return newUser;
     } catch (e) {
       print("Sign Up Error: $e");
@@ -57,7 +55,6 @@ class AuthService extends ChangeNotifier {
 
       _currentUser = UserModel.fromMap(doc.data() as Map<String, dynamic>);
       notifyListeners();
-      
       return _currentUser;
     } catch (e) {
       print("Login Error: $e");
@@ -76,9 +73,7 @@ class AuthService extends ChangeNotifier {
     try {
       Map<String, dynamic> updates = {};
 
-      if (name != null && name.isNotEmpty) {
-        updates['name'] = name;
-      }
+      if (name != null && name.isNotEmpty) updates['name'] = name;
 
       if (email != null && email.isNotEmpty && email != _currentUser!.email) {
         updates['email'] = email;
@@ -91,7 +86,6 @@ class AuthService extends ChangeNotifier {
 
       if (updates.isNotEmpty) {
         await _db.collection('users').doc(_currentUser!.uid).update(updates);
-        
         DocumentSnapshot doc = await _db.collection('users').doc(_currentUser!.uid).get();
         _currentUser = UserModel.fromMap(doc.data() as Map<String, dynamic>);
         notifyListeners();
@@ -102,17 +96,27 @@ class AuthService extends ChangeNotifier {
     }
   }
 
+  // RESET PASSWORD
+  Future<void> resetPassword(String email) async {
+    try {
+      await _auth.sendPasswordResetEmail(email: email);
+    } catch (e) {
+      print("Reset Password Error: $e");
+      throw Exception("Failed to reset password: $e");
+    }
+  }
+
+  // UPLOAD PHOTO HELPER
   Future<String> _uploadPhoto(String localPath) async {
     try {
       File file = File(localPath);
       String fileName = '${_currentUser!.uid}_${DateTime.now().millisecondsSinceEpoch}.jpg';
-      
+
       Reference ref = _storage.ref().child('profile_photos/$fileName');
       UploadTask uploadTask = ref.putFile(file);
-      
+
       TaskSnapshot snapshot = await uploadTask;
       String downloadUrl = await snapshot.ref.getDownloadURL();
-      
       return downloadUrl;
     } catch (e) {
       print("Upload photo error: $e");
@@ -120,12 +124,14 @@ class AuthService extends ChangeNotifier {
     }
   }
 
+  // LOGOUT
   Future<void> logout() async {
     await _auth.signOut();
     _currentUser = null;
     notifyListeners();
   }
 
+  // CHECK AUTH STATE
   Future<void> checkAuthState() async {
     User? user = _auth.currentUser;
     if (user != null) {

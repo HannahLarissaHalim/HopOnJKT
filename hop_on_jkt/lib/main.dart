@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_auth/firebase_auth.dart' as fb_auth;
 import 'package:provider/provider.dart';
-
+import 'package:get/get.dart';
 import 'providers/auth_provider.dart' as my_auth;
 import 'providers/ticket_provider.dart';
 
@@ -28,13 +28,10 @@ class MyApp extends StatelessWidget {
         ChangeNotifierProvider(create: (_) => my_auth.AuthProvider()),
         ChangeNotifierProvider(create: (_) => TicketProvider()),
       ],
-      child: MaterialApp(
+      child: GetMaterialApp(
         debugShowCheckedModeBanner: false,
         title: 'HopOnJKT',
-        theme: ThemeData(
-          primarySwatch: Colors.blue,
-          fontFamily: "Coolvetica",
-        ),
+        theme: ThemeData(primarySwatch: Colors.blue, fontFamily: "Coolvetica"),
         home: const AuthWrapper(),
         routes: {
           '/login': (context) => const LoginScreen(),
@@ -47,7 +44,7 @@ class MyApp extends StatelessWidget {
   }
 }
 
-// Wrapper: tentuin layar awal sesuai status login
+// Wrapperutk tentuin layar awal sesuai status login
 class AuthWrapper extends StatelessWidget {
   const AuthWrapper({super.key});
 

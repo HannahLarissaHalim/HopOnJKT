@@ -17,6 +17,10 @@ class _SignUpScreenState extends State<SignUpScreen> {
 
   bool isLoading = false;
 
+  // password/pin visibility
+  bool _obscurePassword = true; 
+  bool _obscurePin = true;   
+
   @override
   void dispose() {
     nameController.dispose();
@@ -31,6 +35,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
     return Scaffold(
       body: Stack(
         children: [
+          // Background gradient
           Container(
             decoration: const BoxDecoration(
               gradient: LinearGradient(
@@ -41,6 +46,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
             ),
           ),
 
+          // Top clouds image
           SafeArea(
             child: Align(
               alignment: Alignment.topCenter,
@@ -53,15 +59,16 @@ class _SignUpScreenState extends State<SignUpScreen> {
             ),
           ),
 
+          // App title
           Align(
             alignment: Alignment.topCenter,
             child: Padding(
-              padding: const EdgeInsets.only(top: 150),
+              padding: const EdgeInsets.only(top: 120),
               child: const Text(
                 "HopOnJKT",
                 style: TextStyle(
-                  fontFamily: "Coolvetica",
-                  fontSize: 50,
+                  fontFamily: "HeyComic",
+                  fontSize: 55,
                   color: Color(0xFF1A3C6E),
                   fontWeight: FontWeight.bold,
                 ),
@@ -69,11 +76,11 @@ class _SignUpScreenState extends State<SignUpScreen> {
             ),
           ),
 
+          // Sign Up form
           Center(
             child: SingleChildScrollView(
               padding: const EdgeInsets.symmetric(horizontal: 20),
               child: Container(
-                margin: const EdgeInsets.only(top: 50),
                 padding: const EdgeInsets.all(20),
                 decoration: BoxDecoration(
                   color: Colors.white,
@@ -93,6 +100,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                     ),
                     const SizedBox(height: 20),
 
+                    // Full Name
                     TextField(
                       controller: nameController,
                       decoration: InputDecoration(
@@ -103,10 +111,12 @@ class _SignUpScreenState extends State<SignUpScreen> {
                           borderRadius: BorderRadius.circular(10),
                           borderSide: BorderSide.none,
                         ),
+                        contentPadding: const EdgeInsets.symmetric(vertical: 16, horizontal: 12),
                       ),
                     ),
                     const SizedBox(height: 12),
 
+                    // Email
                     TextField(
                       controller: emailController,
                       keyboardType: TextInputType.emailAddress,
@@ -118,13 +128,15 @@ class _SignUpScreenState extends State<SignUpScreen> {
                           borderRadius: BorderRadius.circular(10),
                           borderSide: BorderSide.none,
                         ),
+                        contentPadding: const EdgeInsets.symmetric(vertical: 16, horizontal: 12),
                       ),
                     ),
                     const SizedBox(height: 12),
 
+                    // Password
                     TextField(
                       controller: passwordController,
-                      obscureText: true,
+                      obscureText: _obscurePassword,
                       decoration: InputDecoration(
                         hintText: "Password",
                         filled: true,
@@ -133,13 +145,26 @@ class _SignUpScreenState extends State<SignUpScreen> {
                           borderRadius: BorderRadius.circular(10),
                           borderSide: BorderSide.none,
                         ),
+                        contentPadding: const EdgeInsets.symmetric(vertical: 16, horizontal: 12),
+                        suffixIcon: IconButton(
+                          icon: Icon(
+                            _obscurePassword ? Icons.visibility_off : Icons.visibility,
+                            color: const Color(0xFF1A3C6E),
+                          ),
+                          onPressed: () {
+                            setState(() {
+                              _obscurePassword = !_obscurePassword;
+                            });
+                          },
+                        ),
                       ),
                     ),
                     const SizedBox(height: 12),
 
+                    // PIN
                     TextField(
                       controller: pinController,
-                      obscureText: true,
+                      obscureText: _obscurePin,
                       keyboardType: TextInputType.number,
                       maxLength: 4,
                       decoration: InputDecoration(
@@ -151,10 +176,23 @@ class _SignUpScreenState extends State<SignUpScreen> {
                           borderRadius: BorderRadius.circular(10),
                           borderSide: BorderSide.none,
                         ),
+                        contentPadding: const EdgeInsets.symmetric(vertical: 16, horizontal: 12),
+                        suffixIcon: IconButton(
+                          icon: Icon(
+                            _obscurePin ? Icons.visibility_off : Icons.visibility,
+                            color: const Color(0xFF1A3C6E),
+                          ),
+                          onPressed: () {
+                            setState(() {
+                              _obscurePin = !_obscurePin;
+                            });
+                          },
+                        ),
                       ),
                     ),
                     const SizedBox(height: 20),
 
+                    // Sign Up button
                     SizedBox(
                       width: double.infinity,
                       child: ElevatedButton(
@@ -188,6 +226,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
             ),
           ),
 
+          // Bottom train image
           Align(
             alignment: Alignment.bottomCenter,
             child: Image.asset(
