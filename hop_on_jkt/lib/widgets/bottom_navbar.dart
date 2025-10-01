@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 import '../screens/journey/route_screen.dart';
 import '../screens/ticket/order_history_screen.dart';
+import '../screens/profile/profile_page.dart';  
 
 class BottomNavBar extends StatefulWidget {
-  final int initialIndex; //  untuk masuk langsung ke tab tertentu
+  final int initialIndex;
   const BottomNavBar({super.key, this.initialIndex = 0}); 
 
   @override
@@ -16,19 +17,19 @@ class _BottomNavBarState extends State<BottomNavBar> {
   @override
   void initState() {
     super.initState();
-    _currentIndex = widget.initialIndex; //supaya bisa start dari tab ke-2
+    _currentIndex = widget.initialIndex;
   }
 
   final List<Widget> _screens = [
     RouteScreen(from: "Manggarai", to: "Jakarta Kota", date: DateTime.now()),
     OrderHistoryScreen(userId: "dummyUserId"), 
-    Center(child: Text("Account Page (soon)")),
+    ProfilePage(),  // ← GANTI JADI INI (tanpa const)
   ];
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: IndexedStack( // supaya state tiap screen ga reset
+      body: IndexedStack(
         index: _currentIndex,
         children: _screens,
       ),
