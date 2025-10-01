@@ -33,6 +33,7 @@ class MyApp extends StatelessWidget {
         theme: ThemeData(primarySwatch: Colors.blue, fontFamily: "Coolvetica"),
         home: const AuthWrapper(),
         routes: {
+          '/welcome': (context) => const WelcomeScreen(),
           '/login': (context) => const LoginScreen(),
           '/signup': (context) => const SignUpScreen(),
           '/home': (context) => const BottomNavBar(),
@@ -63,7 +64,7 @@ class AuthWrapper extends StatelessWidget {
         }
 
         // kalau belum login tampil login screen
-        return const LoginScreen();
+        return const WelcomeScreen();
       },
     );
   }
