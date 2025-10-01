@@ -1,15 +1,15 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import '../../providers/auth_provider.dart';  // ← GANTI IMPORT INI
+import '../../providers/auth_provider.dart'; 
 
 class ProfilePage extends StatelessWidget {
   const ProfilePage({super.key});
 
   @override
   Widget build(BuildContext context) {
-    final auth = context.watch<AuthProvider>();  // ← GANTI JADI AuthProvider
-    final user = auth.user;  // ← GANTI dari currentUser jadi user
+    final auth = context.watch<AuthProvider>();  
+    final user = auth.user;  
 
     return Scaffold(
       backgroundColor: const Color(0xFFF0F4FA),
