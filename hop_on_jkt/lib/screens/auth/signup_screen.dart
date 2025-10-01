@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../../providers/auth_provider.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 class SignUpScreen extends StatefulWidget {
   const SignUpScreen({Key? key}) : super(key: key);
@@ -19,8 +20,8 @@ class _SignUpScreenState extends State<SignUpScreen> {
   bool isLoading = false;
 
   // password/pin keliatan atau gak
-  bool _obscurePassword = true; 
-  bool _obscurePin = true;   
+  bool _obscurePassword = true;
+  bool _obscurePin = true;
 
   @override
   Widget build(BuildContext context) {
@@ -59,7 +60,8 @@ class _SignUpScreenState extends State<SignUpScreen> {
 
             child: Padding(
               padding: const EdgeInsets.only(
-                top: 120, // jarak dari atas layar, biar teks agak ke bawah dan gak nempel sama awan
+                top:
+                    120, // jarak dari atas layar, biar teks agak ke bawah dan gak nempel sama awan
               ),
 
               child: const Text(
@@ -77,16 +79,12 @@ class _SignUpScreenState extends State<SignUpScreen> {
           // form sign up
           // center supaya semua yg didalam form selalu di tengah
           Center(
-
             // biar bisa scroll kalo layar kecil
             child: SingleChildScrollView(
               // jarak 20 px kiri & kanan
-              padding: const EdgeInsets.symmetric(
-                horizontal: 20,           
-              ),
+              padding: const EdgeInsets.symmetric(horizontal: 20),
 
               child: Container(
-
                 padding: const EdgeInsets.all(20), // ruang di dalam form
 
                 decoration: BoxDecoration(
@@ -94,7 +92,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                   borderRadius: BorderRadius.circular(15),
                   boxShadow: [BoxShadow(color: Colors.black, blurRadius: 7)],
                 ),
-                
+
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
 
@@ -193,11 +191,12 @@ class _SignUpScreenState extends State<SignUpScreen> {
                     // Tombol Sign Up
                     ElevatedButton(
                       onPressed: isLoading
-                          ? null 
-                          : () async { 
+                          ? null
+                          : () async {
                               setState(
-                                () => isLoading = true, // disable kalau lagi loading
-                              ); 
+                                () => isLoading =
+                                    true, // disable kalau lagi loading
+                              );
                               try {
                                 // panggil provider untuk signup ke firebase
                                 // dgn cara akses AuthProvider untuk panggil fungsi signUp lalu kirim data dari TextField
@@ -209,6 +208,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                                   passwordController.text.trim(),
                                   pinController.text.trim(),
                                 );
+
                                 // kalau sukses kasih snackbar
                                 ScaffoldMessenger.of(context).showSnackBar(
                                   const SnackBar(
@@ -226,8 +226,9 @@ class _SignUpScreenState extends State<SignUpScreen> {
                                 );
                               } finally {
                                 setState(
-                                  () => isLoading = false, // tombol bisa ditekan,
-                                ); 
+                                  () =>
+                                      isLoading = false, // tombol bisa ditekan,
+                                );
                               }
                             },
                       style: ElevatedButton.styleFrom(
@@ -239,7 +240,9 @@ class _SignUpScreenState extends State<SignUpScreen> {
                         ),
                       ),
                       child: isLoading
-                          ? const CircularProgressIndicator(color: Colors.white) // spinner loading putih
+                          ? const CircularProgressIndicator(
+                              color: Colors.white,
+                            ) // spinner loading putih
                           : const Text("Sign Up"), // teks "Sign Up"
                     ),
                   ],
