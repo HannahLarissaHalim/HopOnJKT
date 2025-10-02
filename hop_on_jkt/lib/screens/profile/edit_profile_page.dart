@@ -30,44 +30,32 @@ class _EditProfilePageState extends State<EditProfilePage> {
   }
 
   Future<void> _pickImageFromGallery() async {
-    try {
-      final picked = await ImagePicker().pickImage(
-        source: ImageSource.gallery,
-        maxWidth: 512,
-        maxHeight: 512,
-        imageQuality: 75,
-      );
-      if (picked != null) {
-        setState(() {
-          _imageFile = File(picked.path);
-        });
-        print("✅ Image picked from gallery: ${picked.path}");
-      } else {
-        print("⚠️ No image picked from gallery");
-      }
-    } catch (e) {
-      print("❌ Error picking image from gallery: $e");
+    final picked = await ImagePicker().pickImage(
+      source: ImageSource.gallery,
+      maxWidth: 512,
+      maxHeight: 512,
+      imageQuality: 75,
+    );
+    if (picked != null) {
+      setState(() {
+        _imageFile = File(picked.path);
+      });
+      print("✅ Image picked from gallery: ${picked.path}");
     }
   }
 
   Future<void> _pickImageFromCamera() async {
-    try {
-      final picked = await ImagePicker().pickImage(
-        source: ImageSource.camera,
-        maxWidth: 512,
-        maxHeight: 512,
-        imageQuality: 75,
-      );
-      if (picked != null) {
-        setState(() {
-          _imageFile = File(picked.path);
-        });
-        print("✅ Image picked from camera: ${picked.path}");
-      } else {
-        print("⚠️ No image picked from camera");
-      }
-    } catch (e) {
-      print("❌ Error picking image from camera: $e");
+    final picked = await ImagePicker().pickImage(
+      source: ImageSource.camera,
+      maxWidth: 512,
+      maxHeight: 512,
+      imageQuality: 75,
+    );
+    if (picked != null) {
+      setState(() {
+        _imageFile = File(picked.path);
+      });
+      print("✅ Image picked from camera: ${picked.path}");
     }
   }
 
@@ -190,23 +178,17 @@ class _EditProfilePageState extends State<EditProfilePage> {
               children: [
                 GestureDetector(
                   onTap: _showImageSourceDialog,
-                  child: Container(
-                    decoration: BoxDecoration(
-                      shape: BoxShape.circle,
-                      border: Border.all(color: const Color(0xFF1A3C6E), width: 3),
-                    ),
-                    child: CircleAvatar(
-                      radius: 70,
-                      backgroundColor: Colors.grey[200],
-                      backgroundImage: _imageFile != null
-                          ? FileImage(_imageFile!)
-                          : (user?.photoPath != null
-                              ? NetworkImage(user.photoPath!) as ImageProvider
-                              : null),
-                      child: (_imageFile == null && user?.photoPath == null)
-                          ? const Icon(Icons.person, size: 70, color: Colors.grey)
-                          : null,
-                    ),
+                  child: CircleAvatar(
+                    radius: 70,
+                    backgroundColor: Colors.grey[200],
+                    backgroundImage: _imageFile != null
+                        ? FileImage(_imageFile!)
+                        : (user?.photoPath != null
+                            ? NetworkImage(user.photoPath!) as ImageProvider
+                            : null),
+                    child: (_imageFile == null && user?.photoPath == null)
+                        ? const Icon(Icons.person, size: 70, color: Colors.grey)
+                        : null,
                   ),
                 ),
                 Positioned(
