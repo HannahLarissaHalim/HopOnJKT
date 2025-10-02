@@ -31,8 +31,10 @@ class UserModel {
     return UserModel(
       uid: map['uid'] ?? '',
       email: map['email'] ?? '',
-      points: map['points'] ?? 0,
-      pin: map['pin'] ?? '',
+      points: map['points'] is int
+          ? map['points']
+          : int.tryParse(map['points'].toString()) ?? 0,
+      pin: map['pin']?.toString() ?? '',
     );
   }
 }
