@@ -6,6 +6,8 @@ import 'package:uuid/uuid.dart';
 import '../../providers/ticket_provider.dart';
 import '../../widgets/bottom_navbar.dart';
 
+//testes
+
 class BuyTicketScreen extends StatefulWidget {
   final String fromStation;  // stasiun asal
   final String toStation;    // stasiun tujuan
