@@ -16,6 +16,9 @@ class _ChangePinScreenState extends State<ChangePinScreen> {
   bool _isLoading = false;
   bool _verified = false;
 
+  bool _obscureNew = true;
+  bool _obscureConfirm = true;
+
   @override
   void dispose() {
     _newPinController.dispose();
@@ -34,8 +37,12 @@ class _ChangePinScreenState extends State<ChangePinScreen> {
         content: TextField(
           obscureText: true,
           keyboardType: TextInputType.number,
+          maxLength: 4,
           onChanged: (value) => currentPin = value,
-          decoration: const InputDecoration(hintText: 'Current PIN'),
+          decoration: const InputDecoration(
+            hintText: 'Current PIN',
+            counterText: '',
+          ),
         ),
         actions: [
           TextButton(
@@ -120,9 +127,11 @@ class _ChangePinScreenState extends State<ChangePinScreen> {
       controller: controller,
       obscureText: obscure,
       keyboardType: TextInputType.number,
+      maxLength: 4,
       decoration: InputDecoration(
         labelText: label,
         border: const OutlineInputBorder(),
+        counterText: "",
         suffixIcon: IconButton(
           icon: Icon(obscure ? Icons.visibility_off : Icons.visibility),
           onPressed: onToggle,
@@ -130,9 +139,6 @@ class _ChangePinScreenState extends State<ChangePinScreen> {
       ),
     );
   }
-
-  bool _obscureNew = true;
-  bool _obscureConfirm = true;
 
   @override
   Widget build(BuildContext context) {

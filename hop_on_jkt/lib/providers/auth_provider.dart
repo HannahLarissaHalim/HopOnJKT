@@ -46,7 +46,7 @@ class AuthProvider with ChangeNotifier {
     notifyListeners();
   }
 
-  // CHECK AUTH STATE - Method baru ini yang penting!
+  // CHECK AUTH STATE
   Future<void> checkAuthState() async {
     await _authService.checkAuthState();
     _user = _authService.currentUser;
@@ -60,14 +60,26 @@ class AuthProvider with ChangeNotifier {
     notifyListeners();
   }
 
-  // di dalam class AuthProvider
-Future<void> changePin(String newPin) async {
-  if (_user == null) throw Exception('User not logged in');
+  // CHANGE PIN
+  Future<void> changePin(String newPin) async {
+    if (_user == null) throw Exception('User not logged in');
 
-  await _authService.changePin(newPin);
+    await _authService.changePin(newPin);
 
-  // update user lokal supaya UI langsung refresh
-  _user = _authService.currentUser;
-  notifyListeners();
-}
+    // update user lokal supaya UI langsung refresh
+    _user = _authService.currentUser;
+    notifyListeners();
+  }
+
+  // UPDATE POINTS 
+
+  Future<void> updatePoints(int newPoints) async {
+    if (_user == null) throw Exception('User not logged in');
+
+    await _authService.updatePoints(newPoints); // harus ada di AuthService juga
+
+    // update user lokal supaya UI langsung refresh
+    _user = _authService.currentUser;
+    notifyListeners();
+  }
 }

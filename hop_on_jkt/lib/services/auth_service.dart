@@ -250,4 +250,30 @@ class AuthService extends ChangeNotifier {
       }
     }
   }
+
+  // Fungsi baru untuk update points
+  Future<void> updatePoints(int pointsToAdd) async {
+    if (_currentUser == null) {
+      throw Exception("User not logged in");
+    }
+
+    try {
+      int currentPoints = _currentUser!.points;
+      int newPoints = currentPoints + pointsToAdd;
+
+      await _db.collection('users').doc(_currentUser!.uid).update({
+        'points': newPoints,
+      });
+
+      // Refresh user data setelah update
+      DocumentSnapshot doc = await _db.collection('users').doc(_currentUser!.uid).get();
+      _currentUser = UserModel.fromMap(doc.data() as Map<String, dynamic>);
+      notifyListeners();
+      print("✅ Points updated successfully: $currentPoints → $newPoints");
+    } catch (e) {
+      print("Add Points Error: $e");
+      rethrow;
+    }
+  }
+
 }
