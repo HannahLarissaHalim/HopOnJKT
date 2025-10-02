@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:intl/intl.dart';
 
 class TicketCard extends StatelessWidget {
   final Map<String, dynamic> ticket;
@@ -11,12 +12,35 @@ class TicketCard extends StatelessWidget {
 
     final expiry = ticket['expiryTime'];
     String expiryText = "-";
+    
+    DateTime expiryTime = DateTime.now();
+
     if (expiry != null) {
+      DateTime expiryTime;
       if (expiry is Timestamp) {
-        expiryText = expiry.toDate().toString();
+        expiryTime = expiry.toDate();
+      } else if (expiry is String) {
+        expiryTime = DateTime.tryParse(expiry) ?? DateTime.now();
       } else {
-        expiryText = expiry.toString();
+        expiryTime = DateTime.now();
       }
+
+      expiryText = DateFormat("dd MMM yyyy, HH:mm").format(expiryTime);
+    }
+
+    String createdText = "-";
+    final created = ticket['date'];
+
+    if (created != null) {
+      DateTime createdTime;
+      if (created is Timestamp) {
+        createdTime = created.toDate();
+      } else if (created is String) {
+        createdTime = DateTime.tryParse(created) ?? DateTime.now();
+      } else {
+        createdTime = DateTime.now();
+      }
+      createdText = DateFormat("dd MMM yyyy, HH:mm").format(createdTime);
     }
 
     return Card(
@@ -55,7 +79,7 @@ class TicketCard extends StatelessWidget {
             Text("No Ticket: ${ticket['id'] ?? '-'}"),
 
             // Date & Expired
-            Text("Date: ${ticket['date'] ?? '-'}"),
+            Text("Date: $createdText"),
             Text("Expired: $expiryText"),
 
             // Status
