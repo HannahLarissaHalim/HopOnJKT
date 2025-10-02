@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart'; 
+import 'package:intl/intl.dart'; // ✅ biar format tanggal rapi
 
 class TicketCard extends StatelessWidget {
   final Map<String, dynamic> ticket;
@@ -8,18 +8,22 @@ class TicketCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-   
-    DateTime? expiryTime;
-    if (ticket['expiryTime'] != null) {
-      try {
-        expiryTime = DateTime.tryParse(ticket['expiryTime'].toString());
-      } catch (e) {
-        expiryTime = null;
-      }
-    }
+    // parsing field tanggal
+    String depart = ticket['departureTime'] != null
+        ? DateFormat("yyyy-MM-dd HH:mm").format(DateTime.parse(ticket['departureTime']))
+        : "-";
 
-    final dateFormat = DateFormat('dd MMM yyyy, HH:mm');
-    final expiryText = expiryTime != null ? dateFormat.format(expiryTime) : "-";
+    String arrive = ticket['arrivalTime'] != null
+        ? DateFormat("yyyy-MM-dd HH:mm").format(DateTime.parse(ticket['arrivalTime']))
+        : "-";
+
+    String expired = ticket['expiryTime'] != null
+        ? DateFormat("yyyy-MM-dd HH:mm").format(DateTime.parse(ticket['expiryTime']))
+        : "-";
+
+    String duration = ticket['duration'] != null
+        ? "${ticket['duration']} min"
+        : "-";
 
     return Card(
       margin: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
@@ -30,7 +34,7 @@ class TicketCard extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // FromStation → ToStation
+            // From → To
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
@@ -56,9 +60,15 @@ class TicketCard extends StatelessWidget {
             // Ticket ID
             Text("No Ticket: ${ticket['id'] ?? '-'}"),
 
-            // Date & Expired
-            Text("Date: ${ticket['departureTime'] ?? '-'}"), 
-            Text("Expired: $expiryText"), 
+            // Depart & Arrival
+            Text("Depart: $depart"),
+            Text("Arrive: $arrive"),
+
+            // Duration
+            Text("Duration: $duration"),
+
+            // Expired
+            Text("Expired: $expired"),
 
             // Status
             Text(
