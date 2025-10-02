@@ -15,6 +15,9 @@ import 'screens/auth/welcome_screen.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
+
+  await fb_auth.FirebaseAuth.instance.signOut();
+  
   runApp(const MyApp());
 }
 
