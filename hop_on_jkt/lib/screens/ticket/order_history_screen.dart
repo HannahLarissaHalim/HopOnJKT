@@ -61,23 +61,20 @@ class _OrderHistoryScreenState extends State<OrderHistoryScreen> {
         displayLabel,
         style: TextStyle(
           color: _selectedTab == tabName
-              ? const Color.fromARGB(255, 255, 255, 255)
-              : unselectedColor,
+              ? const Color(0xFF3B658D) // teks saat aktif
+              : const Color(0xFF248ABA), // teks saat gk aktif
           fontWeight: FontWeight.bold,
         ),
       ),
       selected: _selectedTab == tabName,
-      selectedColor: Color.fromRGBO(
-        18,
-        68,
-        109,
-        1,
-      ), // Warna hitam pekat untuk tab yang aktif
-      backgroundColor: Color.fromRGBO(18, 68, 109, 1),
+      selectedColor: const Color(0xFFA4D1EE), // saat aktif
+      backgroundColor: const Color(0xFFE7F2F8), // saat gk aktif
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(8),
         side: BorderSide(
-          color: _selectedTab == tabName ? Colors.black : Colors.grey,
+          color: _selectedTab == tabName
+            ? const Color(0xFF3B658D) // border saat aktif
+            : const Color(0xFF248ABA), // border saat gk aktif
           width: 1.5,
         ),
       ),
