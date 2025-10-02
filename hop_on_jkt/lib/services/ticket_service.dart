@@ -75,6 +75,9 @@ class TicketService {
         ...ticketData,                             // gabungkan data tiket yang dikirim
         'status': 'active',                        // tiket baru diberi status aktif
         'createdAt': FieldValue.serverTimestamp(), // timestamp
+        'departureTime': ticketData['departureTime'], // ✅
+        'arrivalTime': ticketData['arrivalTime'],     // ✅
+        'duration': ticketData['duration'],   
         'expiryTime': (ticketData['expiryTime'] as DateTime).toIso8601String(),
       });
     });
