@@ -24,7 +24,7 @@ class BuyTicketScreen extends StatefulWidget {
 
 class _BuyTicketScreenState extends State<BuyTicketScreen> {
   int userPoints = 0;  // saldo poin user
-  String userPin = ""; // pin user (4 digit)
+  String userPin = ""; // pin user 
 
   @override
   void initState() {
@@ -60,9 +60,9 @@ class _BuyTicketScreenState extends State<BuyTicketScreen> {
             controller: pinController,
             obscureText: true, // biar pin ga keliatan
             keyboardType: TextInputType.number,
-            maxLength: 4,      // pin = 4 digit
+            maxLength: 6,      // pin 6 digit
             decoration: const InputDecoration(
-              hintText: "4-digit PIN",
+              hintText: "6-digit PIN",
               counterText: "",
             ),
           ),

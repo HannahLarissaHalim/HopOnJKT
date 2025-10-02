@@ -161,9 +161,9 @@ class _SignUpScreenState extends State<SignUpScreen> {
                       controller: pinController,
                       obscureText: _obscurePin, // default true
                       keyboardType: TextInputType.number,
-                      maxLength: 4,
+                      maxLength: 6,
                       decoration: InputDecoration(
-                        hintText: "Set 4-digit PIN",
+                        hintText: "Set 6-digit PIN",
                         counterText: "",
                         filled: true,
                         fillColor: Colors.grey[200],
