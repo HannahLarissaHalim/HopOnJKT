@@ -8,7 +8,7 @@ class TicketTab extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final user = FirebaseAuth.instance.currentUser; // ambil user yg login
+    final user = FirebaseAuth.instance.currentUser; // ✅ ambil user yg login
     final userId = user?.uid ?? ""; // kalau null = kosong
 
     return DefaultTabController(
@@ -33,7 +33,7 @@ class TicketTab extends StatelessWidget {
               departureTime: DateTime.now(),
             ),
             OrderHistoryScreen(
-              userId: userId, // pakai user login
+              userId: userId, // ✅ pakai user login
             ),
           ],
         ),
