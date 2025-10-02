@@ -148,7 +148,7 @@ class WelcomeScreen extends StatelessWidget {
               
               // Logo atau judul
               const Text(
-                'HopOnUK',
+                'HopOnJKT',
                 style: TextStyle(
                   fontFamily: "HeyComic",
                   fontSize: 36,
@@ -233,3 +233,4 @@ class WelcomeScreen extends StatelessWidget {
   }
 
 }
+
