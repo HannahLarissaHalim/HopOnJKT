@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 class TicketCard extends StatelessWidget {
   final Map<String, dynamic> ticket;
@@ -7,6 +8,17 @@ class TicketCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+
+    final expiry = ticket['expiryTime'];
+    String expiryText = "-";
+    if (expiry != null) {
+      if (expiry is Timestamp) {
+        expiryText = expiry.toDate().toString();
+      } else {
+        expiryText = expiry.toString();
+      }
+    }
+
     return Card(
       margin: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
@@ -44,7 +56,7 @@ class TicketCard extends StatelessWidget {
 
             // Date & Expired
             Text("Date: ${ticket['date'] ?? '-'}"),
-            Text("Expired: ${ticket['expired'] ?? '-'}"),
+            Text("Expired: $expiryText"),
 
             // Status
             Text(
