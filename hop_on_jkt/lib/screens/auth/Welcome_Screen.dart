@@ -29,7 +29,7 @@ class WelcomeScreen extends StatelessWidget {
                 child: Container(
                   width: double.infinity,
                   child: Image.asset(
-                    "assets/images/welcome.jpg", // Gunakan gambar yang Anda upload
+                    "assets/images/welcome.png", // Gunakan gambar yang Anda upload
                     fit: BoxFit.cover,
                     alignment: Alignment.center,
                   ),
@@ -231,4 +231,5 @@ class WelcomeScreen extends StatelessWidget {
       },
     );
   }
+
 }
