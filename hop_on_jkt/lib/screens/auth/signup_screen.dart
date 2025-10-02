@@ -10,25 +10,32 @@ class SignUpScreen extends StatefulWidget {
 }
 
 class _SignUpScreenState extends State<SignUpScreen> {
-  // controller untuk ambil teks dari input field
+  final nameController = TextEditingController();
   final emailController = TextEditingController();
   final passwordController = TextEditingController();
   final pinController = TextEditingController();
 
-  // loading state biar tombol bisa nunjukin spinner loading
   bool isLoading = false;
 
-  // password/pin keliatan atau gak
+  // password/pin visibility
   bool _obscurePassword = true; 
   bool _obscurePin = true;   
+
+  @override
+  void dispose() {
+    nameController.dispose();
+    emailController.dispose();
+    passwordController.dispose();
+    pinController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: Stack(
-        // stack biar bisa layering background, clouds, form, kereta
         children: [
-          // background scr keseluruhan
+          // Background gradient
           Container(
             decoration: const BoxDecoration(
               gradient: LinearGradient(
@@ -39,8 +46,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
             ),
           ),
 
-          // gambar awan
-          // biar gak tabrakan sama status bar/baterai pake SafeArea
+          // Top clouds image
           SafeArea(
             child: Align(
               alignment: Alignment.topCenter,
@@ -53,15 +59,11 @@ class _SignUpScreenState extends State<SignUpScreen> {
             ),
           ),
 
-          // HopOnJKT
+          // App title
           Align(
             alignment: Alignment.topCenter,
-
             child: Padding(
-              padding: const EdgeInsets.only(
-                top: 120, // jarak dari atas layar, biar teks agak ke bawah dan gak nempel sama awan
-              ),
-
+              padding: const EdgeInsets.only(top: 120),
               child: const Text(
                 "HopOnJKT",
                 style: TextStyle(
@@ -74,30 +76,19 @@ class _SignUpScreenState extends State<SignUpScreen> {
             ),
           ),
 
-          // form sign up
-          // center supaya semua yg didalam form selalu di tengah
+          // Sign Up form
           Center(
-
-            // biar bisa scroll kalo layar kecil
             child: SingleChildScrollView(
-              // jarak 20 px kiri & kanan
-              padding: const EdgeInsets.symmetric(
-                horizontal: 20,           
-              ),
-
+              padding: const EdgeInsets.symmetric(horizontal: 20),
               child: Container(
-
-                padding: const EdgeInsets.all(20), // ruang di dalam form
-
+                padding: const EdgeInsets.all(20),
                 decoration: BoxDecoration(
                   color: Colors.white,
                   borderRadius: BorderRadius.circular(15),
-                  boxShadow: [BoxShadow(color: Colors.black, blurRadius: 7)],
+                  boxShadow: [BoxShadow(color: Colors.black26, blurRadius: 7)],
                 ),
-                
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
-
                   children: [
                     const Text(
                       "Sign Up",
@@ -109,30 +100,43 @@ class _SignUpScreenState extends State<SignUpScreen> {
                     ),
                     const SizedBox(height: 20),
 
-                    // input email
+                    // Full Name
                     TextField(
-                      controller: emailController, // ambil input teks email
+                      controller: nameController,
                       decoration: InputDecoration(
-                        hintText: "Email",
+                        hintText: "Full Name",
                         filled: true,
-                        fillColor: Colors.grey[200], // background abu-abu muda
+                        fillColor: Colors.grey[200],
                         border: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(10),
-                          borderSide:
-                              BorderSide.none, // hilangkan border hitam default
+                          borderSide: BorderSide.none,
                         ),
-                        contentPadding: const EdgeInsets.symmetric(
-                          vertical: 16,
-                          horizontal: 12,
-                        ),
+                        contentPadding: const EdgeInsets.symmetric(vertical: 16, horizontal: 12),
                       ),
                     ),
                     const SizedBox(height: 12),
 
-                    // input pw
+                    // Email
+                    TextField(
+                      controller: emailController,
+                      keyboardType: TextInputType.emailAddress,
+                      decoration: InputDecoration(
+                        hintText: "Email",
+                        filled: true,
+                        fillColor: Colors.grey[200],
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(10),
+                          borderSide: BorderSide.none,
+                        ),
+                        contentPadding: const EdgeInsets.symmetric(vertical: 16, horizontal: 12),
+                      ),
+                    ),
+                    const SizedBox(height: 12),
+
+                    // Password
                     TextField(
                       controller: passwordController,
-                      obscureText: _obscurePassword, // default true
+                      obscureText: _obscurePassword,
                       decoration: InputDecoration(
                         hintText: "Password",
                         filled: true,
@@ -141,11 +145,10 @@ class _SignUpScreenState extends State<SignUpScreen> {
                           borderRadius: BorderRadius.circular(10),
                           borderSide: BorderSide.none,
                         ),
+                        contentPadding: const EdgeInsets.symmetric(vertical: 16, horizontal: 12),
                         suffixIcon: IconButton(
                           icon: Icon(
-                            _obscurePassword
-                                ? Icons.visibility_off
-                                : Icons.visibility,
+                            _obscurePassword ? Icons.visibility_off : Icons.visibility,
                             color: const Color(0xFF1A3C6E),
                           ),
                           onPressed: () {
@@ -158,10 +161,10 @@ class _SignUpScreenState extends State<SignUpScreen> {
                     ),
                     const SizedBox(height: 12),
 
-                    // input pin
+                    // PIN
                     TextField(
                       controller: pinController,
-                      obscureText: _obscurePin, // default true
+                      obscureText: _obscurePin,
                       keyboardType: TextInputType.number,
                       maxLength: 4,
                       decoration: InputDecoration(
@@ -173,11 +176,10 @@ class _SignUpScreenState extends State<SignUpScreen> {
                           borderRadius: BorderRadius.circular(10),
                           borderSide: BorderSide.none,
                         ),
+                        contentPadding: const EdgeInsets.symmetric(vertical: 16, horizontal: 12),
                         suffixIcon: IconButton(
                           icon: Icon(
-                            _obscurePin
-                                ? Icons.visibility_off
-                                : Icons.visibility,
+                            _obscurePin ? Icons.visibility_off : Icons.visibility,
                             color: const Color(0xFF1A3C6E),
                           ),
                           onPressed: () {
@@ -190,57 +192,33 @@ class _SignUpScreenState extends State<SignUpScreen> {
                     ),
                     const SizedBox(height: 20),
 
-                    // Tombol Sign Up
-                    ElevatedButton(
-                      onPressed: isLoading
-                          ? null 
-                          : () async { 
-                              setState(
-                                () => isLoading = true, // disable kalau lagi loading
-                              ); 
-                              try {
-                                // panggil provider untuk signup ke firebase
-                                // dgn cara akses AuthProvider untuk panggil fungsi signUp lalu kirim data dari TextField
-                                await Provider.of<AuthProvider>(
-                                  context,
-                                  listen: false,
-                                ).signUp(
-                                  emailController.text.trim(),
-                                  passwordController.text.trim(),
-                                  pinController.text.trim(),
-                                );
-                                // kalau sukses kasih snackbar
-                                ScaffoldMessenger.of(context).showSnackBar(
-                                  const SnackBar(
-                                    content: Text("Sign Up Success"),
-                                  ),
-                                );
-                                // pindah ke halaman home
-                                Navigator.pushReplacementNamed(
-                                  context,
-                                  '/home',
-                                );
-                              } catch (e) {
-                                ScaffoldMessenger.of(context).showSnackBar(
-                                  SnackBar(content: Text("Error: $e")),
-                                );
-                              } finally {
-                                setState(
-                                  () => isLoading = false, // tombol bisa ditekan,
-                                ); 
-                              }
-                            },
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: const Color(0xFF1A3C6E),
-                        foregroundColor: Colors.white,
-                        padding: const EdgeInsets.symmetric(vertical: 14),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(8),
+                    // Sign Up button
+                    SizedBox(
+                      width: double.infinity,
+                      child: ElevatedButton(
+                        onPressed: isLoading ? null : _handleSignUp,
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: const Color(0xFF1A3C6E),
+                          foregroundColor: Colors.white,
+                          padding: const EdgeInsets.symmetric(vertical: 14),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(8),
+                          ),
                         ),
+                        child: isLoading
+                            ? const SizedBox(
+                                height: 20,
+                                width: 20,
+                                child: CircularProgressIndicator(
+                                  color: Colors.white,
+                                  strokeWidth: 2,
+                                ),
+                              )
+                            : const Text(
+                                "Sign Up",
+                                style: TextStyle(fontSize: 16),
+                              ),
                       ),
-                      child: isLoading
-                          ? const CircularProgressIndicator(color: Colors.white) // spinner loading putih
-                          : const Text("Sign Up"), // teks "Sign Up"
                     ),
                   ],
                 ),
@@ -248,7 +226,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
             ),
           ),
 
-          // kereta
+          // Bottom train image
           Align(
             alignment: Alignment.bottomCenter,
             child: Image.asset(
@@ -260,5 +238,68 @@ class _SignUpScreenState extends State<SignUpScreen> {
         ],
       ),
     );
+  }
+
+  Future<void> _handleSignUp() async {
+    final name = nameController.text.trim();
+    final email = emailController.text.trim();
+    final password = passwordController.text.trim();
+    final pin = pinController.text.trim();
+
+    if (name.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text("Please enter your name")),
+      );
+      return;
+    }
+
+    if (email.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text("Please enter your email")),
+      );
+      return;
+    }
+
+    if (password.isEmpty || password.length < 6) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text("Password must be at least 6 characters")),
+      );
+      return;
+    }
+
+    if (pin.isEmpty || pin.length != 4) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text("PIN must be 4 digits")),
+      );
+      return;
+    }
+
+    setState(() => isLoading = true);
+
+    try {
+      bool success = await Provider.of<AuthProvider>(context, listen: false)
+          .signUp(email, password, pin, name);
+
+      if (success && mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text("Sign Up Success!")),
+        );
+        Navigator.pushReplacementNamed(context, '/home');
+      } else if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text("Sign up failed. Please try again.")),
+        );
+      }
+    } catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text("Error: $e")),
+        );
+      }
+    } finally {
+      if (mounted) {
+        setState(() => isLoading = false);
+      }
+    }
   }
 }

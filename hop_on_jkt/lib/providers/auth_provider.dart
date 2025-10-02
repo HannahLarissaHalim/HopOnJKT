@@ -18,8 +18,8 @@ class AuthProvider with ChangeNotifier {
 
 
   // SIGN UP
-  Future<bool> signUp(String email, String password, String pin) async {
-    _user = await _authService.signUp(email, password, pin); // panggil fungsi dari AuthService
+  Future<bool> signUp(String email, String password, String pin, String name) async {
+    _user = await _authService.signUp(email, password, pin, name); // panggil fungsi dari AuthService
     notifyListeners();    // kasih tau UI kalau ada perubahan state
     return _user != null; // return true kalau sukses
   }
@@ -36,6 +36,27 @@ class AuthProvider with ChangeNotifier {
     await _authService.resetPassword(email);
   }
 
+  // Update profile
+  Future<void> updateProfile({
+  String? name,
+  String? email,
+  String? photoPath,
+  }) async {
+    if (_user == null) return; // kalau belum login, gak usah jalan
+    await _authService.updateProfile(
+      name: name,
+      photoPath: photoPath,
+    );
+
+  // update user lokal setelah profile berubah
+    _user = _authService.currentUser;
+    notifyListeners();
+  }
   // LOGOUT
+  Future<void> logout() async {
+    await _authService.logout();
+    _user = null;
+    notifyListeners();
+  }
   
 }
