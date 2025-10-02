@@ -10,6 +10,7 @@ import 'providers/ticket_provider.dart';
 import 'screens/auth/login_screen.dart';
 import 'screens/auth/signup_screen.dart';
 import 'widgets/bottom_navbar.dart';
+import 'screens/profile/edit_profile_page.dart';
 import 'screens/auth/welcome_screen.dart';
 
 void main() async {
@@ -41,6 +42,7 @@ class MyApp extends StatelessWidget {
           '/login': (context) => const LoginScreen(),
           '/signup': (context) => const SignUpScreen(),
           '/home': (context) => const BottomNavBar(),
+          '/edit-profile': (context) => const EditProfilePage(),
         },
       ),
     );

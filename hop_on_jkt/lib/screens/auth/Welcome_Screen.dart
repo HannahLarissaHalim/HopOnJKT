@@ -14,8 +14,8 @@ class WelcomeScreen extends StatelessWidget {
             begin: Alignment.topCenter,
             end: Alignment.bottomCenter,
             colors: [
-              Color(0xFFE6F9F5), // Light cyan di atas
-              Color(0xFF85D8F5), // Biru muda di bawah
+              Color(0xFFE6F9F5), 
+              Color(0xFF85D8F5), 
             ],
             stops: [0.5, 1.0],
           ),
@@ -23,13 +23,13 @@ class WelcomeScreen extends StatelessWidget {
         child: SafeArea(
           child: Column(
             children: [
-              // Top section dengan gambar welcome utuh
+            
               Expanded(
                 flex: 6,
                 child: Container(
                   width: double.infinity,
                   child: Image.asset(
-                    "assets/images/welcome.png", // Gunakan gambar yang Anda upload
+                    "assets/images/welcome.png", 
                     fit: BoxFit.cover,
                     alignment: Alignment.center,
                   ),
@@ -233,4 +233,5 @@ class WelcomeScreen extends StatelessWidget {
   }
 
 }
+
 
