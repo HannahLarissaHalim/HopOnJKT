@@ -10,19 +10,13 @@ class BuyTicketScreen extends StatefulWidget {
   final String fromStation;  // stasiun asal
   final String toStation;    // stasiun tujuan
   final int price;           // harga tiket (dalam poin)
-  final DateTime departureTime;   
-  final DateTime arrivalTime;    
-  final Duration duration; 
 
   const BuyTicketScreen({
-    super.key,
+    Key? key,
     required this.fromStation,
     required this.toStation,
     required this.price,
-    required this.departureTime, 
-    required this.arrivalTime,   
-    required this.duration,      
-  });
+  }) : super(key: key);
 
   @override
   State<BuyTicketScreen> createState() => _BuyTicketScreenState();
@@ -120,8 +114,7 @@ class _BuyTicketScreenState extends State<BuyTicketScreen> {
             "price": widget.price,
             "departureTime": widget.departureTime.toIso8601String(),
             "arrivalTime": widget.arrivalTime.toIso8601String(),
-            "expiryTime": widget.departureTime.add(const Duration(minutes: 60)).toIso8601String(),
-            "duration": widget.duration.inMinutes, 
+            "expiryTime": widget.departureTime.add(const Duration(minutes: 60)).toIso8601String(), 
           },
         );
 
