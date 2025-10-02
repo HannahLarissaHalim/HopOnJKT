@@ -59,4 +59,15 @@ class AuthProvider with ChangeNotifier {
     _user = null;
     notifyListeners();
   }
+
+  // di dalam class AuthProvider
+Future<void> changePin(String newPin) async {
+  if (_user == null) throw Exception('User not logged in');
+
+  await _authService.changePin(newPin);
+
+  // update user lokal supaya UI langsung refresh
+  _user = _authService.currentUser;
+  notifyListeners();
+}
 }
