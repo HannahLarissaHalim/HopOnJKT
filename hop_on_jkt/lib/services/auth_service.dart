@@ -28,10 +28,8 @@ class AuthService extends ChangeNotifier {
         email: email,
         points: 999,    // default saldo poin
         pin: pin,       // simpan pin dari form signup
-        points: 999999,
-        pin: pin,
-        name: name,
         photoPath: null,
+        name: name,
       );
 
       await _db.collection('users').doc(user.uid).set(newUser.toMap());
