@@ -68,7 +68,7 @@ class _BuyTicketScreenState extends State<BuyTicketScreen> {
                 keyboardType: TextInputType.number,
                 maxLength: 6,
                 decoration: InputDecoration(
-                  hintText: "6-digit PIN",
+                  hintText: "Enter 6-digit PIN",
                   counterText: "",
                   suffixIcon: IconButton(
                     icon: Icon(
@@ -119,7 +119,9 @@ class _BuyTicketScreenState extends State<BuyTicketScreen> {
           'userId': user.uid,
           'status': 'active',
           'date': FieldValue.serverTimestamp(),
-          'expiryTime': DateTime.now().add(const Duration(minutes: 120)),
+          'expiryTime': Timestamp.fromDate(
+            DateTime.now().add(const Duration(minutes: 120)),
+          ),
         };
 
         // panggil provider utk kurangi poin + simpan tiket
@@ -135,32 +137,34 @@ class _BuyTicketScreenState extends State<BuyTicketScreen> {
         // kasih notifikasi sukses
         ScaffoldMessenger.of(
           context,
-        ).showSnackBar(const SnackBar(content: Text("Payment Success ✅")));
+        ).showSnackBar(const SnackBar(content: Text("Payment Successful :D")));
 
-        // setelah sukses, pindah ke tab My Orders (OrderHistory)
-        Navigator.pushAndRemoveUntil(
-          context,
-          MaterialPageRoute(
-            builder: (_) => const BottomNavBar(initialIndex: 1),
-          ),
-          (route) => false,
-        );
+        Future.delayed(const Duration(milliseconds: 300), () {
+          Navigator.pushAndRemoveUntil(
+            context,
+            MaterialPageRoute(
+              builder: (_) => const BottomNavBar(initialIndex: 1),
+            ),
+            (route) => false,
+          );
+        });
       } catch (e) {
-        ScaffoldMessenger.of(
-          context,
-        ).showSnackBar(SnackBar(content: Text("Error: $e")));
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text("Error: $e")),
+        );
       }
     } else {
-      // kalau pin salah
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(const SnackBar(content: Text("Wrong PIN ❌")));
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text("Wrong PIN ❌")),
+      );
     }
   }
 
+        
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.white,
       body: SafeArea(
         child: Column(
           children: [
@@ -226,13 +230,13 @@ class _BuyTicketScreenState extends State<BuyTicketScreen> {
                   Container(
                     padding: const EdgeInsets.all(12),
                     decoration: BoxDecoration(
-                      color: Color(0xFFC7DEE4), // 🔵 biru muda
+                      color: Color(0xFFC7DEE4), 
                       borderRadius: BorderRadius.circular(8),
                     ),
                     child: Text(
                       "Your points: $userPoints",
                       style: const TextStyle(
-                        color: Color(0xFF006889), // 🔵 biru tua
+                        color: Color(0xFF006889), 
                         fontWeight: FontWeight.bold,
                       ),
                     ),
@@ -244,7 +248,7 @@ class _BuyTicketScreenState extends State<BuyTicketScreen> {
                   ElevatedButton(
                     onPressed: _confirmPayment,
                     style: ElevatedButton.styleFrom(
-                      backgroundColor: Color(0xFFDDF3A1), // 🟢 hijau muda
+                      backgroundColor: Color(0xFFDDF3A1), 
                       padding: const EdgeInsets.symmetric(vertical: 14),
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(8),

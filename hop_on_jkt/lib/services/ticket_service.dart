@@ -74,7 +74,9 @@ class TicketService {
       transaction.set(newTicketRef, {
         ...ticketData,                             
         'status': 'active',
-        'expiryTime': DateTime.now().add(Duration(minutes: 120)),
+        'expiryTime': Timestamp.fromDate(
+          DateTime.now().add(const Duration(minutes: 120)),
+        ),
       });
     });
   }
@@ -93,14 +95,17 @@ Future<void> markExpiredTickets(String userId) async {
     final data = doc.data();
     final expiry = data['expiryTime'];
 
-    DateTime expiryTime;
+    DateTime? expiryTime;
+
     if (expiry is Timestamp) {
       expiryTime = expiry.toDate();
     } else if (expiry is String) {
-      expiryTime = DateTime.tryParse(expiry) ?? now;
-    } else {
-      continue;
+      expiryTime = DateTime.tryParse(expiry);
+    } else if (expiry is DateTime) {
+      expiryTime = expiry;
     }
+
+    if (expiryTime == null) continue;
 
     if (expiryTime.isBefore(now)) {
       await _firestore.collection('tickets').doc(doc.id).update({
