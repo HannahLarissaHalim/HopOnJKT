@@ -90,6 +90,7 @@ class JourneyService {
                 operator: operator + ' - ' + trainType + ' | ${hargaPoin} Poin',
                 routeId:
                     '${stations[i]}-${stations[j]}-${depTime.hour}${depTime.minute}-$k',
+                expiryTime: depTime.add(const Duration(minutes: 60)),
               ),
             );
           }
@@ -109,6 +110,13 @@ class JourneyService {
                   r.arrivalStation.toLowerCase().contains(to.toLowerCase())),
         )
         .toList();
+
+
+    final now = DateTime.now();
+
+    // filter expired //
+    routes = routes.where((r) => r.expiryTime.isAfter(now)).toList();
+
 
     // Sorting berdasarkan departure time //
     routes.sort((a, b) => a.departureTime.compareTo(b.departureTime));
