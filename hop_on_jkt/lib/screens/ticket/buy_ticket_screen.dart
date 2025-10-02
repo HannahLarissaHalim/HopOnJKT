@@ -6,6 +6,8 @@ import 'package:uuid/uuid.dart';
 import '../../providers/ticket_provider.dart';
 import '../../widgets/bottom_navbar.dart';
 
+//testes
+
 class BuyTicketScreen extends StatefulWidget {
   final String fromStation;  // stasiun asal
   final String toStation;    // stasiun tujuan
@@ -41,8 +43,8 @@ class _BuyTicketScreenState extends State<BuyTicketScreen> {
         await FirebaseFirestore.instance.collection("users").doc(user.uid).get();
 
     setState(() {
-      userPoints = snapshot['points'] ?? 0; // ambil field points
-      userPin = snapshot['pin'] ?? "";      // ambil field pin
+      userPoints = snapshot['points'] ?? 0;         // ambil field points
+      userPin = (snapshot['pin'] ?? "").toString(); // ambil field pin
     });
   }
 
@@ -100,6 +102,8 @@ class _BuyTicketScreenState extends State<BuyTicketScreen> {
           'toStation': widget.toStation,
           'price': widget.price,
           'userId': user.uid,
+          'status': 'active', 
+          'date': DateTime.now().toIso8601String(),
         };
 
         // panggil provider utk kurangi poin + simpan tiket 

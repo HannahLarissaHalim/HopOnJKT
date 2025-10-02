@@ -6,6 +6,7 @@ class RouteModel {
   final Duration duration;
   final String operator;
   final String routeId;
+  final int price;
   final DateTime expiryTime;
 
   RouteModel({
@@ -16,6 +17,7 @@ class RouteModel {
     required this.duration,
     required this.operator,
     required this.routeId,
+    required this.price,
     required this.expiryTime,
   });
 

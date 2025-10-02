@@ -21,6 +21,9 @@ import 'screens/profile/change_password_screen.dart' as pass_screen;
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
+
+  await fb_auth.FirebaseAuth.instance.signOut();
+  
   runApp(const MyApp());
 }
 

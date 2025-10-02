@@ -29,23 +29,105 @@ class _EditProfilePageState extends State<EditProfilePage> {
     }
   }
 
-  Future<void> _pickImage() async {
-    try {
-      final picked = await ImagePicker().pickImage(source: ImageSource.gallery);
-      if (picked != null) {
-        setState(() {
-          _imageFile = File(picked.path);
-        });
-        print("✅ Image picked: ${picked.path}");
-      } else {
-        print("⚠️ No image picked");
-      }
-    } catch (e) {
-      print("❌ Error picking image: $e");
+  Future<void> _pickImageFromGallery() async {
+    final picked = await ImagePicker().pickImage(
+      source: ImageSource.gallery,
+      maxWidth: 512,
+      maxHeight: 512,
+      imageQuality: 75,
+    );
+    if (picked != null) {
+      setState(() {
+        _imageFile = File(picked.path);
+      });
+      print("✅ Image picked from gallery: ${picked.path}");
     }
   }
 
+  Future<void> _pickImageFromCamera() async {
+    final picked = await ImagePicker().pickImage(
+      source: ImageSource.camera,
+      maxWidth: 512,
+      maxHeight: 512,
+      imageQuality: 75,
+    );
+    if (picked != null) {
+      setState(() {
+        _imageFile = File(picked.path);
+      });
+      print("✅ Image picked from camera: ${picked.path}");
+    }
+  }
+
+  void _showImageSourceDialog() {
+    showModalBottomSheet(
+      context: context,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+      ),
+      builder: (context) {
+        return SafeArea(
+          child: Padding(
+            padding: const EdgeInsets.all(20),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                const Text(
+                  "Choose Photo Source",
+                  style: TextStyle(
+                    fontSize: 18,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                const SizedBox(height: 20),
+                ListTile(
+                  leading: const Icon(Icons.camera_alt, color: Color(0xFF1A3C6E)),
+                  title: const Text("Take Photo"),
+                  onTap: () {
+                    Navigator.pop(context);
+                    _pickImageFromCamera();
+                  },
+                ),
+                ListTile(
+                  leading: const Icon(Icons.photo_library, color: Color(0xFF1A3C6E)),
+                  title: const Text("Choose from Gallery"),
+                  onTap: () {
+                    Navigator.pop(context);
+                    _pickImageFromGallery();
+                  },
+                ),
+                if (_imageFile != null || _getCurrentPhotoPath() != null)
+                  ListTile(
+                    leading: const Icon(Icons.delete, color: Colors.red),
+                    title: const Text("Remove Photo"),
+                    onTap: () {
+                      Navigator.pop(context);
+                      setState(() {
+                        _imageFile = null;
+                      });
+                    },
+                  ),
+              ],
+            ),
+          ),
+        );
+      },
+    );
+  }
+
+  String? _getCurrentPhotoPath() {
+    final user = Provider.of<AuthProvider>(context, listen: false).user;
+    return user?.photoPath;
+  }
+
   Future<void> _saveProfile() async {
+    if (_nameController.text.trim().isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text("Name cannot be empty")),
+      );
+      return;
+    }
+
     final authProvider = Provider.of<AuthProvider>(context, listen: false);
 
     print("\n=== SAVE PROFILE DEBUG ===");
@@ -59,28 +141,31 @@ class _EditProfilePageState extends State<EditProfilePage> {
 
     try {
       print("🔄 Calling updateProfile...");
-      
       await authProvider.updateProfile(
         name: _nameController.text.trim(),
         photoPath: _imageFile?.path,
       );
-
       print("✅ updateProfile completed");
       print("New user photoPath: ${authProvider.user?.photoPath}");
 
       if (context.mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text("Profile updated successfully!")),
+          const SnackBar(
+            content: Text("Profile updated successfully!"),
+            backgroundColor: Colors.green,
+          ),
         );
         Navigator.pop(context);
       }
     } catch (e) {
       print("❌ Error in _saveProfile: $e");
       print("Error type: ${e.runtimeType}");
-      
       if (context.mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text("Failed to update profile: $e")),
+          SnackBar(
+            content: Text("Failed to update profile: $e"),
+            backgroundColor: Colors.red,
+          ),
         );
       }
     } finally {
@@ -100,6 +185,8 @@ class _EditProfilePageState extends State<EditProfilePage> {
       appBar: AppBar(
         title: const Text("Edit Profile"),
         centerTitle: true,
+        backgroundColor: const Color(0xFF1A3C6E),
+        foregroundColor: Colors.white,
       ),
       body: Stack(
         children: [
@@ -107,48 +194,120 @@ class _EditProfilePageState extends State<EditProfilePage> {
             padding: const EdgeInsets.all(16),
             child: Column(
               children: [
-                GestureDetector(
-                  onTap: _pickImage,
-                  child: CircleAvatar(
-                    radius: 60,
-                    backgroundColor: Colors.grey[200],
-                    backgroundImage: _imageFile != null
-                        ? FileImage(_imageFile!)
-                        : (user?.photoPath != null && user!.photoPath!.isNotEmpty
-                            ? NetworkImage(user.photoPath!) as ImageProvider
-                            : null),
-                    child: (_imageFile == null && (user?.photoPath == null || user!.photoPath!.isEmpty))
-                        ? const Icon(Icons.person, size: 60, color: Colors.grey)
-                        : null,
-                  ),
+                // Profile Photo with Edit Button
+                Stack(
+                  children: [
+                    GestureDetector(
+                      onTap: _showImageSourceDialog,
+                      child: Container(
+                        decoration: BoxDecoration(
+                          shape: BoxShape.circle,
+                          border: Border.all(
+                            color: const Color(0xFF1A3C6E),
+                            width: 3,
+                          ),
+                        ),
+                        child: CircleAvatar(
+                          radius: 70,
+                          backgroundColor: Colors.grey[200],
+                          backgroundImage: _imageFile != null
+                              ? FileImage(_imageFile!)
+                              : (user?.photoPath != null
+                                  ? NetworkImage(user!.photoPath!) as ImageProvider
+                                  : null),
+                          child: (_imageFile == null && (user?.photoPath == null))
+                              ? const Icon(
+                                  Icons.person,
+                                  size: 70,
+                                  color: Colors.grey,
+                                )
+                              : null,
+                        ),
+                      ),
+                    ),
+                    Positioned(
+                      bottom: 0,
+                      right: 0,
+                      child: GestureDetector(
+                        onTap: _showImageSourceDialog,
+                        child: Container(
+                          padding: const EdgeInsets.all(8),
+                          decoration: BoxDecoration(
+                            color: const Color(0xFF1A3C6E),
+                            shape: BoxShape.circle,
+                            border: Border.all(
+                              color: Colors.white,
+                              width: 2,
+                            ),
+                          ),
+                          child: const Icon(
+                            Icons.camera_alt,
+                            color: Colors.white,
+                            size: 20,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
                 ),
-                const SizedBox(height: 8),
-                Text(
-                  "Tap to change photo",
-                  style: TextStyle(color: Colors.grey[600], fontSize: 12),
-                ),
-                const SizedBox(height: 20),
+                const SizedBox(height: 30),
+
+                // Name TextField
                 TextField(
                   controller: _nameController,
-                  decoration: const InputDecoration(
+                  decoration: InputDecoration(
                     labelText: "Username",
-                    border: OutlineInputBorder(),
+                    labelStyle: const TextStyle(color: Color(0xFF1A3C6E)),
+                    prefixIcon: const Icon(Icons.person, color: Color(0xFF1A3C6E)),
+                    filled: true,
+                    fillColor: Colors.grey[100],
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(12),
+                      borderSide: BorderSide.none,
+                    ),
+                    focusedBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(12),
+                      borderSide: const BorderSide(
+                        color: Color(0xFF1A3C6E),
+                        width: 2,
+                      ),
+                    ),
                   ),
                 ),
                 const SizedBox(height: 16),
+
+                // Email TextField (disabled)
                 TextField(
                   enabled: false,
                   decoration: InputDecoration(
                     labelText: "Email",
-                    border: const OutlineInputBorder(),
+                    labelStyle: const TextStyle(color: Colors.grey),
+                    prefixIcon: const Icon(Icons.email, color: Colors.grey),
                     hintText: user?.email ?? "No email available",
+                    filled: true,
+                    fillColor: Colors.grey[200],
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(12),
+                      borderSide: BorderSide.none,
+                    ),
                   ),
                 ),
                 const SizedBox(height: 32),
+
+                // Save Button
                 SizedBox(
                   width: double.infinity,
                   child: ElevatedButton(
                     onPressed: _isLoading ? null : _saveProfile,
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: const Color(0xFF1A3C6E),
+                      foregroundColor: Colors.white,
+                      padding: const EdgeInsets.symmetric(vertical: 16),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                      elevation: 2,
+                    ),
                     child: _isLoading
                         ? const SizedBox(
                             width: 24,
@@ -158,7 +317,13 @@ class _EditProfilePageState extends State<EditProfilePage> {
                               color: Colors.white,
                             ),
                           )
-                        : const Text("Save Profile"),
+                        : const Text(
+                            "Save Profile",
+                            style: TextStyle(
+                              fontSize: 16,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
                   ),
                 ),
               ],

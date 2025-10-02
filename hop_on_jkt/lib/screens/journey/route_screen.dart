@@ -113,7 +113,7 @@ class _RouteScreenState extends State<RouteScreen> {
       builder: (_) => BuyTicketScreen(
         fromStation: route.departureStation,
         toStation: route.arrivalStation,
-        price: int.tryParse(route.operator.split('|').last.trim()) ?? 0,
+        price: route.price,
       ),
     ),
   );

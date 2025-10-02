@@ -26,8 +26,8 @@ class AuthService extends ChangeNotifier {
       UserModel newUser = UserModel(
         uid: user.uid,
         email: email,
+        pin: pin,       // simpan pin dari form signup
         points: 999999,
-        pin: pin,
         name: name,
         photoPath: null,
       );
