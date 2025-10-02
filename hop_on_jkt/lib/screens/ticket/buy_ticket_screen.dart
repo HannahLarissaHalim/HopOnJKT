@@ -102,6 +102,7 @@ class _BuyTicketScreenState extends State<BuyTicketScreen> {
           'userId': user.uid,
           'status': 'active', 
           'date': DateTime.now().toIso8601String(),
+          'expiryTime': DateTime.now().add(const Duration(minutes: 120)),
         };
 
         // panggil provider utk kurangi poin + simpan tiket 
