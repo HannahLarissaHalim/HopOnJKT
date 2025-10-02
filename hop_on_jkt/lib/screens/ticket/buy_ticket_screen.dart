@@ -26,6 +26,8 @@ class _BuyTicketScreenState extends State<BuyTicketScreen> {
   int userPoints = 0; // saldo poin user
   String userPin = ""; // pin user
 
+  bool _isObscure = true;
+
   @override
   void initState() {
     super.initState();
@@ -56,35 +58,48 @@ class _BuyTicketScreenState extends State<BuyTicketScreen> {
     final result = await showDialog<bool>(
       context: context,
       builder: (context) {
-        return AlertDialog(
-          title: const Text("Enter PIN"),
-          content: TextField(
-            controller: pinController,
-            obscureText: true, // biar pin ga keliatan
-            keyboardType: TextInputType.number,
-            maxLength: 6, // pin 6 digit
-            decoration: const InputDecoration(
-              hintText: "6-digit PIN",
-              counterText: "",
-            ),
-          ),
-          actions: [
-            TextButton(
-              onPressed: () => Navigator.pop(context, false), // batal
-              child: const Text("Cancel"),
-            ),
-            TextButton(
-              onPressed: () {
-                // cek apakah input pin sama dengan pin user
-                if (pinController.text == userPin) {
-                  Navigator.pop(context, true); // pin valid
-                } else {
-                  Navigator.pop(context, false); // pin salah
-                }
-              },
-              child: const Text("Confirm"),
-            ),
-          ],
+        return StatefulBuilder( // biar bisa setState di dalam dialog
+          builder: (context, setState) {
+            return AlertDialog(
+              title: const Text("Enter PIN"),
+              content: TextField(
+                controller: pinController,
+                obscureText: _isObscure, // pakai state untuk hide/show
+                keyboardType: TextInputType.number,
+                maxLength: 6,
+                decoration: InputDecoration(
+                  hintText: "6-digit PIN",
+                  counterText: "",
+                  suffixIcon: IconButton(
+                    icon: Icon(
+                      _isObscure ? Icons.visibility_off : Icons.visibility,
+                    ),
+                    onPressed: () {
+                      setState(() {
+                        _isObscure = !_isObscure; // toggle
+                      });
+                    },
+                  ),
+                ),
+              ),
+              actions: [
+                TextButton(
+                  onPressed: () => Navigator.pop(context, false),
+                  child: const Text("Cancel"),
+                ),
+                TextButton(
+                  onPressed: () {
+                    if (pinController.text == userPin) {
+                      Navigator.pop(context, true);
+                    } else {
+                      Navigator.pop(context, false);
+                    }
+                  },
+                  child: const Text("Confirm"),
+                ),
+              ],
+            );
+          },
         );
       },
     );
@@ -156,7 +171,7 @@ class _BuyTicketScreenState extends State<BuyTicketScreen> {
                 child: Text(
                   "TICKET PAYMENT",
                   style: const TextStyle(
-                    fontSize: 37,
+                    fontSize: 30,
                     fontWeight: FontWeight.bold,
                     color: Color(0xFF1A3C6E), // biru tua
                   ),
