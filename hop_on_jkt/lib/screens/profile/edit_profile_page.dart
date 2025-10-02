@@ -22,35 +22,51 @@ class _EditProfilePageState extends State<EditProfilePage> {
     final user = Provider.of<AuthProvider>(context, listen: false).user;
     if (user != null) {
       _nameController.text = user.name;
+      print("✅ Init - User name: ${user.name}");
+      print("✅ Init - User photoPath: ${user.photoPath}");
+    } else {
+      print("❌ Init - User is null!");
     }
   }
 
   Future<void> _pickImage() async {
-    final picked = await ImagePicker().pickImage(source: ImageSource.gallery);
-    if (picked != null) {
-      setState(() {
-        _imageFile = File(picked.path);
-      });
+    try {
+      final picked = await ImagePicker().pickImage(source: ImageSource.gallery);
+      if (picked != null) {
+        setState(() {
+          _imageFile = File(picked.path);
+        });
+        print("✅ Image picked: ${picked.path}");
+      } else {
+        print("⚠️ No image picked");
+      }
+    } catch (e) {
+      print("❌ Error picking image: $e");
     }
   }
 
   Future<void> _saveProfile() async {
     final authProvider = Provider.of<AuthProvider>(context, listen: false);
 
+    print("\n=== SAVE PROFILE DEBUG ===");
+    print("Name: ${_nameController.text.trim()}");
+    print("Image file path: ${_imageFile?.path ?? 'null'}");
+    print("Current user photoPath: ${authProvider.user?.photoPath}");
+
     setState(() {
       _isLoading = true;
     });
 
     try {
-      String? photoPath;
-      if (_imageFile != null && await _imageFile!.exists()) {
-        photoPath = _imageFile!.path;
-      }
-
+      print("🔄 Calling updateProfile...");
+      
       await authProvider.updateProfile(
         name: _nameController.text.trim(),
-        photoPath: photoPath,
+        photoPath: _imageFile?.path,
       );
+
+      print("✅ updateProfile completed");
+      print("New user photoPath: ${authProvider.user?.photoPath}");
 
       if (context.mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
@@ -59,6 +75,9 @@ class _EditProfilePageState extends State<EditProfilePage> {
         Navigator.pop(context);
       }
     } catch (e) {
+      print("❌ Error in _saveProfile: $e");
+      print("Error type: ${e.runtimeType}");
+      
       if (context.mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text("Failed to update profile: $e")),
@@ -95,13 +114,18 @@ class _EditProfilePageState extends State<EditProfilePage> {
                     backgroundColor: Colors.grey[200],
                     backgroundImage: _imageFile != null
                         ? FileImage(_imageFile!)
-                        : (user?.photoPath != null
-                            ? NetworkImage(user!.photoPath!) as ImageProvider
+                        : (user?.photoPath != null && user!.photoPath!.isNotEmpty
+                            ? NetworkImage(user.photoPath!) as ImageProvider
                             : null),
-                    child: (_imageFile == null && (user?.photoPath == null))
+                    child: (_imageFile == null && (user?.photoPath == null || user!.photoPath!.isEmpty))
                         ? const Icon(Icons.person, size: 60, color: Colors.grey)
                         : null,
                   ),
+                ),
+                const SizedBox(height: 8),
+                Text(
+                  "Tap to change photo",
+                  style: TextStyle(color: Colors.grey[600], fontSize: 12),
                 ),
                 const SizedBox(height: 20),
                 TextField(
@@ -143,5 +167,11 @@ class _EditProfilePageState extends State<EditProfilePage> {
         ],
       ),
     );
+  }
+
+  @override
+  void dispose() {
+    _nameController.dispose();
+    super.dispose();
   }
 }

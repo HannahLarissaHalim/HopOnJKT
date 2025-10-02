@@ -1,14 +1,15 @@
 import 'dart:io';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import '../models/user_model.dart';
+import 'package:firebase_storage/firebase_storage.dart' as firebase_storage; 
+
 
 class AuthService extends ChangeNotifier {
   final FirebaseAuth _auth = FirebaseAuth.instance;
   final FirebaseFirestore _db = FirebaseFirestore.instance;
-  final FirebaseStorage _storage = FirebaseStorage.instance;
+  final firebase_storage.FirebaseStorage _storage = firebase_storage.FirebaseStorage.instance;
 
   UserModel? _currentUser;
   UserModel? get currentUser => _currentUser;
@@ -76,10 +77,10 @@ class AuthService extends ChangeNotifier {
         updates['name'] = name;
       }
 
-      // upload foto hanya kalau ada file baru
+      // upload foto hanya kalau ada file lokal baru
       if (photoPath != null && photoPath.isNotEmpty && !photoPath.startsWith('http')) {
         String downloadUrl = await _uploadPhoto(photoPath);
-        updates['photoPath'] = downloadUrl;
+        updates['photoPath'] = downloadUrl; // simpan URL hasil upload
       }
 
       if (updates.isNotEmpty) {
@@ -94,7 +95,8 @@ class AuthService extends ChangeNotifier {
       print("Update Profile Error: $e");
       rethrow;
     }
-  }
+}
+
 
   // RESET PASSWORD
   Future<void> resetPassword(String email) async {
@@ -105,24 +107,28 @@ class AuthService extends ChangeNotifier {
       throw Exception("Failed to reset password: $e");
     }
   }
-
+  
   // UPLOAD PHOTO HELPER
-  Future<String> _uploadPhoto(String localPath) async {
-    try {
-      File file = File(localPath);
-      String fileName = '${_currentUser!.uid}_${DateTime.now().millisecondsSinceEpoch}.jpg';
+Future<String> _uploadPhoto(String localPath) async {
+  try {
+    File file = File(localPath);
+    String fileName = '${_currentUser!.uid}_${DateTime.now().millisecondsSinceEpoch}.jpg';
 
-      Reference ref = _storage.ref().child('profile_photos').child(fileName);
-      UploadTask uploadTask = ref.putFile(file);
+    firebase_storage.Reference ref = firebase_storage.FirebaseStorage.instance
+        .ref()
+        .child('profile_photos')
+        .child(fileName);
 
-      TaskSnapshot snapshot = await uploadTask;
-      String downloadUrl = await snapshot.ref.getDownloadURL();
-      return downloadUrl;
-    } catch (e) {
-      print("Upload photo error: $e");
-      rethrow;
-    }
+    firebase_storage.UploadTask uploadTask = ref.putFile(file);
+    firebase_storage.TaskSnapshot snapshot = await uploadTask; 
+
+    String downloadUrl = await snapshot.ref.getDownloadURL();
+    return downloadUrl;
+  } catch (e) {
+    print("Upload photo error: $e");
+    rethrow;
   }
+}
 
   // LOGOUT
   Future<void> logout() async {

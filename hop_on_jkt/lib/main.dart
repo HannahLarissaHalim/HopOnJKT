@@ -46,9 +46,26 @@ class MyApp extends StatelessWidget {
   }
 }
 
-// Wrapperutk tentuin layar awal sesuai status login
-class AuthWrapper extends StatelessWidget {
+// Wrapper untuk tentuin layar awal sesuai status login
+class AuthWrapper extends StatefulWidget {
   const AuthWrapper({super.key});
+
+  @override
+  State<AuthWrapper> createState() => _AuthWrapperState();
+}
+
+class _AuthWrapperState extends State<AuthWrapper> {
+  @override
+  void initState() {
+    super.initState();
+    // Load user data dari Firestore saat app pertama kali dibuka
+    _loadUserData();
+  }
+
+  Future<void> _loadUserData() async {
+    final authProvider = Provider.of<my_auth.AuthProvider>(context, listen: false);
+    await authProvider.checkAuthState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -61,14 +78,29 @@ class AuthWrapper extends StatelessWidget {
           );
         }
 
-        // kalau user sudah login langsung ke home
+        // Kalau user sudah login, load data dari Firestore
         if (snapshot.hasData) {
-          return const BottomNavBar();
+          return FutureBuilder(
+            future: _loadUserFromFirestore(),
+            builder: (context, futureSnapshot) {
+              if (futureSnapshot.connectionState == ConnectionState.waiting) {
+                return const Scaffold(
+                  body: Center(child: CircularProgressIndicator()),
+                );
+              }
+              return const BottomNavBar();
+            },
+          );
         }
 
-        // kalau belum login tampil login screen
+        // Kalau belum login tampil welcome screen
         return const WelcomeScreen();
       },
     );
+  }
+
+  Future<void> _loadUserFromFirestore() async {
+    final authProvider = Provider.of<my_auth.AuthProvider>(context, listen: false);
+    await authProvider.checkAuthState();
   }
 }
