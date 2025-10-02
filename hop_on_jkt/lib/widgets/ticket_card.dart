@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart'; 
 
 class TicketCard extends StatelessWidget {
   final Map<String, dynamic> ticket;
@@ -7,6 +8,19 @@ class TicketCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+   
+    DateTime? expiryTime;
+    if (ticket['expiryTime'] != null) {
+      try {
+        expiryTime = DateTime.tryParse(ticket['expiryTime'].toString());
+      } catch (e) {
+        expiryTime = null;
+      }
+    }
+
+    final dateFormat = DateFormat('dd MMM yyyy, HH:mm');
+    final expiryText = expiryTime != null ? dateFormat.format(expiryTime) : "-";
+
     return Card(
       margin: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
@@ -43,8 +57,8 @@ class TicketCard extends StatelessWidget {
             Text("No Ticket: ${ticket['id'] ?? '-'}"),
 
             // Date & Expired
-            Text("Date: ${ticket['date'] ?? '-'}"),
-            Text("Expired: ${ticket['expired'] ?? '-'}"),
+            Text("Date: ${ticket['departureTime'] ?? '-'}"), 
+            Text("Expired: $expiryText"), 
 
             // Status
             Text(
