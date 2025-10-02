@@ -22,40 +22,52 @@ class _EditProfilePageState extends State<EditProfilePage> {
     final user = Provider.of<AuthProvider>(context, listen: false).user;
     if (user != null) {
       _nameController.text = user.name;
+      print("✅ Init - User name: ${user.name}");
+      print("✅ Init - User photoPath: ${user.photoPath}");
+    } else {
+      print("❌ Init - User is null!");
     }
   }
 
-  @override
-  void dispose() {
-    _nameController.dispose();
-    super.dispose();
-  }
-
   Future<void> _pickImageFromGallery() async {
-    final picked = await ImagePicker().pickImage(
-      source: ImageSource.gallery,
-      maxWidth: 512,
-      maxHeight: 512,
-      imageQuality: 75,
-    );
-    if (picked != null) {
-      setState(() {
-        _imageFile = File(picked.path);
-      });
+    try {
+      final picked = await ImagePicker().pickImage(
+        source: ImageSource.gallery,
+        maxWidth: 512,
+        maxHeight: 512,
+        imageQuality: 75,
+      );
+      if (picked != null) {
+        setState(() {
+          _imageFile = File(picked.path);
+        });
+        print("✅ Image picked from gallery: ${picked.path}");
+      } else {
+        print("⚠️ No image picked from gallery");
+      }
+    } catch (e) {
+      print("❌ Error picking image from gallery: $e");
     }
   }
 
   Future<void> _pickImageFromCamera() async {
-    final picked = await ImagePicker().pickImage(
-      source: ImageSource.camera,
-      maxWidth: 512,
-      maxHeight: 512,
-      imageQuality: 75,
-    );
-    if (picked != null) {
-      setState(() {
-        _imageFile = File(picked.path);
-      });
+    try {
+      final picked = await ImagePicker().pickImage(
+        source: ImageSource.camera,
+        maxWidth: 512,
+        maxHeight: 512,
+        imageQuality: 75,
+      );
+      if (picked != null) {
+        setState(() {
+          _imageFile = File(picked.path);
+        });
+        print("✅ Image picked from camera: ${picked.path}");
+      } else {
+        print("⚠️ No image picked from camera");
+      }
+    } catch (e) {
+      print("❌ Error picking image from camera: $e");
     }
   }
 
@@ -74,10 +86,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
               children: [
                 const Text(
                   "Choose Photo Source",
-                  style: TextStyle(
-                    fontSize: 18,
-                    fontWeight: FontWeight.bold,
-                  ),
+                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                 ),
                 const SizedBox(height: 20),
                 ListTile(
@@ -130,19 +139,12 @@ class _EditProfilePageState extends State<EditProfilePage> {
 
     final authProvider = Provider.of<AuthProvider>(context, listen: false);
 
-    setState(() {
-      _isLoading = true;
-    });
+    setState(() => _isLoading = true);
 
     try {
-      String? photoPath;
-      if (_imageFile != null && await _imageFile!.exists()) {
-        photoPath = _imageFile!.path;
-      }
-
       await authProvider.updateProfile(
         name: _nameController.text.trim(),
-        photoPath: photoPath,
+        photoPath: _imageFile?.path,
       );
 
       if (context.mounted) {
@@ -164,11 +166,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
         );
       }
     } finally {
-      if (mounted) {
-        setState(() {
-          _isLoading = false;
-        });
-      }
+      if (mounted) setState(() => _isLoading = false);
     }
   }
 
@@ -183,154 +181,128 @@ class _EditProfilePageState extends State<EditProfilePage> {
         backgroundColor: const Color(0xFF1A3C6E),
         foregroundColor: Colors.white,
       ),
-      body: Stack(
-        children: [
-          SingleChildScrollView(
-            padding: const EdgeInsets.all(16),
-            child: Column(
+      body: SingleChildScrollView(
+        padding: const EdgeInsets.all(16),
+        child: Column(
+          children: [
+            // Profile Photo with Edit Button
+            Stack(
               children: [
-                const SizedBox(height: 20),
-                
-                // Profile Photo with Edit Button
-                Stack(
-                  children: [
-                    GestureDetector(
-                      onTap: _showImageSourceDialog,
-                      child: Container(
-                        decoration: BoxDecoration(
-                          shape: BoxShape.circle,
-                          border: Border.all(
-                            color: const Color(0xFF1A3C6E),
-                            width: 3,
-                          ),
-                        ),
-                        child: CircleAvatar(
-                          radius: 70,
-                          backgroundColor: Colors.grey[200],
-                          backgroundImage: _imageFile != null
-                              ? FileImage(_imageFile!)
-                              : (user?.photoPath != null
-                                  ? NetworkImage(user!.photoPath!) as ImageProvider
-                                  : null),
-                          child: (_imageFile == null && (user?.photoPath == null))
-                              ? const Icon(
-                                  Icons.person,
-                                  size: 70,
-                                  color: Colors.grey,
-                                )
-                              : null,
-                        ),
-                      ),
+                GestureDetector(
+                  onTap: _showImageSourceDialog,
+                  child: Container(
+                    decoration: BoxDecoration(
+                      shape: BoxShape.circle,
+                      border: Border.all(color: const Color(0xFF1A3C6E), width: 3),
                     ),
-                    Positioned(
-                      bottom: 0,
-                      right: 0,
-                      child: GestureDetector(
-                        onTap: _showImageSourceDialog,
-                        child: Container(
-                          padding: const EdgeInsets.all(8),
-                          decoration: BoxDecoration(
-                            color: const Color(0xFF1A3C6E),
-                            shape: BoxShape.circle,
-                            border: Border.all(
-                              color: Colors.white,
-                              width: 2,
-                            ),
-                          ),
-                          child: const Icon(
-                            Icons.camera_alt,
-                            color: Colors.white,
-                            size: 20,
-                          ),
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-                
-                const SizedBox(height: 30),
-                
-                // Name TextField
-                TextField(
-                  controller: _nameController,
-                  decoration: InputDecoration(
-                    labelText: "Username",
-                    labelStyle: const TextStyle(color: Color(0xFF1A3C6E)),
-                    prefixIcon: const Icon(Icons.person, color: Color(0xFF1A3C6E)),
-                    filled: true,
-                    fillColor: Colors.grey[100],
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(12),
-                      borderSide: BorderSide.none,
-                    ),
-                    focusedBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(12),
-                      borderSide: const BorderSide(
-                        color: Color(0xFF1A3C6E),
-                        width: 2,
-                      ),
+                    child: CircleAvatar(
+                      radius: 70,
+                      backgroundColor: Colors.grey[200],
+                      backgroundImage: _imageFile != null
+                          ? FileImage(_imageFile!)
+                          : (user?.photoPath != null
+                              ? NetworkImage(user.photoPath!) as ImageProvider
+                              : null),
+                      child: (_imageFile == null && user?.photoPath == null)
+                          ? const Icon(Icons.person, size: 70, color: Colors.grey)
+                          : null,
                     ),
                   ),
                 ),
-                
-                const SizedBox(height: 16),
-                
-                // Email TextField (disabled)
-                TextField(
-                  enabled: false,
-                  decoration: InputDecoration(
-                    labelText: "Email",
-                    labelStyle: const TextStyle(color: Colors.grey),
-                    prefixIcon: const Icon(Icons.email, color: Colors.grey),
-                    hintText: user?.email ?? "No email available",
-                    filled: true,
-                    fillColor: Colors.grey[200],
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(12),
-                      borderSide: BorderSide.none,
-                    ),
-                  ),
-                ),
-                
-                const SizedBox(height: 32),
-                
-                // Save Button
-                SizedBox(
-                  width: double.infinity,
-                  child: ElevatedButton(
-                    onPressed: _isLoading ? null : _saveProfile,
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: const Color(0xFF1A3C6E),
-                      foregroundColor: Colors.white,
-                      padding: const EdgeInsets.symmetric(vertical: 16),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(12),
+                Positioned(
+                  bottom: 0,
+                  right: 0,
+                  child: GestureDetector(
+                    onTap: _showImageSourceDialog,
+                    child: Container(
+                      padding: const EdgeInsets.all(8),
+                      decoration: BoxDecoration(
+                        color: const Color(0xFF1A3C6E),
+                        shape: BoxShape.circle,
+                        border: Border.all(color: Colors.white, width: 2),
                       ),
-                      elevation: 2,
+                      child: const Icon(Icons.camera_alt, color: Colors.white, size: 20),
                     ),
-                    child: _isLoading
-                        ? const SizedBox(
-                            width: 24,
-                            height: 24,
-                            child: CircularProgressIndicator(
-                              strokeWidth: 3,
-                              color: Colors.white,
-                            ),
-                          )
-                        : const Text(
-                            "Save Profile",
-                            style: TextStyle(
-                              fontSize: 16,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
                   ),
                 ),
               ],
             ),
-          ),
-        ],
+            const SizedBox(height: 30),
+
+            // Name TextField
+            TextField(
+              controller: _nameController,
+              decoration: InputDecoration(
+                labelText: "Username",
+                labelStyle: const TextStyle(color: Color(0xFF1A3C6E)),
+                prefixIcon: const Icon(Icons.person, color: Color(0xFF1A3C6E)),
+                filled: true,
+                fillColor: Colors.grey[100],
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(12),
+                  borderSide: BorderSide.none,
+                ),
+                focusedBorder: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(12),
+                  borderSide: const BorderSide(color: Color(0xFF1A3C6E), width: 2),
+                ),
+              ),
+            ),
+            const SizedBox(height: 16),
+
+            // Email TextField (disabled)
+            TextField(
+              enabled: false,
+              decoration: InputDecoration(
+                labelText: "Email",
+                labelStyle: const TextStyle(color: Colors.grey),
+                prefixIcon: const Icon(Icons.email, color: Colors.grey),
+                hintText: user?.email ?? "No email available",
+                filled: true,
+                fillColor: Colors.grey[200],
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(12),
+                  borderSide: BorderSide.none,
+                ),
+              ),
+            ),
+            const SizedBox(height: 32),
+
+            // Save Button
+            SizedBox(
+              width: double.infinity,
+              child: ElevatedButton(
+                onPressed: _isLoading ? null : _saveProfile,
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: const Color(0xFF1A3C6E),
+                  foregroundColor: Colors.white,
+                  padding: const EdgeInsets.symmetric(vertical: 16),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  elevation: 2,
+                ),
+                child: _isLoading
+                    ? const SizedBox(
+                        width: 24,
+                        height: 24,
+                        child: CircularProgressIndicator(strokeWidth: 3, color: Colors.white),
+                      )
+                    : const Text(
+                        "Save Profile",
+                        style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                      ),
+              ),
+            ),
+          ],
+        ),
       ),
     );
+  }
+
+  @override
+  void dispose() {
+    _nameController.dispose();
+    super.dispose();
   }
 }
