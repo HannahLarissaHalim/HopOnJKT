@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'dart:io';
 import '../../providers/auth_provider.dart';
 import 'edit_profile_page.dart';
 import 'points_page.dart';
@@ -8,6 +9,34 @@ import 'rate_page.dart';
 
 class ProfilePage extends StatelessWidget {
   const ProfilePage({super.key});
+
+  Widget _buildProfileImage(String? photoPath) {
+    // Cek apakah photoPath adalah URL atau path lokal
+    if (photoPath != null && photoPath.isNotEmpty) {
+      if (photoPath.startsWith('http')) {
+        // Jika URL, gunakan NetworkImage
+        return CircleAvatar(
+          radius: 60,
+          backgroundColor: Colors.white,
+          backgroundImage: NetworkImage(photoPath),
+        );
+      } else {
+        // Jika path lokal, gunakan FileImage
+        return CircleAvatar(
+          radius: 60,
+          backgroundColor: Colors.white,
+          backgroundImage: FileImage(File(photoPath)),
+        );
+      }
+    }
+    
+    // Default avatar jika tidak ada foto
+    return CircleAvatar(
+      radius: 60,
+      backgroundColor: Colors.white,
+      child: const Icon(Icons.person, size: 70, color: Colors.grey),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -22,7 +51,8 @@ class ProfilePage extends StatelessWidget {
         ),
         centerTitle: true,
         elevation: 0,
-        backgroundColor: Colors.blueAccent,
+        backgroundColor: const Color(0xFF1A3C6E),
+        foregroundColor: Colors.white,
       ),
       body: SingleChildScrollView(
         child: Column(
@@ -31,26 +61,36 @@ class ProfilePage extends StatelessWidget {
             Container(
               width: double.infinity,
               padding: const EdgeInsets.symmetric(vertical: 32),
-              decoration: BoxDecoration(
-                color: Colors.blueAccent,
-                borderRadius: const BorderRadius.only(
+              decoration: const BoxDecoration(
+                color: Color(0xFF1A3C6E),
+                borderRadius: BorderRadius.only(
                   bottomLeft: Radius.circular(30),
                   bottomRight: Radius.circular(30),
                 ),
               ),
               child: Column(
                 children: [
-                  CircleAvatar(
-                    radius: 60,
-                    backgroundColor: Colors.white,
-                    backgroundImage: user?.photoPath != null
-                        ? NetworkImage(user!.photoPath!)
-                        : null,
-                    child: user?.photoPath == null
-                        ? const Icon(Icons.person, size: 70, color: Colors.grey)
-                        : null,
+                  // Profile Photo
+                  Container(
+                    decoration: BoxDecoration(
+                      shape: BoxShape.circle,
+                      border: Border.all(
+                        color: Colors.white,
+                        width: 3,
+                      ),
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.black.withOpacity(0.2),
+                          blurRadius: 10,
+                          offset: const Offset(0, 5),
+                        ),
+                      ],
+                    ),
+                    child: _buildProfileImage(user?.photoPath),
                   ),
+                  
                   const SizedBox(height: 16),
+                  
                   Text(
                     user?.name ?? "Guest User",
                     style: const TextStyle(
@@ -59,7 +99,9 @@ class ProfilePage extends StatelessWidget {
                       color: Colors.white,
                     ),
                   ),
+                  
                   const SizedBox(height: 6),
+                  
                   Text(
                     user?.email ?? "No email available",
                     style: const TextStyle(
@@ -67,7 +109,10 @@ class ProfilePage extends StatelessWidget {
                       color: Colors.white70,
                     ),
                   ),
+                  
                   const SizedBox(height: 16),
+                  
+                  // Points Badge
                   GestureDetector(
                     onTap: () {
                       Navigator.push(
@@ -80,6 +125,13 @@ class ProfilePage extends StatelessWidget {
                       decoration: BoxDecoration(
                         color: Colors.white,
                         borderRadius: BorderRadius.circular(30),
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.black.withOpacity(0.1),
+                            blurRadius: 5,
+                            offset: const Offset(0, 3),
+                          ),
+                        ],
                       ),
                       child: Row(
                         mainAxisSize: MainAxisSize.min,
@@ -91,6 +143,7 @@ class ProfilePage extends StatelessWidget {
                             style: const TextStyle(
                               fontSize: 16,
                               fontWeight: FontWeight.bold,
+                              color: Color(0xFF1A3C6E),
                             ),
                           ),
                         ],
@@ -104,10 +157,11 @@ class ProfilePage extends StatelessWidget {
             const SizedBox(height: 20),
 
             /// MENU LIST
-            ListTile(
-              leading: const Icon(Icons.edit, color: Colors.blueAccent),
-              title: const Text("Edit Profile"),
-              trailing: const Icon(Icons.arrow_forward_ios, size: 16),
+            _buildMenuTile(
+              context,
+              icon: Icons.edit,
+              iconColor: const Color(0xFF1A3C6E),
+              title: "Edit Profile",
               onTap: () {
                 Navigator.push(
                   context,
@@ -115,29 +169,44 @@ class ProfilePage extends StatelessWidget {
                 );
               },
             ),
-            const Divider(),
-            ListTile(
-              leading: const Icon(Icons.lock, color: Colors.orange),
-              title: const Text("Change Password"),
-              trailing: const Icon(Icons.arrow_forward_ios, size: 16),
+            
+            const Divider(height: 1),
+            
+            _buildMenuTile(
+              context,
+              icon: Icons.lock,
+              iconColor: Colors.orange,
+              title: "Change Password",
               onTap: () {
-                Navigator.pushNamed(context, "/change-password");
+                // TODO: Implement change password
+                ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(content: Text("Change Password feature coming soon")),
+                );
               },
             ),
-            const Divider(),
-            ListTile(
-              leading: const Icon(Icons.pin, color: Colors.purple),
-              title: const Text("Change PIN"),
-              trailing: const Icon(Icons.arrow_forward_ios, size: 16),
+            
+            const Divider(height: 1),
+            
+            _buildMenuTile(
+              context,
+              icon: Icons.pin,
+              iconColor: Colors.purple,
+              title: "Change PIN",
               onTap: () {
-                Navigator.pushNamed(context, "/change-pin");
+                // TODO: Implement change PIN
+                ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(content: Text("Change PIN feature coming soon")),
+                );
               },
             ),
-            const Divider(),
-            ListTile(
-              leading: const Icon(Icons.help, color: Colors.green),
-              title: const Text("FAQ"),
-              trailing: const Icon(Icons.arrow_forward_ios, size: 16),
+            
+            const Divider(height: 1),
+            
+            _buildMenuTile(
+              context,
+              icon: Icons.help_outline,
+              iconColor: Colors.green,
+              title: "FAQ",
               onTap: () {
                 Navigator.push(
                   context,
@@ -145,11 +214,14 @@ class ProfilePage extends StatelessWidget {
                 );
               },
             ),
-            const Divider(),
-            ListTile(
-              leading: const Icon(Icons.star_rate, color: Colors.amber),
-              title: const Text("Rate This App"),
-              trailing: const Icon(Icons.arrow_forward_ios, size: 16),
+            
+            const Divider(height: 1),
+            
+            _buildMenuTile(
+              context,
+              icon: Icons.star_rate,
+              iconColor: Colors.amber,
+              title: "Rate This App",
               onTap: () {
                 Navigator.push(
                   context,
@@ -157,20 +229,77 @@ class ProfilePage extends StatelessWidget {
                 );
               },
             ),
-            const Divider(),
-            ListTile(
-              leading: const Icon(Icons.logout, color: Colors.red),
-              title: const Text("Logout"),
+            
+            const Divider(height: 1),
+            
+            _buildMenuTile(
+              context,
+              icon: Icons.logout,
+              iconColor: Colors.red,
+              title: "Logout",
               onTap: () async {
-                await authProvider.logout();
-                if (context.mounted) {
-                  Navigator.pushReplacementNamed(context, "/login");
+                final confirm = await showDialog<bool>(
+                  context: context,
+                  builder: (context) => AlertDialog(
+                    title: const Text("Logout"),
+                    content: const Text("Are you sure you want to logout?"),
+                    actions: [
+                      TextButton(
+                        onPressed: () => Navigator.pop(context, false),
+                        child: const Text("Cancel"),
+                      ),
+                      TextButton(
+                        onPressed: () => Navigator.pop(context, true),
+                        style: TextButton.styleFrom(
+                          foregroundColor: Colors.red,
+                        ),
+                        child: const Text("Logout"),
+                      ),
+                    ],
+                  ),
+                );
+                
+                if (confirm == true && context.mounted) {
+                  await authProvider.logout();
+                  if (context.mounted) {
+                    Navigator.pushReplacementNamed(context, "/login");
+                  }
                 }
               },
             ),
+            
+            const SizedBox(height: 20),
           ],
         ),
       ),
+    );
+  }
+
+  Widget _buildMenuTile(
+    BuildContext context, {
+    required IconData icon,
+    required Color iconColor,
+    required String title,
+    required VoidCallback onTap,
+  }) {
+    return ListTile(
+      leading: Container(
+        padding: const EdgeInsets.all(8),
+        decoration: BoxDecoration(
+          color: iconColor.withOpacity(0.1),
+          borderRadius: BorderRadius.circular(8),
+        ),
+        child: Icon(icon, color: iconColor, size: 24),
+      ),
+      title: Text(
+        title,
+        style: const TextStyle(
+          fontSize: 16,
+          fontWeight: FontWeight.w500,
+        ),
+      ),
+      trailing: const Icon(Icons.arrow_forward_ios, size: 16, color: Colors.grey),
+      onTap: onTap,
     );
   }
 }
