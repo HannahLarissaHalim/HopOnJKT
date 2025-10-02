@@ -4,26 +4,25 @@ import '../../services/journey_service.dart';
 import '../../widgets/bottom_navbar.dart';
 import '../ticket/buy_ticket_screen.dart';
 
+
 /////////////////// template Warna /////////////// //////////////
-const Color primaryColor = Color(0xFF1E4D6E);
-const Color SecondColor = Color.fromARGB(255, 123, 188, 241);
-const Color BackgroundColor = Color(0xFFF5F9FD);
+const Color primaryColor = Color(0xFF1E4D6E); 
+const Color SecondColor = Color.fromARGB(255, 123, 188, 241); 
+const Color BackgroundColor = Color(0xFFF5F9FD); 
 const Color ChipColor = Color(0xFFE0F7FA);
 const Color HeaderBgColor = Color(0xFFD7E7F0);
 
 class RouteScreen extends StatefulWidget {
   final String from;
   final String to;
-  final DateTime departureTime;
   final DateTime date;
 
   const RouteScreen({
-    super.key,
+    Key? key,
     required this.from,
     required this.to,
-    required this.departureTime,
     required this.date,
-  });
+  }) : super(key: key);
 
   @override
   State<RouteScreen> createState() => _RouteScreenState();
@@ -67,7 +66,7 @@ class _RouteScreenState extends State<RouteScreen> {
     'Parung Panjang',
     'Maja',
     'Rangkasbitung',
-  ].toSet().toList();
+  ].toSet().toList(); 
 
   late String _selectedFrom;
   late String _selectedTo;
@@ -93,6 +92,7 @@ class _RouteScreenState extends State<RouteScreen> {
       _selectedTo = _stations.first;
     }
 
+
     _searchRoutes();
   }
 
@@ -107,20 +107,18 @@ class _RouteScreenState extends State<RouteScreen> {
   }
 
   void _navigateToPurchase(RouteModel route) {
-    Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (_) => BuyTicketScreen(
-          fromStation: route.departureStation,
-          toStation: route.arrivalStation,
-          price: route.price,
-          departureTime: route.departureTime,
-          arrivalTime: route.arrivalTime,
-          duration: route.duration,
-        ),
+  Navigator.push(
+    context,
+    MaterialPageRoute(
+      builder: (_) => BuyTicketScreen(
+        fromStation: route.departureStation,
+        toStation: route.arrivalStation,
+        price: route.price,
       ),
-    );
-  }
+    ),
+  );
+}
+
 
   /////////////// Komponen Dropdown Stasiun //////////////
   Widget _buildStationDropdown({
@@ -132,17 +130,17 @@ class _RouteScreenState extends State<RouteScreen> {
     if (displayValue == null && _stations.isNotEmpty) {
       displayValue = _stations.first;
     }
-
+    
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 16.0),
+      padding: const EdgeInsets.symmetric(horizontal: 16.0), 
       height: 50,
       decoration: BoxDecoration(
-        color: SecondColor,
+        color: SecondColor, 
         borderRadius: BorderRadius.circular(8.0),
       ),
       child: DropdownButtonHideUnderline(
         child: DropdownButton<String>(
-          value: displayValue,
+          value: displayValue, 
           icon: const Icon(Icons.keyboard_arrow_down, color: Colors.white),
           isExpanded: true,
           dropdownColor: Colors.white,
@@ -155,21 +153,20 @@ class _RouteScreenState extends State<RouteScreen> {
                   padding: EdgeInsets.zero,
                   child: Text(
                     station,
-                    style: const TextStyle(
-                      color: Colors.white,
-                      fontSize: 16,
-                      fontWeight: FontWeight.bold,
-                    ),
+                    style: const TextStyle(color: Colors.white, fontSize: 16, fontWeight: FontWeight.bold),
                   ),
                 ),
               );
             }).toList();
           },
-
+          
           items: _stations.map((station) {
             return DropdownMenuItem(
               value: station,
-              child: Text(station, style: const TextStyle(color: primaryColor)),
+              child: Text(
+                station,
+                style: const TextStyle(color: primaryColor), 
+              ),
             );
           }).toList(),
           onChanged: onChanged,
@@ -199,25 +196,25 @@ class _RouteScreenState extends State<RouteScreen> {
 
   Widget _buildRouteCard(RouteModel route) {
     String priceText = 'XXXX Poin';
-
+    
     final parts = route.operator.split('|');
     if (parts.length > 1) {
       priceText = parts.last.trim();
     } else {
-      priceText = 'XXXX Poin';
+        priceText = 'XXXX Poin'; 
     }
-
-    final depTime =
+    
+    final depTime = 
         '${route.departureTime.hour}:${route.departureTime.minute.toString().padLeft(2, '0')}';
-
+    
     return Card(
       margin: const EdgeInsets.symmetric(horizontal: 24, vertical: 8),
       elevation: 4,
-      color: Colors.white,
+      color: Colors.white, 
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
       child: Padding(
         padding: const EdgeInsets.all(16.0),
-        child: Column(
+        child: Column( 
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             ///////// Chips Stasiun (biar bisa kyk gini, a -> b) ///////////////
@@ -227,18 +224,14 @@ class _RouteScreenState extends State<RouteScreen> {
                 _buildStationChip(route.departureStation),
                 const Padding(
                   padding: EdgeInsets.symmetric(horizontal: 8.0),
-                  child: Icon(
-                    Icons.arrow_right_alt,
-                    color: Colors.grey,
-                    size: 20,
-                  ),
+                  child: Icon(Icons.arrow_right_alt, color: Colors.grey, size: 20),
                 ),
                 _buildStationChip(route.arrivalStation),
               ],
             ),
-
-            const SizedBox(height: 12),
-
+            
+            const SizedBox(height: 12), 
+            
             ////// Detail Waktu, Durasi, Harga dan Tombol Buy Ticket //////////////
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -250,48 +243,29 @@ class _RouteScreenState extends State<RouteScreen> {
                   children: [
                     Text(
                       'Depart $depTime',
-                      style: const TextStyle(
-                        color: primaryColor,
-                        fontWeight: FontWeight.bold,
-                      ),
+                      style: const TextStyle(color: primaryColor, fontWeight: FontWeight.bold),
                     ),
                     const SizedBox(height: 4),
-                    Text(
-                      'Duration: ${route.duration.inMinutes} min',
-                      style: const TextStyle(
-                        color: primaryColor,
-                        fontWeight: FontWeight.bold,
-                      ),
+                    Text('Duration: ${route.duration.inMinutes} min', style:  const TextStyle(color: primaryColor, fontWeight: FontWeight.bold),
                     ),
                     const SizedBox(height: 4),
-                    Text(
-                      'price: $priceText',
-                      style: const TextStyle(
-                        fontWeight: FontWeight.bold,
-                        color: Color.fromARGB(255, 7, 125, 15),
-                      ),
-                    ),
+                    Text('price: $priceText', 
+                        style: const TextStyle(fontWeight: FontWeight.bold, color: Color.fromARGB(255, 7, 125, 15))), 
                   ],
                 ),
-
+                
                 //////////////////// Tombol Buy Ticket ///////////////////////////////
                 ElevatedButton(
                   onPressed: () => _navigateToPurchase(route),
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: primaryColor,
+                    backgroundColor: primaryColor, 
                     shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(8),
-                    ),
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 16,
-                      vertical: 8,
-                    ),
+                        borderRadius: BorderRadius.circular(8)),
+                    padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
                     elevation: 0,
                   ),
-                  child: const Text(
-                    'Buy Ticket',
-                    style: TextStyle(color: Colors.white, fontSize: 14),
-                  ),
+                  child: const Text('Buy Ticket',
+                      style: TextStyle(color: Colors.white, fontSize: 14)),
                 ),
               ],
             ),
@@ -304,7 +278,7 @@ class _RouteScreenState extends State<RouteScreen> {
   @override
   Widget build(BuildContext context) {
     final screenHeight = MediaQuery.of(context).size.height;
-
+    
     return Scaffold(
       backgroundColor: BackgroundColor,
       body: Stack(
@@ -318,14 +292,14 @@ class _RouteScreenState extends State<RouteScreen> {
 
           ////////////////// ILUSTRASI KERETA DI BACKGROUND //////////////////////
           Positioned(
-            top: screenHeight * 0.05,
-            width: MediaQuery.of(context).size.width * 1.5,
-            height: screenHeight * 0.4,
-            left: MediaQuery.of(context).size.width * 0.0,
+            top: screenHeight * 0.05, 
+            width: MediaQuery.of(context).size.width * 1.5, 
+            height: screenHeight * 0.4, 
+            left: MediaQuery.of(context).size.width * 0.0, 
             child: Image.asset(
-              'assets/images/kereta.png',
-              fit: BoxFit.fitWidth,
-              alignment: Alignment.bottomCenter,
+              'assets/images/kereta.png', 
+              fit: BoxFit.fitWidth, 
+              alignment: Alignment.bottomCenter, 
             ),
           ),
 
@@ -346,11 +320,11 @@ class _RouteScreenState extends State<RouteScreen> {
                           fontWeight: FontWeight.bold,
                           foreground: Paint()
                             // ..style = PaintingStyle.stroke
-                            // ..strokeWidth = 1.5
-                            ..color = primaryColor,
+                            // ..strokeWidth = 1.5 
+                            ..color = primaryColor, 
                         ),
                       ),
-
+                      
                       //////////////////////////////////// Ikon Akun ////////////////////////////////////
                       // GestureDetector(
                       //   onTap: () {
@@ -370,12 +344,9 @@ class _RouteScreenState extends State<RouteScreen> {
                   ),
                 ),
 
-                /////////////////////// Teks "Where do you Want to go ////////////////////////
+                /////////////////////// Teks "Where do you Want to go //////////////////////// 
                 const Padding(
-                  padding: EdgeInsets.symmetric(
-                    horizontal: 24.0,
-                    vertical: 20.0,
-                  ),
+                  padding: EdgeInsets.symmetric(horizontal: 24.0, vertical: 20.0),
                   child: Text(
                     'Where do you \nWant to go?',
                     style: TextStyle(
@@ -389,7 +360,7 @@ class _RouteScreenState extends State<RouteScreen> {
 
                 ////////////////// Card Input buat Rute ///////////////////////////
                 Padding(
-                  padding: const EdgeInsets.fromLTRB(24.0, 0, 24.0, 20.0),
+                  padding: const EdgeInsets.fromLTRB(24.0, 0, 24.0, 20.0), 
                   child: Container(
                     padding: const EdgeInsets.all(20.0),
                     decoration: BoxDecoration(
@@ -437,25 +408,21 @@ class _RouteScreenState extends State<RouteScreen> {
                               backgroundColor: primaryColor,
                               padding: const EdgeInsets.symmetric(vertical: 16),
                               shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(12),
-                              ),
+                                  borderRadius: BorderRadius.circular(12)),
                               elevation: 0,
                             ),
-                            child: const Text(
-                              'Show Ticket',
-                              style: TextStyle(
-                                fontSize: 18,
-                                color: Colors.white,
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
+                            child: const Text('Show Ticket',
+                                style: TextStyle(
+                                    fontSize: 18,
+                                    color: Colors.white,
+                                    fontWeight: FontWeight.bold)),
                           ),
                         ),
                       ],
                     ),
                   ),
                 ),
-
+                
                 ///////////////////// Hasil Pencarian Rute ///////////////////////////////////
                 Expanded(
                   child: FutureBuilder<List<RouteModel>>(
@@ -463,25 +430,18 @@ class _RouteScreenState extends State<RouteScreen> {
                     builder: (context, snapshot) {
                       if (snapshot.connectionState == ConnectionState.waiting) {
                         return const Center(
-                          child: CircularProgressIndicator(color: primaryColor),
-                        );
+                            child: CircularProgressIndicator(color: primaryColor));
                       } else if (snapshot.hasError) {
                         return Center(
-                          child: Text(
-                            'Error: ${snapshot.error}',
-                            style: const TextStyle(color: primaryColor),
-                          ),
-                        );
+                            child: Text('Error: ${snapshot.error}',
+                                style: const TextStyle(color: primaryColor)));
                       } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
                         return const Center(
-                          child: Padding(
-                            padding: EdgeInsets.all(24.0),
-                            child: Text(
-                              'Tidak ada rute yang bisa ditemukan',
-                              style: TextStyle(color: primaryColor),
-                            ),
-                          ),
-                        );
+                            child: Padding(
+                              padding: EdgeInsets.all(24.0),
+                              child: Text('Tidak ada rute yang bisa ditemukan',
+                                  style: TextStyle(color: primaryColor)),
+                            ));
                       }
 
                       final routes = snapshot.data!;
@@ -505,12 +465,12 @@ class _RouteScreenState extends State<RouteScreen> {
       // //////////////// Navigator ///////////////////////////
       // bottomNavigationBar: BottomNavigationBar(
       //   backgroundColor: Colors.white,
-      //   selectedItemColor: primaryColor,
+      //   selectedItemColor: primaryColor, 
       //   unselectedItemColor: Colors.grey,
-      //   currentIndex: 0,
+      //   currentIndex: 0, 
       //   showSelectedLabels: false,
       //   showUnselectedLabels: false,
-      //   type: BottomNavigationBarType.fixed,
+      //   type: BottomNavigationBarType.fixed, 
       //   items: const [
       //     BottomNavigationBarItem(
       //       icon: Icon(Icons.home, size: 30),
