@@ -16,19 +16,19 @@ class TicketCard extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // From → To
+            // FromStation → ToStation
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Text(
-                  "${ticket['from']} → ${ticket['to']}",
+                  "${ticket['fromStation'] ?? '-'} → ${ticket['toStation'] ?? '-'}",
                   style: const TextStyle(
                     fontSize: 18,
                     fontWeight: FontWeight.bold,
                   ),
                 ),
                 Text(
-                  "${ticket['price']} pts",
+                  "${ticket['price'] ?? 0} pts",
                   style: const TextStyle(
                     fontSize: 16,
                     fontWeight: FontWeight.w600,
@@ -39,7 +39,7 @@ class TicketCard extends StatelessWidget {
             ),
             const SizedBox(height: 8),
 
-            // No Ticket
+            // Ticket ID
             Text("No Ticket: ${ticket['id'] ?? '-'}"),
 
             // Date & Expired
