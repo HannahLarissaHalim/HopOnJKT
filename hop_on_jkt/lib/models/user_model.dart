@@ -33,7 +33,7 @@ class UserModel {
       email: map['email'] ?? '',
       points: map['points'] is int
           ? map['points']
-          : int.tryParse(map['points'].toString()) ?? 0,
+          : int.tryParse(map['points'].toString()) ?? 100000,
       pin: map['pin']?.toString() ?? '',
     );
   }
