@@ -13,7 +13,7 @@ class AuthService extends ChangeNotifier {
   UserModel? _currentUser;
   UserModel? get currentUser => _currentUser;
 
-  // SIGN UP dengan name
+  // SIGN UP
   Future<UserModel?> signUp(String email, String password, String pin, String name) async {
     try {
       UserCredential result = await _auth.createUserWithEmailAndPassword(
@@ -65,7 +65,6 @@ class AuthService extends ChangeNotifier {
   // UPDATE PROFILE
   Future<void> updateProfile({
     String? name,
-    String? email,
     String? photoPath,
   }) async {
     if (_currentUser == null) return;
@@ -73,12 +72,11 @@ class AuthService extends ChangeNotifier {
     try {
       Map<String, dynamic> updates = {};
 
-      if (name != null && name.isNotEmpty) updates['name'] = name;
-
-      if (email != null && email.isNotEmpty && email != _currentUser!.email) {
-        updates['email'] = email;
+      if (name != null && name.isNotEmpty) {
+        updates['name'] = name;
       }
 
+      // upload foto hanya kalau ada file baru
       if (photoPath != null && photoPath.isNotEmpty && !photoPath.startsWith('http')) {
         String downloadUrl = await _uploadPhoto(photoPath);
         updates['photoPath'] = downloadUrl;
@@ -86,6 +84,8 @@ class AuthService extends ChangeNotifier {
 
       if (updates.isNotEmpty) {
         await _db.collection('users').doc(_currentUser!.uid).update(updates);
+
+        // refresh data user setelah update
         DocumentSnapshot doc = await _db.collection('users').doc(_currentUser!.uid).get();
         _currentUser = UserModel.fromMap(doc.data() as Map<String, dynamic>);
         notifyListeners();
@@ -112,7 +112,7 @@ class AuthService extends ChangeNotifier {
       File file = File(localPath);
       String fileName = '${_currentUser!.uid}_${DateTime.now().millisecondsSinceEpoch}.jpg';
 
-      Reference ref = _storage.ref().child('profile_photos/$fileName');
+      Reference ref = _storage.ref().child('profile_photos').child(fileName);
       UploadTask uploadTask = ref.putFile(file);
 
       TaskSnapshot snapshot = await uploadTask;

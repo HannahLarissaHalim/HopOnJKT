@@ -45,7 +45,6 @@ class AuthProvider with ChangeNotifier {
     if (_user == null) return; // kalau belum login, gak usah jalan
     await _authService.updateProfile(
       name: name,
-      email: email,
       photoPath: photoPath,
     );
 

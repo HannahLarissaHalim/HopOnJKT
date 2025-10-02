@@ -1,209 +1,174 @@
-import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import '../../providers/auth_provider.dart'; 
+import '../../providers/auth_provider.dart';
+import 'edit_profile_page.dart';
+import 'points_page.dart';
+import 'faq_page.dart';
+import 'rate_page.dart';
 
 class ProfilePage extends StatelessWidget {
   const ProfilePage({super.key});
 
   @override
   Widget build(BuildContext context) {
-    final auth = context.watch<AuthProvider>();  
-    final user = auth.user;  
+    final authProvider = Provider.of<AuthProvider>(context);
+    final user = authProvider.user;
 
     return Scaffold(
-      backgroundColor: const Color(0xFFF0F4FA),
-      body: SafeArea(
+      appBar: AppBar(
+        title: const Text(
+          "My Profile",
+          style: TextStyle(fontWeight: FontWeight.bold),
+        ),
+        centerTitle: true,
+        elevation: 0,
+        backgroundColor: Colors.blueAccent,
+      ),
+      body: SingleChildScrollView(
         child: Column(
           children: [
-            const SizedBox(height: 20),
-            Align(
-              alignment: Alignment.centerLeft,
-              child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 16),
-                child: Text(
-                  "HopOnJKT",
-                  style: TextStyle(
-                    fontSize: 22,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.blue[900],
-                  ),
+            /// HEADER PROFILE
+            Container(
+              width: double.infinity,
+              padding: const EdgeInsets.symmetric(vertical: 32),
+              decoration: BoxDecoration(
+                color: Colors.blueAccent,
+                borderRadius: const BorderRadius.only(
+                  bottomLeft: Radius.circular(30),
+                  bottomRight: Radius.circular(30),
                 ),
               ),
-            ),
-            const SizedBox(height: 20),
-
-            Expanded(
-              child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 16),
-                child: Card(
-                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
-                  elevation: 5,
-                  child: Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 30, horizontal: 20),
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        CircleAvatar(
-                          radius: 50,
-                          backgroundColor: Colors.grey[300],
-                          backgroundImage: user?.hasPhoto == true && user!.photoPath != null
-                              ? (user.photoPath!.startsWith('http')
-                                  ? NetworkImage(user.photoPath!)
-                                  : FileImage(File(user.photoPath!)) as ImageProvider)
-                              : null,
-                          child: user?.hasPhoto != true
-                              ? Icon(Icons.person, size: 50, color: Colors.grey[700])
-                              : null,
-                        ),
-                        const SizedBox(height: 12),
-                        
-                        Text(
-                          user?.name ?? 'User',
-                          style: const TextStyle(
-                            fontSize: 20,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                        Text(
-                          user?.email ?? '',
-                          style: TextStyle(
-                            fontSize: 14,
-                            color: Colors.grey[600],
-                          ),
-                        ),
-                        const SizedBox(height: 20),
-
-                        _FeatureButton(
-                          text: "Edit Profile",
-                          icon: Icons.edit,
-                          onTap: () => Navigator.pushNamed(context, '/edit-profile'),
-                        ),
-                        _FeatureButton(
-                          text: "FAQ",
-                          icon: Icons.help_outline,
-                          onTap: () {
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              const SnackBar(content: Text('FAQ coming soon')),
-                            );
-                          },
-                        ),
-                        _FeatureButton(
-                          text: "Rate this app",
-                          icon: Icons.star_outline,
-                          onTap: () {
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              const SnackBar(content: Text('Rate feature coming soon')),
-                            );
-                          },
-                        ),
-
-                        const SizedBox(height: 20),
-                        TextButton.icon(
-                          onPressed: () {
-                            _showLogoutDialog(context, auth);
-                          },
-                          icon: const Icon(Icons.logout, color: Colors.red),
-                          label: const Text(
-                            "Log Out",
-                            style: TextStyle(
-                              color: Colors.red,
+              child: Column(
+                children: [
+                  CircleAvatar(
+                    radius: 60,
+                    backgroundColor: Colors.white,
+                    backgroundImage: user?.photoPath != null
+                        ? NetworkImage(user!.photoPath!)
+                        : null,
+                    child: user?.photoPath == null
+                        ? const Icon(Icons.person, size: 70, color: Colors.grey)
+                        : null,
+                  ),
+                  const SizedBox(height: 16),
+                  Text(
+                    user?.name ?? "Guest User",
+                    style: const TextStyle(
+                      fontSize: 22,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.white,
+                    ),
+                  ),
+                  const SizedBox(height: 6),
+                  Text(
+                    user?.email ?? "No email available",
+                    style: const TextStyle(
+                      fontSize: 16,
+                      color: Colors.white70,
+                    ),
+                  ),
+                  const SizedBox(height: 16),
+                  GestureDetector(
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (_) => const PointsPage()),
+                      );
+                    },
+                    child: Container(
+                      padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.circular(30),
+                      ),
+                      child: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          const Icon(Icons.stars, color: Colors.orange),
+                          const SizedBox(width: 8),
+                          Text(
+                            "${user?.points ?? 0} Points",
+                            style: const TextStyle(
+                              fontSize: 16,
                               fontWeight: FontWeight.bold,
                             ),
                           ),
-                        ),
-                      ],
+                        ],
+                      ),
                     ),
                   ),
-                ),
-              ),
-            ),
-
-            Container(
-              color: const Color(0xFFDFF4FF),
-              padding: const EdgeInsets.symmetric(vertical: 8),
-              child: const Row(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: [
-                  Icon(Icons.home, size: 28),
-                  Icon(Icons.list_alt, size: 28),
-                  Icon(Icons.person, size: 28, color: Colors.black54),
                 ],
               ),
             ),
+
+            const SizedBox(height: 20),
+
+            /// MENU LIST
+            ListTile(
+              leading: const Icon(Icons.edit, color: Colors.blueAccent),
+              title: const Text("Edit Profile"),
+              trailing: const Icon(Icons.arrow_forward_ios, size: 16),
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (_) => const EditProfilePage()),
+                );
+              },
+            ),
+            const Divider(),
+            ListTile(
+              leading: const Icon(Icons.lock, color: Colors.orange),
+              title: const Text("Change Password"),
+              trailing: const Icon(Icons.arrow_forward_ios, size: 16),
+              onTap: () {
+                Navigator.pushNamed(context, "/change-password");
+              },
+            ),
+            const Divider(),
+            ListTile(
+              leading: const Icon(Icons.pin, color: Colors.purple),
+              title: const Text("Change PIN"),
+              trailing: const Icon(Icons.arrow_forward_ios, size: 16),
+              onTap: () {
+                Navigator.pushNamed(context, "/change-pin");
+              },
+            ),
+            const Divider(),
+            ListTile(
+              leading: const Icon(Icons.help, color: Colors.green),
+              title: const Text("FAQ"),
+              trailing: const Icon(Icons.arrow_forward_ios, size: 16),
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (_) => const FaqPage()),
+                );
+              },
+            ),
+            const Divider(),
+            ListTile(
+              leading: const Icon(Icons.star_rate, color: Colors.amber),
+              title: const Text("Rate This App"),
+              trailing: const Icon(Icons.arrow_forward_ios, size: 16),
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (_) => const RatePage()),
+                );
+              },
+            ),
+            const Divider(),
+            ListTile(
+              leading: const Icon(Icons.logout, color: Colors.red),
+              title: const Text("Logout"),
+              onTap: () async {
+                await authProvider.logout();
+                if (context.mounted) {
+                  Navigator.pushReplacementNamed(context, "/login");
+                }
+              },
+            ),
           ],
-        ),
-      ),
-    );
-  }
-
-  void _showLogoutDialog(BuildContext context, AuthProvider auth) {
-    showDialog(
-      context: context,
-      builder: (c) => AlertDialog(
-        title: const Text('Logout'),
-        content: const Text('Are you sure you want to logout?'),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(c),
-            child: const Text('Cancel'),
-          ),
-          TextButton(
-            onPressed: () async {
-              await auth.logout();
-              if (context.mounted) {
-                Navigator.pop(c);
-                Navigator.pushNamedAndRemoveUntil(context, '/login', (_) => false);
-              }
-            },
-            child: const Text('Logout', style: TextStyle(color: Colors.red)),
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-class _FeatureButton extends StatelessWidget {
-  final String text;
-  final IconData icon;
-  final VoidCallback onTap;
-
-  const _FeatureButton({
-    required this.text,
-    required this.icon,
-    required this.onTap,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 6),
-      child: InkWell(
-        onTap: onTap,
-        borderRadius: BorderRadius.circular(10),
-        child: Container(
-          height: 50,
-          width: double.infinity,
-          decoration: BoxDecoration(
-            color: Colors.blue[900],
-            borderRadius: BorderRadius.circular(10),
-          ),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Icon(icon, color: Colors.white),
-              const SizedBox(width: 10),
-              Text(
-                text,
-                style: const TextStyle(
-                  color: Colors.white,
-                  fontWeight: FontWeight.bold,
-                  fontSize: 16,
-                ),
-              ),
-            ],
-          ),
         ),
       ),
     );

@@ -23,7 +23,7 @@ class _BottomNavBarState extends State<BottomNavBar> {
   final List<Widget> _screens = [
     RouteScreen(from: "Manggarai", to: "Jakarta Kota", date: DateTime.now()),
     OrderHistoryScreen(userId: "dummyUserId"), 
-    ProfilePage(),  // ← GANTI JADI INI (tanpa const)
+    ProfilePage(),
   ];
 
   @override
