@@ -91,6 +91,7 @@ class JourneyService {
                 routeId:
                     '${stations[i]}-${stations[j]}-${depTime.hour}${depTime.minute}-$k',
                 price: hargaPoin,
+                expiryTime: depTime.add(const Duration(minutes: 60)),
               ),
             );
           }
