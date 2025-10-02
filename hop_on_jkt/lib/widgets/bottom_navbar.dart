@@ -5,30 +5,46 @@ import '../screens/ticket/order_history_screen.dart';
 
 class BottomNavBar extends StatefulWidget {
   final int initialIndex; //  untuk masuk langsung ke tab tertentu
-  const BottomNavBar({super.key, this.initialIndex = 0}); 
+  final bool showPaymentSuccess;
+
+  const BottomNavBar({
+    super.key,
+    this.initialIndex = 0,
+    this.showPaymentSuccess = false, // default false
+  }); 
 
   @override
   State<BottomNavBar> createState() => _BottomNavBarState();
 }
 
 class _BottomNavBarState extends State<BottomNavBar> {
-  late int _currentIndex; 
+  late int _currentIndex;
 
   @override
   void initState() {
     super.initState();
     _currentIndex = widget.initialIndex; //supaya bisa start dari tab ke-2
+
+  WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (widget.showPaymentSuccess) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text("Payment Successful :D"),
+            backgroundColor: Colors.green,
+          ),
+        );
+      }
+    });
   }
 
-  final List<Widget> _screens = [
-    RouteScreen(from: "Manggarai", to: "Jakarta Kota", date: DateTime.now()),
-    OrderHistoryScreen(userId: "dummyUserId"), 
-    Center(child: Text("Account Page (soon)")),
-  ];
+  // final List<Widget> _screens = [
+  //   RouteScreen(from: "Manggarai", to: "Jakarta Kota", date: DateTime.now()),
+  //   OrderHistoryScreen(userId: "dummyUserId"),
+  //   Center(child: Text("Account Page (soon)")),
+  // ];
 
   @override
   Widget build(BuildContext context) {
-
     // ambil userId dari FirebaseAuth
     final userId = FirebaseAuth.instance.currentUser?.uid ?? "";
 
@@ -40,16 +56,20 @@ class _BottomNavBarState extends State<BottomNavBar> {
     ];
 
     return Scaffold(
-      body: IndexedStack( // supaya state tiap screen ga reset
+      body: IndexedStack(
+        // supaya state tiap screen ga reset
         index: _currentIndex,
         children: _screens,
       ),
       bottomNavigationBar: BottomNavigationBar(
         currentIndex: _currentIndex,
-        onTap: (index) => setState(() => _currentIndex = index), 
+        onTap: (index) => setState(() => _currentIndex = index),
         items: const [
           BottomNavigationBarItem(icon: Icon(Icons.home), label: "Home"),
-          BottomNavigationBarItem(icon: Icon(Icons.confirmation_num), label: "Tickets"),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.confirmation_num),
+            label: "Tickets",
+          ),
           BottomNavigationBarItem(icon: Icon(Icons.person), label: "Account"),
         ],
       ),

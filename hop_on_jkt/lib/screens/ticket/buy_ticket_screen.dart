@@ -134,20 +134,50 @@ class _BuyTicketScreenState extends State<BuyTicketScreen> {
         // reload saldo user setelah transaksi
         _loadUserData();
 
-        // kasih notifikasi sukses
-        ScaffoldMessenger.of(
-          context,
-        ).showSnackBar(const SnackBar(content: Text("Payment Successful :D")));
+        // // kasih notifikasi sukses
+        // ScaffoldMessenger.of(
+        //   context,
+        // ).showSnackBar(const SnackBar(content: Text("Payment Successful :D")));
 
-        Future.delayed(const Duration(milliseconds: 300), () {
+        // Future.delayed(const Duration(milliseconds: 300), () {
+        //   Navigator.pushAndRemoveUntil(
+        //     context,
+        //     MaterialPageRoute(
+        //       builder: (_) => const BottomNavBar(initialIndex: 1),
+        //     ),
+        //     (route) => false,
+        //   );
+        // });
+
+        // ScaffoldMessenger.of(context).showSnackBar(
+        //   const SnackBar(content: Text("Payment Successful :D")),
+        // );
+        
+
+        // await Future.delayed(const Duration(seconds: 1));
+        // if (!mounted) return;
+
+        // Navigator.pushAndRemoveUntil(
+        //   context,
+        //   MaterialPageRoute(
+        //     builder: (_) => const BottomNavBar(initialIndex: 1),
+        //   ),
+        //   (route) => false,
+        // );
+
+        Future.delayed(const Duration(milliseconds: 200), () {
           Navigator.pushAndRemoveUntil(
             context,
             MaterialPageRoute(
-              builder: (_) => const BottomNavBar(initialIndex: 1),
+              builder: (_) => const BottomNavBar(
+                initialIndex: 1,
+                showPaymentSuccess: true, 
+              ),
             ),
             (route) => false,
           );
         });
+
       } catch (e) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text("Error: $e")),
@@ -155,7 +185,7 @@ class _BuyTicketScreenState extends State<BuyTicketScreen> {
       }
     } else {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text("Wrong PIN ❌")),
+        const SnackBar(content: Text("Wrong PIN :()")),
       );
     }
   }
