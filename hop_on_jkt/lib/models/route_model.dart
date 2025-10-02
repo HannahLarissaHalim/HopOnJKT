@@ -7,6 +7,7 @@ class RouteModel {
   final String operator;
   final String routeId;
   final int price;
+  final DateTime expiryTime;
 
   RouteModel({
     required this.departureStation,
@@ -17,6 +18,7 @@ class RouteModel {
     required this.operator,
     required this.routeId,
     required this.price,
+    required this.expiryTime,
   });
 
   // factory RouteModel.fromJson(Map<String, dynamic> json) {
