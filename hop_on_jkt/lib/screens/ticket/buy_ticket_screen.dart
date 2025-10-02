@@ -101,7 +101,7 @@ class _BuyTicketScreenState extends State<BuyTicketScreen> {
           'price': widget.price,
           'userId': user.uid,
           'status': 'active', 
-          'date': DateTime.now().toIso8601String(),
+          'date': FieldValue.serverTimestamp(),
           'expiryTime': DateTime.now().add(const Duration(minutes: 120)),
         };
 
