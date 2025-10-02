@@ -1,12 +1,16 @@
 import 'package:flutter/material.dart';
-import 'buy_ticket_screen.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'order_history_screen.dart';
+import '../journey/route_screen.dart';
 
 class TicketTab extends StatelessWidget {
   const TicketTab({super.key});
 
   @override
   Widget build(BuildContext context) {
+    final user = FirebaseAuth.instance.currentUser; // ✅ ambil user yg login
+    final userId = user?.uid ?? ""; // kalau null = kosong
+
     return DefaultTabController(
       length: 2,
       child: Scaffold(
@@ -19,15 +23,17 @@ class TicketTab extends StatelessWidget {
             ],
           ),
         ),
-        body: const TabBarView(
+        body: TabBarView(
           children: [
-            BuyTicketScreen(
-              fromStation: "Jakarta",
-              toStation: "Bandung",
-              price: 120,
+            RouteScreen(
+              // user pilih rute dulu
+              from: "Manggarai",
+              to: "Jakarta Kota",
+              date: DateTime.now(),
+              departureTime: DateTime.now(),
             ),
             OrderHistoryScreen(
-              userId: "dummyUser123", 
+              userId: userId, // ✅ pakai user login
             ),
           ],
         ),
