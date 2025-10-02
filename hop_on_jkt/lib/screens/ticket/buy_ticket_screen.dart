@@ -41,8 +41,8 @@ class _BuyTicketScreenState extends State<BuyTicketScreen> {
         await FirebaseFirestore.instance.collection("users").doc(user.uid).get();
 
     setState(() {
-      userPoints = snapshot['points'] ?? 0; // ambil field points
-      userPin = snapshot['pin'] ?? "";      // ambil field pin
+      userPoints = snapshot['points'] ?? 0;         // ambil field points
+      userPin = (snapshot['pin'] ?? "").toString(); // ambil field pin
     });
   }
 
