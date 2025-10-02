@@ -68,6 +68,7 @@ flutter:
     - assets/images/kereta.png
     - assets/images/clouds.png
     - assets/images/logo.svg
+    - assets/images/welcome.jpg
 
   fonts:
     - family: HeyComic
