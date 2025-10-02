@@ -2,14 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:uuid/uuid.dart'; 
+import 'package:uuid/uuid.dart';
 import '../../providers/ticket_provider.dart';
 import '../../widgets/bottom_navbar.dart';
 
 class BuyTicketScreen extends StatefulWidget {
-  final String fromStation;  // stasiun asal
-  final String toStation;    // stasiun tujuan
-  final int price;           // harga tiket (dalam poin)
+  final String fromStation; // stasiun asal
+  final String toStation; // stasiun tujuan
+  final int price; // harga tiket (dalam poin)
 
   const BuyTicketScreen({
     Key? key,
@@ -23,8 +23,8 @@ class BuyTicketScreen extends StatefulWidget {
 }
 
 class _BuyTicketScreenState extends State<BuyTicketScreen> {
-  int userPoints = 0;  // saldo poin user
-  String userPin = ""; // pin user 
+  int userPoints = 0; // saldo poin user
+  String userPin = ""; // pin user
 
   @override
   void initState() {
@@ -37,11 +37,13 @@ class _BuyTicketScreenState extends State<BuyTicketScreen> {
     final user = FirebaseAuth.instance.currentUser;
     if (user == null) return;
 
-    final snapshot =
-        await FirebaseFirestore.instance.collection("users").doc(user.uid).get();
+    final snapshot = await FirebaseFirestore.instance
+        .collection("users")
+        .doc(user.uid)
+        .get();
 
     setState(() {
-      userPoints = snapshot['points'] ?? 0;         // ambil field points
+      userPoints = snapshot['points'] ?? 0; // ambil field points
       userPin = (snapshot['pin'] ?? "").toString(); // ambil field pin
     });
   }
@@ -60,7 +62,7 @@ class _BuyTicketScreenState extends State<BuyTicketScreen> {
             controller: pinController,
             obscureText: true, // biar pin ga keliatan
             keyboardType: TextInputType.number,
-            maxLength: 6,      // pin 6 digit
+            maxLength: 6, // pin 6 digit
             decoration: const InputDecoration(
               hintText: "6-digit PIN",
               counterText: "",
@@ -75,7 +77,7 @@ class _BuyTicketScreenState extends State<BuyTicketScreen> {
               onPressed: () {
                 // cek apakah input pin sama dengan pin user
                 if (pinController.text == userPin) {
-                  Navigator.pop(context, true);  // pin valid
+                  Navigator.pop(context, true); // pin valid
                 } else {
                   Navigator.pop(context, false); // pin salah
                 }
@@ -100,12 +102,12 @@ class _BuyTicketScreenState extends State<BuyTicketScreen> {
           'toStation': widget.toStation,
           'price': widget.price,
           'userId': user.uid,
-          'status': 'active', 
+          'status': 'active',
           'date': FieldValue.serverTimestamp(),
           'expiryTime': DateTime.now().add(const Duration(minutes: 120)),
         };
 
-        // panggil provider utk kurangi poin + simpan tiket 
+        // panggil provider utk kurangi poin + simpan tiket
         await Provider.of<TicketProvider>(context, listen: false).buyTicket(
           userId: user.uid,
           price: widget.price,
@@ -116,9 +118,9 @@ class _BuyTicketScreenState extends State<BuyTicketScreen> {
         _loadUserData();
 
         // kasih notifikasi sukses
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text("Payment Success ✅")),
-        );
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(const SnackBar(content: Text("Payment Success ✅")));
 
         // setelah sukses, pindah ke tab My Orders (OrderHistory)
         Navigator.pushAndRemoveUntil(
@@ -128,18 +130,16 @@ class _BuyTicketScreenState extends State<BuyTicketScreen> {
           ),
           (route) => false,
         );
-
       } catch (e) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text("Error: $e")),
-        );
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(SnackBar(content: Text("Error: $e")));
       }
-
     } else {
       // kalau pin salah
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text("Wrong PIN ❌")),
-      );
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(const SnackBar(content: Text("Wrong PIN ❌")));
     }
   }
 
@@ -149,29 +149,22 @@ class _BuyTicketScreenState extends State<BuyTicketScreen> {
       body: SafeArea(
         child: Column(
           children: [
-            // header atas
+            // HEADER TICKET
             Padding(
-              padding: const EdgeInsets.all(16.0),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: const [
-                  Text(
-                    "Ticket",
-                    style: TextStyle(
-                      fontSize: 24,
-                      fontWeight: FontWeight.bold,
-                      color: Color(0xFF1A3C6E),
-                    ),
+              padding: const EdgeInsets.all(20.0),
+              child: Center(
+                child: Text(
+                  "TICKET PAYMENT",
+                  style: const TextStyle(
+                    fontSize: 37,
+                    fontWeight: FontWeight.bold,
+                    color: Color(0xFF1A3C6E), // biru tua
                   ),
-                  CircleAvatar(
-                    backgroundColor: Colors.grey,
-                    child: Icon(Icons.person, color: Colors.white),
-                  ),
-                ],
+                ),
               ),
             ),
 
-            // kartu tiket (detail tiket + saldo user + tombol bayar)
+            // KARTU DETAIL TIKET
             Container(
               margin: const EdgeInsets.all(16),
               padding: const EdgeInsets.all(20),
@@ -188,65 +181,75 @@ class _BuyTicketScreenState extends State<BuyTicketScreen> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  // row info tiket
+                  // INFO RUTE TIKET
                   Row(
                     children: [
                       const Icon(Icons.train, size: 30, color: Colors.black87),
                       const SizedBox(width: 10),
                       Expanded(
                         child: Text(
-                          "${widget.fromStation} → ${widget.toStation}", // asal -> tujuan
+                          "${widget.fromStation} → ${widget.toStation}",
                           style: const TextStyle(
                             fontSize: 18,
                             fontWeight: FontWeight.bold,
                           ),
                         ),
                       ),
-                      Text("${widget.price} pts", // harga tiket
-                          style: const TextStyle(
-                            fontWeight: FontWeight.bold,
-                            color: Colors.redAccent,
-                          )),
+                      Text(
+                        "${widget.price} pts",
+                        style: const TextStyle(
+                          fontWeight: FontWeight.bold,
+                          color: Colors.redAccent,
+                        ),
+                      ),
                     ],
                   ),
+
                   const SizedBox(height: 16),
 
-                  // saldo user
+                  // USER POINTS BOX
                   Container(
                     padding: const EdgeInsets.all(12),
                     decoration: BoxDecoration(
-                      color: Colors.green[100],
+                      color: Color(0xFFC7DEE4), // 🔵 biru muda
                       borderRadius: BorderRadius.circular(8),
                     ),
                     child: Text(
-                      "Your balance: $userPoints Points", // tampilkan saldo
+                      "Your points: $userPoints",
                       style: const TextStyle(
-                        color: Colors.green,
+                        color: Color(0xFF006889), // 🔵 biru tua
                         fontWeight: FontWeight.bold,
                       ),
                     ),
                   ),
+
                   const SizedBox(height: 16),
 
-                  // tombol bayar
+                  // PAY BUTTON
                   ElevatedButton(
-                    onPressed: _confirmPayment, // kalau ditekan cek pin dulu
+                    onPressed: _confirmPayment,
                     style: ElevatedButton.styleFrom(
-                      backgroundColor: const Color(0xFF1A3C6E),
+                      backgroundColor: Color(0xFFDDF3A1), // 🟢 hijau muda
                       padding: const EdgeInsets.symmetric(vertical: 14),
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(8),
                       ),
                       minimumSize: const Size(double.infinity, 50),
                     ),
-                    child: const Text("Pay with points"),
+                    child: const Text(
+                      "Pay with points",
+                      style: TextStyle(
+                        color: Color(0xFF4F8F14), // hijau gelap
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
                   ),
                 ],
               ),
             ),
           ],
         ),
-      ), 
+      ),
     );
   }
 }
