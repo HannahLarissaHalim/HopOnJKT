@@ -27,18 +27,23 @@ class _OrderHistoryScreenState extends State<OrderHistoryScreen> {
     // Jika tab 'history' dipilih, asumsikan status di Firestore adalah 'cancelled' atau 'expired'
     // Menggunakan 'cancelled' sebagai contoh, sesuaikan dengan skema database Anda.
     if (_selectedTab == 'ongoing') return 'active';
-    if (_selectedTab == 'history') return 'cancelled';
+    if (_selectedTab == 'history') return 'expired'; // expired
     return 'active';
   }
 
   // Memuat ulang data tiket berdasarkan tab yang dipilih
-  void _loadTickets() {
+  void _loadTickets() async {
     // Menginisialisasi future dengan status yang benar
     // Catatan: TicketService().getUserTickets harus tersedia dan mengembalikan Future<List<Map<String, dynamic>>>
+    
+    final service = TicketService();
+    await service.markExpiredTickets(widget.userId); // cek expired
+    
     _ticketsFuture = TicketService().getUserTickets(
       widget.userId,
       status: firestoreStatus,
     );
+
     // Memanggil setState untuk memicu FutureBuilder memuat data baru
     setState(() {});
   }
