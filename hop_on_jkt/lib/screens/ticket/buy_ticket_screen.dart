@@ -108,7 +108,14 @@ class _BuyTicketScreenState extends State<BuyTicketScreen> {
         await Provider.of<TicketProvider>(context, listen: false).buyTicket(
           userId: user.uid,
           price: widget.price,
-          ticketData: ticketData,
+          ticketData: {
+            "fromStation": widget.fromStation,
+            "toStation": widget.toStation,
+            "price": widget.price,
+            "departureTime": widget.departureTime.toIso8601String(),
+            "arrivalTime": widget.arrivalTime.toIso8601String(),
+            "expiryTime": widget.departureTime.add(const Duration(minutes: 60)).toIso8601String(), 
+          },
         );
 
         // reload saldo user setelah transaksi
