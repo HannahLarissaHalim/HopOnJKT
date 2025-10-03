@@ -201,7 +201,7 @@ class _BuyTicketScreenState extends State<BuyTicketScreen> {
                 margin: const EdgeInsets.all(20),
                 padding: const EdgeInsets.all(20),
                 decoration: BoxDecoration(
-                  color: Colors.white,
+                  color: const Color(0xFFF9F9F9),
                   borderRadius: BorderRadius.circular(16),
                   boxShadow: [
                     BoxShadow(
