@@ -155,6 +155,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                 ScaffoldMessenger.of(context).showSnackBar(
                                   const SnackBar(
                                     content: Text("Login Success!"),
+                                    backgroundColor: Colors.green,
                                   ),
                                 );
                                 Navigator.pushReplacementNamed(
@@ -272,7 +273,7 @@ class _LoginScreenState extends State<LoginScreen> {
             "Success",
             "Password reset email sent ✅",
             snackPosition: SnackPosition.BOTTOM,
-            backgroundColor: Colors.green.shade600,
+            backgroundColor: Colors.green,
             colorText: Colors.white,
           );
         } catch (e) {
