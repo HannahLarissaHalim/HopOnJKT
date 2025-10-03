@@ -95,7 +95,7 @@ class ProfilePage extends StatelessWidget {
         ),
         centerTitle: true,
         elevation: 0,
-        backgroundColor: const Color(0xFF1A3C6E),
+        backgroundColor: const Color.fromARGB(255, 125, 188, 241),
         foregroundColor: Colors.white,
       ),
       body: SingleChildScrollView(
@@ -106,7 +106,7 @@ class ProfilePage extends StatelessWidget {
               width: double.infinity,
               padding: const EdgeInsets.symmetric(vertical: 32),
               decoration: const BoxDecoration(
-                color: Color(0xFF1A3C6E),
+                color: Color.fromARGB(255, 125, 188, 241),
                 borderRadius: BorderRadius.only(
                   bottomLeft: Radius.circular(30),
                   bottomRight: Radius.circular(30),
