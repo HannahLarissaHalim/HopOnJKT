@@ -111,7 +111,7 @@ class _OrderHistoryScreenState extends State<OrderHistoryScreen> {
             children: [
               // 1. Logo menggunakan SvgPicture
               SvgPicture.asset(
-                'assets/logo.svg', // Pastikan jalur ini benar
+                'assets/images/logo.svg', // Pastikan jalur ini benar
                 height: 20,
               ),
             ],
