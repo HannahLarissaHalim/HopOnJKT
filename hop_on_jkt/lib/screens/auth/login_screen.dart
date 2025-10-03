@@ -57,10 +57,9 @@ class _LoginScreenState extends State<LoginScreen> {
               child: const Text(
                 "HopOnJKT",
                 style: TextStyle(
-                  fontFamily: "HeyComic",
+                  fontFamily: "FACEBOLF",
                   fontSize: 55,
                   color: Color(0xFF1A3C6E),
-                  fontWeight: FontWeight.bold,
                 ),
               ),
             ),
