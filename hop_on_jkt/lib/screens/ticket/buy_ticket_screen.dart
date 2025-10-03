@@ -193,6 +193,25 @@ class _BuyTicketScreenState extends State<BuyTicketScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
+      appBar: AppBar(
+        backgroundColor: Colors.white,
+        elevation: 0,
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back, color: Colors.black), 
+          onPressed: () {
+            Navigator.pop(context); // balik ke halaman sebelumnya
+          },
+        ),
+        centerTitle: true,
+        title: const Text(
+          "TICKET PAYMENT",
+          style: TextStyle(
+            fontSize: 20,
+            fontWeight: FontWeight.bold,
+            color: Color(0xFF1A3C6E), // biru tua
+          ),
+        ),
+      ),
       body: SafeArea(
         child: Center(
           child: Stack(
