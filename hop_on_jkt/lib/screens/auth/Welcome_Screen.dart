@@ -15,7 +15,7 @@ class WelcomeScreen extends StatelessWidget {
             end: Alignment.bottomCenter,
             colors: [
               Color(0xFFE6F9F5), 
-              Color(0xFF85D8F5), 
+              Color(0xFFE6F9F5), 
             ],
             stops: [0.5, 1.0],
           ),
@@ -29,7 +29,7 @@ class WelcomeScreen extends StatelessWidget {
                 child: Container(
                   width: double.infinity,
                   child: Image.asset(
-                    "assets/images/welcome.png", 
+                    "assets/images/welcome_image.png", 
                     fit: BoxFit.cover,
                     alignment: Alignment.center,
                   ),
@@ -51,7 +51,7 @@ class WelcomeScreen extends StatelessWidget {
                         style: TextStyle(
                           fontSize: 40,
                           fontWeight: FontWeight.bold,
-                          color: Colors.white,
+                          color: Color.fromRGBO(42, 76, 112, 100),
                           height: 1.1,
                         ),
                       ),
@@ -60,7 +60,7 @@ class WelcomeScreen extends StatelessWidget {
                         style: TextStyle(
                           fontSize: 40,
                           fontWeight: FontWeight.bold,
-                          color: Colors.white,
+                          color: Color.fromRGBO(42, 76, 112, 100),
                           height: 1.1,
                         ),
                       ),
@@ -73,7 +73,7 @@ class WelcomeScreen extends StatelessWidget {
                         style: TextStyle(
                           fontSize: 18,
                           fontWeight: FontWeight.w600,
-                          color: Color(0xFF1A3C6E),
+                          color: Color.fromRGBO(42, 76, 112, 100),
                         ),
                       ),
                       
@@ -152,7 +152,7 @@ class WelcomeScreen extends StatelessWidget {
                 style: TextStyle(
                   fontFamily: "HeyComic",
                   fontSize: 36,
-                  color: Color(0xFF1A3C6E),
+                  color: Color.fromRGBO(42, 76, 112, 100),
                   fontWeight: FontWeight.bold,
                 ),
               ),
@@ -163,7 +163,7 @@ class WelcomeScreen extends StatelessWidget {
                 'Choose an option to continue',
                 style: TextStyle(
                   fontSize: 16,
-                  color: Colors.grey,
+                  color: Color.fromARGB(255, 15, 4, 4),
                   fontWeight: FontWeight.w500,
                 ),
               ),
