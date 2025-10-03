@@ -16,7 +16,7 @@ class FaqPage extends StatelessWidget {
         children: const [
           FAQItem(
             question: "How do I buy a ticket?",
-            answer: "To buy a ticket, go to the Home screen, select your departure and arrival stations, then tap 'Show Ticket'. Choose your preferred route and tap 'Buy Ticket'. You'll need to enter your 4-digit PIN to complete the purchase.",
+            answer: "To buy a ticket, go to the Home screen, select your departure and arrival stations, then tap 'Show Ticket'. Choose your preferred route and tap 'Buy Ticket'. You'll need to enter your 6-digit PIN to complete the purchase.",
           ),
           FAQItem(
             question: "How do I get points?",
