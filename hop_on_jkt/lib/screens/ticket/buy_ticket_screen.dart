@@ -192,7 +192,7 @@ class _BuyTicketScreenState extends State<BuyTicketScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.white, // 🔹 full putih background
+      backgroundColor: Colors.white, 
       appBar: AppBar(
         backgroundColor: Colors.white,
         elevation: 0,
@@ -220,7 +220,7 @@ class _BuyTicketScreenState extends State<BuyTicketScreen> {
                 margin: const EdgeInsets.symmetric(horizontal: 20, vertical: 40),
                 padding: const EdgeInsets.all(20),
                 decoration: BoxDecoration(
-                  color: const Color(0xFFF9F9F9), // abu2 muda
+                  color: const Color(0xFFF9F9F9), 
                   borderRadius: BorderRadius.circular(16),
                   boxShadow: [
                     BoxShadow(
@@ -232,8 +232,6 @@ class _BuyTicketScreenState extends State<BuyTicketScreen> {
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    const SizedBox(height: 50), // space untuk kereta
-
                     // Kotak rute biru muda
                     Container(
                       padding: const EdgeInsets.symmetric(
