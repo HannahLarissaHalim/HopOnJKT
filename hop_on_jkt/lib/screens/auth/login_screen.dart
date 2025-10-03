@@ -222,19 +222,21 @@ class _LoginScreenState extends State<LoginScreen> {
             ),
           ),
 
-          // kereta
-          Align(
-            alignment: Alignment.bottomCenter,
-            child: Image.asset(
-              "assets/images/kereta.png",
-              fit: BoxFit.cover,
-              width: double.infinity,
+          // gambar kereta kalau keyboard gak aktif
+          if (MediaQuery.of(context).viewInsets.bottom == 0)
+            Align(
+              alignment: Alignment.bottomCenter,
+              child: Image.asset(
+                "assets/images/kereta.png",
+                fit: BoxFit.cover,
+                width: double.infinity,
+              ),
             ),
-          ),
         ],
       ),
     );
   }
+  
 
  // forgot password pakai GetX
   void _showForgotPasswordDialog() {

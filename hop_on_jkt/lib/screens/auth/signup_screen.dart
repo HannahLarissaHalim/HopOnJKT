@@ -227,15 +227,16 @@ class _SignUpScreenState extends State<SignUpScreen> {
             ),
           ),
 
-          // Bottom train image
-          Align(
-            alignment: Alignment.bottomCenter,
-            child: Image.asset(
-              "assets/images/kereta.png",
-              fit: BoxFit.cover,
-              width: double.infinity,
+          // gambar kereta cuma muncul kalo gada keyboard
+          if (MediaQuery.of(context).viewInsets.bottom == 0)
+            Align(
+              alignment: Alignment.bottomCenter,
+              child: Image.asset(
+                "assets/images/kereta.png",
+                fit: BoxFit.cover,
+                width: double.infinity,
+              ),
             ),
-          ),
         ],
       ),
     );
