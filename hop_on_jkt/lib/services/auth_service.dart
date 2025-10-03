@@ -1,14 +1,14 @@
 import 'dart:io';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import '../models/user_model.dart';
+import 'package:firebase_storage/firebase_storage.dart' as firebase_storage;
 
 class AuthService extends ChangeNotifier {
   final FirebaseAuth _auth = FirebaseAuth.instance;
   final FirebaseFirestore _db = FirebaseFirestore.instance;
-  final FirebaseStorage _storage = FirebaseStorage.instance;
+  final firebase_storage.FirebaseStorage _storage = firebase_storage.FirebaseStorage.instance;
 
   UserModel? _currentUser;
   UserModel? get currentUser => _currentUser;
@@ -26,8 +26,9 @@ class AuthService extends ChangeNotifier {
       UserModel newUser = UserModel(
         uid: user.uid,
         email: email,
-        points: 999,    // default saldo poin
         pin: pin,       // simpan pin dari form signup
+        points: 999999,
+        name: name,
         photoPath: null,
         name: name,
       );
@@ -67,7 +68,9 @@ class AuthService extends ChangeNotifier {
     String? name,
     String? photoPath,
   }) async {
-    if (_currentUser == null) return;
+    if (_currentUser == null) {
+      throw Exception("User not logged in");
+    }
 
     try {
       Map<String, dynamic> updates = {};
@@ -76,18 +79,22 @@ class AuthService extends ChangeNotifier {
         updates['name'] = name;
       }
 
-      // upload foto hanya kalau ada file baru
+      // Upload foto hanya kalau ada file lokal baru
       if (photoPath != null && photoPath.isNotEmpty && !photoPath.startsWith('http')) {
+        print("📤 Uploading photo from: $photoPath");
         String downloadUrl = await _uploadPhoto(photoPath);
+        print("✅ Photo uploaded successfully: $downloadUrl");
         updates['photoPath'] = downloadUrl;
       }
 
       if (updates.isNotEmpty) {
+        print("💾 Updating Firestore with: $updates");
         await _db.collection('users').doc(_currentUser!.uid).update(updates);
 
-        // refresh data user setelah update
+        // Refresh data user setelah update
         DocumentSnapshot doc = await _db.collection('users').doc(_currentUser!.uid).get();
         _currentUser = UserModel.fromMap(doc.data() as Map<String, dynamic>);
+        print("✅ Profile updated in Firestore");
         notifyListeners();
       }
     } catch (e) {
@@ -110,16 +117,114 @@ class AuthService extends ChangeNotifier {
   Future<String> _uploadPhoto(String localPath) async {
     try {
       File file = File(localPath);
+      
+      // Validasi file exists
+      if (!await file.exists()) {
+        throw Exception("File not found at path: $localPath");
+      }
+
+      print("📁 File exists, size: ${await file.length()} bytes");
+
       String fileName = '${_currentUser!.uid}_${DateTime.now().millisecondsSinceEpoch}.jpg';
+      
+      // Buat reference ke Firebase Storage
+      firebase_storage.Reference ref = _storage
+          .ref()
+          .child('profile_photos')
+          .child(fileName);
 
-      Reference ref = _storage.ref().child('profile_photos').child(fileName);
-      UploadTask uploadTask = ref.putFile(file);
+      print("☁️ Uploading to Firebase Storage: profile_photos/$fileName");
 
-      TaskSnapshot snapshot = await uploadTask;
+      // Upload file
+      firebase_storage.UploadTask uploadTask = ref.putFile(
+        file,
+        firebase_storage.SettableMetadata(
+          contentType: 'image/jpeg',
+        ),
+      );
+
+      // Monitor upload progress
+      uploadTask.snapshotEvents.listen((firebase_storage.TaskSnapshot snapshot) {
+        double progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+        print("📊 Upload progress: ${progress.toStringAsFixed(2)}%");
+      });
+
+      // Wait until upload complete
+      firebase_storage.TaskSnapshot snapshot = await uploadTask;
+      
+      print("✅ Upload complete! State: ${snapshot.state}");
+
+      // Get download URL
       String downloadUrl = await snapshot.ref.getDownloadURL();
+      print("🔗 Download URL: $downloadUrl");
+
       return downloadUrl;
+    } on firebase_storage.FirebaseException catch (e) {
+      print("❌ Firebase Storage Error:");
+      print("   Code: ${e.code}");
+      print("   Message: ${e.message}");
+      print("   Plugin: ${e.plugin}");
+      
+      if (e.code == 'object-not-found') {
+        throw Exception("Firebase Storage not properly configured. Please check Firebase Console.");
+      } else if (e.code == 'unauthorized') {
+        throw Exception("Storage permission denied. Please update Firebase Storage Rules.");
+      } else if (e.code == 'cancelled') {
+        throw Exception("Upload was cancelled.");
+      }
+      
+      rethrow;
     } catch (e) {
-      print("Upload photo error: $e");
+      print("❌ Upload photo error: $e");
+      rethrow;
+    }
+  }
+
+  // CHANGE PIN
+  Future<void> changePin(String newPin) async {
+    if (_currentUser == null) {
+      throw Exception("User not logged in");
+    }
+
+    try {
+      await _db.collection('users').doc(_currentUser!.uid).update({
+        'pin': newPin,
+      });
+
+      // Refresh user data
+      DocumentSnapshot doc = await _db.collection('users').doc(_currentUser!.uid).get();
+      _currentUser = UserModel.fromMap(doc.data() as Map<String, dynamic>);
+      notifyListeners();
+    } catch (e) {
+      print("Change PIN Error: $e");
+      rethrow;
+    }
+  }
+
+  // CHANGE PASSWORD
+  Future<void> changePassword(String oldPassword, String newPassword) async {
+    if (_currentUser == null) {
+      throw Exception("User not logged in");
+    }
+
+    try {
+      User? user = _auth.currentUser;
+      if (user == null) throw Exception("No authenticated user");
+
+      // Re-authenticate user dengan password lama
+      AuthCredential credential = EmailAuthProvider.credential(
+        email: user.email!,
+        password: oldPassword,
+      );
+
+      await user.reauthenticateWithCredential(credential);
+
+      // Ganti password
+      await user.updatePassword(newPassword);
+
+      print("Password changed successfully");
+    } catch (e) {
+      print("Change Password Error: $e");
       rethrow;
     }
   }
@@ -146,4 +251,30 @@ class AuthService extends ChangeNotifier {
       }
     }
   }
+
+  // Fungsi baru untuk update points
+  Future<void> updatePoints(int pointsToAdd) async {
+    if (_currentUser == null) {
+      throw Exception("User not logged in");
+    }
+
+    try {
+      int currentPoints = _currentUser!.points;
+      int newPoints = currentPoints + pointsToAdd;
+
+      await _db.collection('users').doc(_currentUser!.uid).update({
+        'points': newPoints,
+      });
+
+      // Refresh user data setelah update
+      DocumentSnapshot doc = await _db.collection('users').doc(_currentUser!.uid).get();
+      _currentUser = UserModel.fromMap(doc.data() as Map<String, dynamic>);
+      notifyListeners();
+      print("✅ Points updated successfully: $currentPoints → $newPoints");
+    } catch (e) {
+      print("Add Points Error: $e");
+      rethrow;
+    }
+  }
+
 }

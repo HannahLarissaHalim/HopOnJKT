@@ -3,6 +3,8 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_auth/firebase_auth.dart' as fb_auth;
 import 'package:provider/provider.dart';
 import 'package:get/get.dart';
+
+// providers
 import 'providers/auth_provider.dart' as my_auth;
 import 'providers/ticket_provider.dart';
 
@@ -12,6 +14,9 @@ import 'screens/auth/signup_screen.dart';
 import 'widgets/bottom_navbar.dart';
 import 'screens/profile/edit_profile_page.dart';
 import 'screens/auth/welcome_screen.dart';
+// alias untuk screens yang sebelumnya bentrok
+import 'screens/profile/change_pin_screen.dart' as pin_screen;
+import 'screens/profile/change_password_screen.dart' as pass_screen;
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -35,7 +40,10 @@ class MyApp extends StatelessWidget {
       child: GetMaterialApp(
         debugShowCheckedModeBanner: false,
         title: 'HopOnJKT',
-        theme: ThemeData(primarySwatch: Colors.blue, fontFamily: "Coolvetica"),
+        theme: ThemeData(
+          primarySwatch: Colors.blue,
+          fontFamily: "Coolvetica",
+        ),
         home: const AuthWrapper(),
         routes: {
           '/welcome': (context) => const WelcomeScreen(),
@@ -43,15 +51,35 @@ class MyApp extends StatelessWidget {
           '/signup': (context) => const SignUpScreen(),
           '/home': (context) => const BottomNavBar(),
           '/edit-profile': (context) => const EditProfilePage(),
+          // gunakan alias untuk membedakan class
+          '/change-pin': (context) => const pin_screen.ChangePinScreen(),
+          '/change-password': (context) => const pass_screen.ChangePasswordScreen(),
         },
       ),
     );
   }
 }
 
-// Wrapperutk tentuin layar awal sesuai status login
-class AuthWrapper extends StatelessWidget {
+// Wrapper untuk tentuin layar awal sesuai status login
+class AuthWrapper extends StatefulWidget {
   const AuthWrapper({super.key});
+
+  @override
+  State<AuthWrapper> createState() => _AuthWrapperState();
+}
+
+class _AuthWrapperState extends State<AuthWrapper> {
+  @override
+  void initState() {
+    super.initState();
+    _loadUserData();
+  }
+
+  Future<void> _loadUserData() async {
+    final authProvider =
+        Provider.of<my_auth.AuthProvider>(context, listen: false);
+    await authProvider.checkAuthState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -64,14 +92,28 @@ class AuthWrapper extends StatelessWidget {
           );
         }
 
-        // kalau user sudah login langsung ke home
         if (snapshot.hasData) {
-          return const BottomNavBar();
+          return FutureBuilder(
+            future: _loadUserFromFirestore(),
+            builder: (context, futureSnapshot) {
+              if (futureSnapshot.connectionState == ConnectionState.waiting) {
+                return const Scaffold(
+                  body: Center(child: CircularProgressIndicator()),
+                );
+              }
+              return const BottomNavBar();
+            },
+          );
         }
 
-        // kalau belum login tampil login screen
         return const WelcomeScreen();
       },
     );
+  }
+
+  Future<void> _loadUserFromFirestore() async {
+    final authProvider =
+        Provider.of<my_auth.AuthProvider>(context, listen: false);
+    await authProvider.checkAuthState();
   }
 }

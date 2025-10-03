@@ -3,9 +3,11 @@ import 'package:provider/provider.dart';
 import 'dart:io';
 import '../../providers/auth_provider.dart';
 import 'edit_profile_page.dart';
-import 'points_page.dart';
+import 'top_up_points_page.dart'; 
 import 'faq_page.dart';
 import 'rate_page.dart';
+import 'change_password_screen.dart'; 
+import 'change_pin_screen.dart';      
 
 class ProfilePage extends StatelessWidget {
   const ProfilePage({super.key});
@@ -14,14 +16,12 @@ class ProfilePage extends StatelessWidget {
     // Cek apakah photoPath adalah URL atau path lokal
     if (photoPath != null && photoPath.isNotEmpty) {
       if (photoPath.startsWith('http')) {
-        // Jika URL, gunakan NetworkImage
         return CircleAvatar(
           radius: 60,
           backgroundColor: Colors.white,
           backgroundImage: NetworkImage(photoPath),
         );
       } else {
-        // Jika path lokal, gunakan FileImage
         return CircleAvatar(
           radius: 60,
           backgroundColor: Colors.white,
@@ -29,12 +29,12 @@ class ProfilePage extends StatelessWidget {
         );
       }
     }
-    
+
     // Default avatar jika tidak ada foto
-    return CircleAvatar(
+    return const CircleAvatar(
       radius: 60,
       backgroundColor: Colors.white,
-      child: const Icon(Icons.person, size: 70, color: Colors.grey),
+      child: Icon(Icons.person, size: 70, color: Colors.grey),
     );
   }
 
@@ -88,9 +88,7 @@ class ProfilePage extends StatelessWidget {
                     ),
                     child: _buildProfileImage(user?.photoPath),
                   ),
-                  
                   const SizedBox(height: 16),
-                  
                   Text(
                     user?.name ?? "Guest User",
                     style: const TextStyle(
@@ -99,9 +97,7 @@ class ProfilePage extends StatelessWidget {
                       color: Colors.white,
                     ),
                   ),
-                  
                   const SizedBox(height: 6),
-                  
                   Text(
                     user?.email ?? "No email available",
                     style: const TextStyle(
@@ -109,15 +105,13 @@ class ProfilePage extends StatelessWidget {
                       color: Colors.white70,
                     ),
                   ),
-                  
                   const SizedBox(height: 16),
-                  
                   // Points Badge
-                  GestureDetector(
+                 GestureDetector(
                     onTap: () {
                       Navigator.push(
                         context,
-                        MaterialPageRoute(builder: (_) => const PointsPage()),
+                        MaterialPageRoute(builder: (_) => const TopUpPointsPage()),
                       );
                     },
                     child: Container(
@@ -178,9 +172,9 @@ class ProfilePage extends StatelessWidget {
               iconColor: Colors.orange,
               title: "Change Password",
               onTap: () {
-                // TODO: Implement change password
-                ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(content: Text("Change Password feature coming soon")),
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (_) => const ChangePasswordScreen()),
                 );
               },
             ),
@@ -193,9 +187,9 @@ class ProfilePage extends StatelessWidget {
               iconColor: Colors.purple,
               title: "Change PIN",
               onTap: () {
-                // TODO: Implement change PIN
-                ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(content: Text("Change PIN feature coming soon")),
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (_) => const ChangePinScreen()),
                 );
               },
             ),

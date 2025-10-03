@@ -17,7 +17,7 @@ class UserModel {
     required this.points,
     required this.pin,
     required this.name,        // harus diisi
-    this.photoPath,            // optional
+    this.photoPath,           
   });
 
   // getter untuk cek apakah user punya foto
