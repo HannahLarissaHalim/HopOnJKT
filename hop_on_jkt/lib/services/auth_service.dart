@@ -13,6 +13,12 @@ class AuthService extends ChangeNotifier {
   UserModel? _currentUser;
   UserModel? get currentUser => _currentUser;
 
+  // Helper untuk cek apakah string adalah avatar ID
+  bool _isAvatarId(String? path) {
+    if (path == null || path.isEmpty) return false;
+    return path.startsWith('avatar_');
+  }
+
   // SIGN UP
   Future<UserModel?> signUp(String email, String password, String pin, String name) async {
     try {
@@ -29,7 +35,7 @@ class AuthService extends ChangeNotifier {
         points: 100000, // default saldo poin
         pin: pin,       // simpan pin dari form signup
         name: name,
-        photoPath: null,
+        photoPath: 'avatar_1', // Set default avatar untuk user baru
       );
 
       await _db.collection('users').doc(user.uid).set(newUser.toMap());
@@ -54,6 +60,21 @@ class AuthService extends ChangeNotifier {
       DocumentSnapshot doc = await _db.collection('users').doc(user.uid).get();
 
       _currentUser = UserModel.fromMap(doc.data() as Map<String, dynamic>);
+      
+      if (!_isAvatarId(_currentUser?.photoPath) && 
+          (_currentUser?.photoPath == null || _currentUser!.photoPath!.isEmpty)) {
+        print("⚠️ User has no valid avatar, setting default...");
+        await _db.collection('users').doc(user.uid).update({'photoPath': 'avatar_1'});
+        _currentUser = UserModel(
+          uid: _currentUser!.uid,
+          email: _currentUser!.email,
+          points: _currentUser!.points,
+          pin: _currentUser!.pin,
+          name: _currentUser!.name,
+          photoPath: 'avatar_1',
+        );
+      }
+      
       notifyListeners();
       return _currentUser;
     } catch (e) {
@@ -78,12 +99,24 @@ class AuthService extends ChangeNotifier {
         updates['name'] = name;
       }
 
-      // Upload foto hanya kalau ada file lokal baru
-      if (photoPath != null && photoPath.isNotEmpty && !photoPath.startsWith('http')) {
-        print("📤 Uploading photo from: $photoPath");
-        String downloadUrl = await _uploadPhoto(photoPath);
-        print("✅ Photo uploaded successfully: $downloadUrl");
-        updates['photoPath'] = downloadUrl;
+      // PENTING: Bedakan antara avatar ID dan file path
+      if (photoPath != null && photoPath.isNotEmpty) {
+        if (_isAvatarId(photoPath)) {
+          // Jika avatar ID (format: avatar_1, avatar_2, dll)
+          // Simpan langsung tanpa upload ke Firebase Storage
+          print("✅ Saving avatar ID: $photoPath");
+          updates['photoPath'] = photoPath;
+        } else if (photoPath.startsWith('http')) {
+          // Jika sudah URL (dari Firebase Storage)
+          print("✅ Photo URL already exists: $photoPath");
+          updates['photoPath'] = photoPath;
+        } else {
+          // Jika file path lokal (untuk backward compatibility jika ada)
+          print("📤 Uploading photo from: $photoPath");
+          String downloadUrl = await _uploadPhoto(photoPath);
+          print("✅ Photo uploaded successfully: $downloadUrl");
+          updates['photoPath'] = downloadUrl;
+        }
       }
 
       if (updates.isNotEmpty) {
@@ -112,7 +145,7 @@ class AuthService extends ChangeNotifier {
     }
   }
 
-  // UPLOAD PHOTO HELPER
+  // UPLOAD PHOTO HELPER (hanya untuk file lokal, tidak untuk avatar ID)
   Future<String> _uploadPhoto(String localPath) async {
     try {
       File file = File(localPath);
@@ -243,6 +276,22 @@ class AuthService extends ChangeNotifier {
         DocumentSnapshot doc = await _db.collection('users').doc(user.uid).get();
         if (doc.exists) {
           _currentUser = UserModel.fromMap(doc.data() as Map<String, dynamic>);
+          
+          // Validasi photoPath
+          if (!_isAvatarId(_currentUser?.photoPath) && 
+              (_currentUser?.photoPath == null || _currentUser!.photoPath!.isEmpty)) {
+            print("⚠️ Fixing invalid photoPath in checkAuthState...");
+            await _db.collection('users').doc(user.uid).update({'photoPath': 'avatar_1'});
+            _currentUser = UserModel(
+              uid: _currentUser!.uid,
+              email: _currentUser!.email,
+              points: _currentUser!.points,
+              pin: _currentUser!.pin,
+              name: _currentUser!.name,
+              photoPath: 'avatar_1',
+            );
+          }
+          
           notifyListeners();
         }
       } catch (e) {
@@ -275,5 +324,4 @@ class AuthService extends ChangeNotifier {
       rethrow;
     }
   }
-
 }
