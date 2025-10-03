@@ -90,6 +90,7 @@ class JourneyService {
                 operator: operator + ' - ' + trainType + ' | ${hargaPoin} Poin',
                 routeId:
                     '${stations[i]}-${stations[j]}-${depTime.hour}${depTime.minute}-$k',
+                expiryTime: depTime.add(const Duration(minutes: 120)), // expired 2 jam stlh depart
                 price: hargaPoin,
                 expiryTime: depTime.add(const Duration(minutes: 60)),
               ),

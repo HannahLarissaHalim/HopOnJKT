@@ -42,4 +42,10 @@ class TicketProvider extends ChangeNotifier {
     // refresh daftar tiket
     await fetchTickets(userId, status: _status); 
   }
+
+  Future<void> refreshAndMarkExpired(String userId) async {
+    await _ticketService.markExpiredTickets(userId); // cek expired
+    await fetchTickets(userId, status: _status);     // reload tickets
+  }
+
 }

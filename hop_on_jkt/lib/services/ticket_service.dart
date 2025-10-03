@@ -72,10 +72,47 @@ class TicketService {
 
       // simpan data tiket ke firestore
       transaction.set(newTicketRef, {
-        ...ticketData,                             // gabungkan data tiket yang dikirim
-        'status': 'active',                        // tiket baru diberi status aktif
-        'createdAt': FieldValue.serverTimestamp(), // timestamp
+        ...ticketData,                             
+        'status': 'active',
+        'expiryTime': Timestamp.fromDate(
+          DateTime.now().add(const Duration(minutes: 120)),
+        ),
       });
     });
   }
+
+// helper function untuk menandai expired tickets
+Future<void> markExpiredTickets(String userId) async {
+  final now = DateTime.now();
+
+  final snapshot = await _firestore
+      .collection('tickets')
+      .where('userId', isEqualTo: userId)
+      .where('status', isEqualTo: 'active')
+      .get();
+
+  for (final doc in snapshot.docs) {
+    final data = doc.data();
+    final expiry = data['expiryTime'];
+
+    DateTime? expiryTime;
+
+    if (expiry is Timestamp) {
+      expiryTime = expiry.toDate();
+    } else if (expiry is String) {
+      expiryTime = DateTime.tryParse(expiry);
+    } else if (expiry is DateTime) {
+      expiryTime = expiry;
+    }
+
+    if (expiryTime == null) continue;
+
+    if (expiryTime.isBefore(now)) {
+      await _firestore.collection('tickets').doc(doc.id).update({
+        'status': 'expired', // update status
+      });
+    }
+  }
+}
+
 }

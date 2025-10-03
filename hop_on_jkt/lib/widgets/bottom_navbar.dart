@@ -5,8 +5,14 @@ import '../screens/ticket/order_history_screen.dart';
 import '../screens/profile/profile_page.dart';
 
 class BottomNavBar extends StatefulWidget {
-  final int initialIndex;
-  const BottomNavBar({super.key, this.initialIndex = 0});
+  final int initialIndex; //  untuk masuk langsung ke tab tertentu
+  final bool showPaymentSuccess;
+
+  const BottomNavBar({
+    super.key,
+    this.initialIndex = 0,
+    this.showPaymentSuccess = false, // default false
+  }); 
 
   @override
   State<BottomNavBar> createState() => _BottomNavBarState();
@@ -18,8 +24,25 @@ class _BottomNavBarState extends State<BottomNavBar> {
   @override
   void initState() {
     super.initState();
-    _currentIndex = widget.initialIndex;
+    _currentIndex = widget.initialIndex; //supaya bisa start dari tab ke-2
+
+  WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (widget.showPaymentSuccess) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text("Payment Successful :D"),
+            backgroundColor: Colors.green,
+          ),
+        );
+      }
+    });
   }
+
+  // final List<Widget> _screens = [
+  //   RouteScreen(from: "Manggarai", to: "Jakarta Kota", date: DateTime.now()),
+  //   OrderHistoryScreen(userId: "dummyUserId"),
+  //   Center(child: Text("Account Page (soon)")),
+  // ];
 
   @override
   Widget build(BuildContext context) {
@@ -35,6 +58,7 @@ class _BottomNavBarState extends State<BottomNavBar> {
 
     return Scaffold(
       body: IndexedStack(
+        // supaya state tiap screen ga reset
         index: _currentIndex,
         children: _screens,
       ),
@@ -43,7 +67,10 @@ class _BottomNavBarState extends State<BottomNavBar> {
         onTap: (index) => setState(() => _currentIndex = index),
         items: const [
           BottomNavigationBarItem(icon: Icon(Icons.home), label: "Home"),
-          BottomNavigationBarItem(icon: Icon(Icons.confirmation_num), label: "Tickets"),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.confirmation_num),
+            label: "Tickets",
+          ),
           BottomNavigationBarItem(icon: Icon(Icons.person), label: "Account"),
         ],
       ),
