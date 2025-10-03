@@ -268,9 +268,9 @@ class _SignUpScreenState extends State<SignUpScreen> {
       return;
     }
 
-    if (pin.isEmpty || pin.length != 4) {
+    if (pin.isEmpty || pin.length != 6) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text("PIN must be 4 digits")),
+        const SnackBar(content: Text("PIN must be 6 digits")),
       );
       return;
     }
