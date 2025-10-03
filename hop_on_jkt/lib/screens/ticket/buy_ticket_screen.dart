@@ -6,18 +6,22 @@ import 'package:uuid/uuid.dart';
 import '../../providers/ticket_provider.dart';
 import '../../widgets/bottom_navbar.dart';
 
-//testes
+const Color primaryColor = Color(0xFF1E4D6E);
+const Color secondColor = Color.fromARGB(255, 123, 188, 241);
+const Color backgroundColor = Color(0xFFF5F9FD);
+const Color chipColor = Color(0xFFE0F7FA);
+const Color headerBgColor = Color(0xFFD7E7F0);
 
 class BuyTicketScreen extends StatefulWidget {
-  final String fromStation; // stasiun asal
-  final String toStation; // stasiun tujuan
-  final int price; // harga tiket (dalam poin)
+  final String fromStation;
+  final String toStation;
+  final int price;
 
   const BuyTicketScreen({
     Key? key,
-    required this.fromStation,
-    required this.toStation,
-    required this.price,
+    required this.fromStation, // stasiun awal
+    required this.toStation, // stasiun tujuan
+    required this.price, // harga tiket (dalam poin)
   }) : super(key: key);
 
   @override
@@ -25,18 +29,16 @@ class BuyTicketScreen extends StatefulWidget {
 }
 
 class _BuyTicketScreenState extends State<BuyTicketScreen> {
-  int userPoints = 0; // saldo poin user
-  String userPin = ""; // pin user
-
+  int userPoints = 0;
+  String userPin = "";
   bool _isObscure = true;
 
   @override
   void initState() {
     super.initState();
-    _loadUserData(); // pas pertama kali buka halaman load saldo & pin user
+    _loadUserData();
   }
 
-  // ambil saldo & pin user dari Firestore
   Future<void> _loadUserData() async {
     final user = FirebaseAuth.instance.currentUser;
     if (user == null) return;
@@ -47,39 +49,52 @@ class _BuyTicketScreenState extends State<BuyTicketScreen> {
         .get();
 
     setState(() {
-      userPoints = snapshot['points'] ?? 0; // ambil field points
-      userPin = (snapshot['pin'] ?? "").toString(); // ambil field pin
+      userPoints = snapshot['points'] ?? 0;
+      userPin = (snapshot['pin'] ?? "").toString();
     });
   }
 
-  // konfirmasi PIN sebelum bayar
   Future<void> _confirmPayment() async {
     final pinController = TextEditingController();
 
-    // tampilkan popup input pin
     final result = await showDialog<bool>(
       context: context,
       builder: (context) {
         return StatefulBuilder(
-          // biar bisa setState di dalam dialog
           builder: (context, setState) {
             return AlertDialog(
-              title: const Text("Enter PIN"),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(16),
+              ),
+              title: const Text(
+                "Enter PIN",
+                style: TextStyle(
+                  fontWeight: FontWeight.bold,
+                  color: primaryColor,
+                ),
+              ),
               content: TextField(
                 controller: pinController,
-                obscureText: _isObscure, // pakai state untuk hide/show
+                obscureText: _isObscure,
                 keyboardType: TextInputType.number,
                 maxLength: 6,
                 decoration: InputDecoration(
                   hintText: "Enter 6-digit PIN",
                   counterText: "",
+                  filled: true,
+                  fillColor: chipColor,
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(12),
+                    borderSide: BorderSide.none,
+                  ),
                   suffixIcon: IconButton(
                     icon: Icon(
                       _isObscure ? Icons.visibility_off : Icons.visibility,
+                      color: primaryColor,
                     ),
                     onPressed: () {
                       setState(() {
-                        _isObscure = !_isObscure; // toggle
+                        _isObscure = !_isObscure;
                       });
                     },
                   ),
@@ -88,9 +103,12 @@ class _BuyTicketScreenState extends State<BuyTicketScreen> {
               actions: [
                 TextButton(
                   onPressed: () => Navigator.pop(context, false),
-                  child: const Text("Cancel"),
+                  child: const Text(
+                    "Cancel",
+                    style: TextStyle(color: Colors.grey),
+                  ),
                 ),
-                TextButton(
+                ElevatedButton(
                   onPressed: () {
                     if (pinController.text == userPin) {
                       Navigator.pop(context, true);
@@ -98,7 +116,16 @@ class _BuyTicketScreenState extends State<BuyTicketScreen> {
                       Navigator.pop(context, false);
                     }
                   },
-                  child: const Text("Confirm"),
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: primaryColor,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                  ),
+                  child: const Text(
+                    "Confirm",
+                    style: TextStyle(color: Colors.white),
+                  ),
                 ),
               ],
             );
@@ -107,13 +134,11 @@ class _BuyTicketScreenState extends State<BuyTicketScreen> {
       },
     );
 
-    // kalau pin valid proses pembayaran
     if (result == true) {
       try {
         final user = FirebaseAuth.instance.currentUser;
         if (user == null) return;
 
-        // data tiket yang mau disimpan
         final ticketData = {
           'id': const Uuid().v4(),
           'fromStation': widget.fromStation,
@@ -127,45 +152,13 @@ class _BuyTicketScreenState extends State<BuyTicketScreen> {
           ),
         };
 
-        // panggil provider utk kurangi poin + simpan tiket
         await Provider.of<TicketProvider>(context, listen: false).buyTicket(
           userId: user.uid,
           price: widget.price,
           ticketData: ticketData,
         );
 
-        // reload saldo user setelah transaksi
         _loadUserData();
-
-        // // kasih notifikasi sukses
-        // ScaffoldMessenger.of(
-        //   context,
-        // ).showSnackBar(const SnackBar(content: Text("Payment Successful :D")));
-
-        // Future.delayed(const Duration(milliseconds: 300), () {
-        //   Navigator.pushAndRemoveUntil(
-        //     context,
-        //     MaterialPageRoute(
-        //       builder: (_) => const BottomNavBar(initialIndex: 1),
-        //     ),
-        //     (route) => false,
-        //   );
-        // });
-
-        // ScaffoldMessenger.of(context).showSnackBar(
-        //   const SnackBar(content: Text("Payment Successful :D")),
-        // );
-
-        // await Future.delayed(const Duration(seconds: 1));
-        // if (!mounted) return;
-
-        // Navigator.pushAndRemoveUntil(
-        //   context,
-        //   MaterialPageRoute(
-        //     builder: (_) => const BottomNavBar(initialIndex: 1),
-        //   ),
-        //   (route) => false,
-        // );
 
         Future.delayed(const Duration(milliseconds: 200), () {
           Navigator.pushAndRemoveUntil(
@@ -178,144 +171,412 @@ class _BuyTicketScreenState extends State<BuyTicketScreen> {
           );
         });
       } catch (e) {
-        ScaffoldMessenger.of(
-          context,
-        ).showSnackBar(SnackBar(content: Text("Error: $e")));
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text("Error: $e"),
+            backgroundColor: Colors.red,
+          ),
+        );
       }
     } else {
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(const SnackBar(content: Text("Wrong PIN :()")));
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text("Wrong PIN"),
+          backgroundColor: Colors.red,
+        ),
+      );
     }
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: backgroundColor,
+      appBar: AppBar(
+        backgroundColor: Colors.white,
+        elevation: 0,
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back, color: primaryColor),
+          onPressed: () => Navigator.pop(context),
+        ),
+        centerTitle: true,
+        title: const Text(
+          "TICKET PAYMENT",
+          style: TextStyle(
+            fontSize: 20,
+            fontWeight: FontWeight.bold,
+            color: primaryColor,
+            letterSpacing: 0.5,
+          ),
+        ),
+      ),
       body: SafeArea(
-        child: Center(
-          child: Stack(
-            clipBehavior: Clip.none, 
-            children: [
-              // CARD PUTIH
-              Container(
-                margin: const EdgeInsets.all(20),
-                padding: const EdgeInsets.all(20),
-                decoration: BoxDecoration(
-                  color: const Color(0xFFF9F9F9),
-                  borderRadius: BorderRadius.circular(16),
-                  boxShadow: [
-                    BoxShadow(
-                      color: Colors.black.withOpacity(0.1),
-                      blurRadius: 6,
-                    ),
-                  ],
+        child: SingleChildScrollView(
+          child: Padding(
+            padding: const EdgeInsets.all(20.0),
+            child: Column(
+              children: [
+                const SizedBox(height: 20),
+                
+                Container(
+                  width: double.infinity,
+                  padding: const EdgeInsets.all(24),
+                  decoration: BoxDecoration(
+                    color: const Color(0xFFE7F2F8),
+                    borderRadius: BorderRadius.circular(20),
+                    boxShadow: [
+                      BoxShadow(
+                        color: const Color(0xFFE7F2F8).withOpacity(0.5),
+                        blurRadius: 12,
+                        offset: const Offset(0, 6),
+                      ),
+                    ],
+                  ),
+                  child: Column(
+                    children: [
+                      Container(
+                        padding: const EdgeInsets.all(16),
+                        decoration: BoxDecoration(
+                          color: Colors.white.withOpacity(0.5),
+                          shape: BoxShape.circle,
+                        ),
+                        child: const Icon(
+                          Icons.confirmation_number_rounded,
+                          size: 48,
+                          color: Color(0xFF248DBE),
+                        ),
+                      ),
+                      const SizedBox(height: 16),
+                      const Text(
+                        "Ticket Purchase",
+                        style: TextStyle(
+                          fontSize: 24,
+                          fontWeight: FontWeight.bold,
+                          color: Color(0xFF248DBE),
+                        ),
+                      ),
+                      const SizedBox(height: 8),
+                      const Text(
+                        "Complete your payment to get the ticket",
+                        style: TextStyle(
+                          fontSize: 14,
+                          color: Color(0xFF248DBE),
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    const SizedBox(height: 30), // space bawah header
 
-                    // RUTE
-                    Row(
+                const SizedBox(height: 24),
+
+                Container(
+                  width: double.infinity,
+                  padding: const EdgeInsets.all(20),
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(16),
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.black.withOpacity(0.05),
+                        blurRadius: 10,
+                        offset: const Offset(0, 4),
+                      ),
+                    ],
+                  ),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      const Text(
+                        "Journey Details",
+                        style: TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.bold,
+                          color: primaryColor,
+                        ),
+                      ),
+                      const SizedBox(height: 16),
+                      
+                      // Route dengan design lebih menarik
+                      Container(
+                        padding: const EdgeInsets.all(16),
+                        decoration: BoxDecoration(
+                          color: Color(0xFFE7F2F8).withOpacity(0.5),
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                        child: Row(
+                          children: [
+                            Expanded(
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  const Text(
+                                    "FROM",
+                                    style: TextStyle(
+                                      fontSize: 11,
+                                      color: Colors.black54,
+                                      fontWeight: FontWeight.w600,
+                                      letterSpacing: 0.5,
+                                    ),
+                                  ),
+                                  const SizedBox(height: 4),
+                                  Text(
+                                    widget.fromStation,
+                                    style: const TextStyle(
+                                      fontSize: 18,
+                                      fontWeight: FontWeight.bold,
+                                      color:Color(0xFF248DBE),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                            Container(
+                              padding: const EdgeInsets.all(8),
+                              decoration: BoxDecoration(
+                                color: secondColor.withOpacity(0.3),
+                                shape: BoxShape.circle,
+                              ),
+                              child: const Icon(
+                                Icons.arrow_forward,
+                                color: primaryColor,
+                                size: 24,
+                              ),
+                            ),
+                            const SizedBox(width: 12),
+                            Expanded(
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.end,
+                                children: [
+                                  const Text(
+                                    "TO",
+                                    style: TextStyle(
+                                      fontSize: 11,
+                                      color: Colors.black54,
+                                      fontWeight: FontWeight.w600,
+                                      letterSpacing: 0.5,
+                                    ),
+                                  ),
+                                  const SizedBox(height: 4),
+                                  Text(
+                                    widget.toStation,
+                                    style: const TextStyle(
+                                      fontSize: 18,
+                                      fontWeight: FontWeight.bold,
+                                      color: Color(0xFF248DBE),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+
+                      const SizedBox(height: 20),
+
+                      Divider(color: Colors.grey.shade300),
+                      
+                      const SizedBox(height: 20),
+
+                      // Price Section
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          const Text(
+                            "Ticket Price",
+                            style: TextStyle(
+                              fontSize: 16,
+                              color: Colors.black87,
+                              fontWeight: FontWeight.w600,
+                            ),
+                          ),
+                          Container(
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 16,
+                              vertical: 8,
+                            ),
+                            decoration: BoxDecoration(
+                              color: Colors.red.shade50,
+                              borderRadius: BorderRadius.circular(8),
+                              border: Border.all(
+                                color: Colors.red.shade200,
+                                width: 1,
+                              ),
+                            ),
+                            child: Text(
+                              "${widget.price} pts",
+                              style: const TextStyle(
+                                fontSize: 20,
+                                fontWeight: FontWeight.bold,
+                                color: Colors.red,
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+
+                      const SizedBox(height: 16),
+
+                      // Balance Section
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          const Text(
+                            "Your Balance",
+                            style: TextStyle(
+                              fontSize: 16,
+                              color: Colors.black87,
+                              fontWeight: FontWeight.w600,
+                            ),
+                          ),
+                          Container(
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 16,
+                              vertical: 8,
+                            ),
+                            decoration: BoxDecoration(
+                              color: const Color(0xFFE7F2F8),
+                              borderRadius: BorderRadius.circular(8),
+                              border: Border.all(
+                                color: const Color(0xFF248DBE).withOpacity(0.3),
+                                width: 1,
+                              ),
+                            ),
+                            child: Row(
+                              children: [
+                                const Icon(
+                                  Icons.account_balance_wallet,
+                                  color: Color(0xFF248DBE),
+                                  size: 20,
+                                ),
+                                const SizedBox(width: 8),
+                                Text(
+                                  "$userPoints pts",
+                                  style: const TextStyle(
+                                    fontSize: 20,
+                                    fontWeight: FontWeight.bold,
+                                    color: Color(0xFF248DBE),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
+                ),
+
+                const SizedBox(height: 24),
+
+                // Info Box
+                if (userPoints < widget.price)
+                  Container(
+                    padding: const EdgeInsets.all(16),
+                    decoration: BoxDecoration(
+                      color: Colors.orange.shade50,
+                      borderRadius: BorderRadius.circular(12),
+                      border: Border.all(
+                        color: Colors.orange.shade200,
+                        width: 1,
+                      ),
+                    ),
+                    child: Row(
+                      children: [
+                        Icon(
+                          Icons.warning_amber_rounded,
+                          color: Colors.orange.shade700,
+                        ),
+                        const SizedBox(width: 12),
+                        Expanded(
+                          child: Text(
+                            "Insufficient balance. Please top up your points.",
+                            style: TextStyle(
+                              color: Colors.orange.shade900,
+                              fontSize: 14,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  )
+                else
+                  Container(
+                    padding: const EdgeInsets.all(16),
+                    decoration: BoxDecoration(
+                      color: Colors.green.shade50,
+                      borderRadius: BorderRadius.circular(12),
+                      border: Border.all(
+                        color: Colors.green.shade200,
+                        width: 1,
+                      ),
+                    ),
+                    child: Row(
+                      children: [
+                        Icon(
+                          Icons.check_circle_outline,
+                          color: Colors.green.shade700,
+                        ),
+                        const SizedBox(width: 12),
+                        Expanded(
+                          child: Text(
+                            "You have sufficient balance to purchase this ticket.",
+                            style: TextStyle(
+                              color: Colors.green.shade900,
+                              fontSize: 14,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+
+                const SizedBox(height: 24),
+
+                // Payment Button
+                SizedBox(
+                  width: double.infinity,
+                  height: 56,
+                  child: ElevatedButton(
+                    onPressed: userPoints >= widget.price ? _confirmPayment : null,
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: primaryColor,
+                      disabledBackgroundColor: Colors.grey.shade300,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                      elevation: userPoints >= widget.price ? 4 : 0,
+                      shadowColor: primaryColor.withOpacity(0.4),
+                    ),
+                    child: Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        const Icon(Icons.train, size: 28, color: Colors.black87),
-                        const SizedBox(width: 8),
+                        Icon(
+                          userPoints >= widget.price
+                              ? Icons.payment
+                              : Icons.block,
+                          color: Colors.white,
+                        ),
+                        const SizedBox(width: 12),
                         Text(
-                          "${widget.fromStation} → ${widget.toStation}",
+                          userPoints >= widget.price
+                              ? "Pay with Points"
+                              : "Insufficient Balance",
                           style: const TextStyle(
                             fontSize: 18,
                             fontWeight: FontWeight.bold,
+                            color: Colors.white,
+                            letterSpacing: 0.5,
                           ),
                         ),
-                        const SizedBox(width: 8),
-                        const Icon(Icons.location_on,
-                            size: 22, color: Colors.black54),
                       ],
-                    ),
-
-                    const SizedBox(height: 20),
-
-                    // PRICE
-                    Text(
-                      "price: ${widget.price} pts",
-                      style: const TextStyle(
-                        fontSize: 20,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.red, // 🔹 merah
-                      ),
-                    ),
-
-                    const SizedBox(height: 20),
-
-                    // BALANCE BOX
-                    Container(
-                      padding: const EdgeInsets.all(12),
-                      decoration: BoxDecoration(
-                        color: const Color(0xFFDDF3A1),
-                        borderRadius: BorderRadius.circular(8),
-                      ),
-                      child: Text(
-                        "Your points: $userPoints",
-                        style: const TextStyle(
-                          color: Color(0xFF4C8912),
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                    ),
-
-                    const SizedBox(height: 20),
-
-                    // BUTTON
-                    ElevatedButton(
-                      onPressed: _confirmPayment,
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: const Color(0xFF1A3C6E),
-                        padding: const EdgeInsets.symmetric(vertical: 14),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(8),
-                        ),
-                        minimumSize: const Size(double.infinity, 50),
-                      ),
-                      child: const Text(
-                        "Pay with points",
-                        style: TextStyle(
-                          color: Colors.white,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-
-              // HEADER DI LUAR CARD 
-              Positioned(
-                top: 0,
-                left: 0,
-                right: 0,
-                child: Center(
-                  child: Container(
-                    padding: const EdgeInsets.symmetric(
-                        vertical: 10, horizontal: 28),
-                    decoration: BoxDecoration(
-                      color: const Color(0xFF1A3C6E),
-                      borderRadius: BorderRadius.circular(8),
-                    ),
-                    child: const Text(
-                      "TICKET PAYMENT", 
-                      style: TextStyle(
-                        fontSize: 22,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.white,
-                      ),
                     ),
                   ),
                 ),
-              ),
-            ],
+
+                const SizedBox(height: 20),
+              ],
+            ),
           ),
         ),
       ),
