@@ -33,7 +33,7 @@ class AuthService extends ChangeNotifier {
         uid: user.uid,
         email: email,
         points: 100000, // default saldo poin
-        pin: pin,       // simpan pin dari form signup
+        pin: pin,       // simpan pin dari form signup    
         name: name,
         photoPath: 'avatar_1', // Set default avatar untuk user baru
       );

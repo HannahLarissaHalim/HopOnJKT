@@ -155,6 +155,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                 ScaffoldMessenger.of(context).showSnackBar(
                                   const SnackBar(
                                     content: Text("Login Success!"),
+                                    backgroundColor: Colors.green,
                                   ),
                                 );
                                 Navigator.pushReplacementNamed(
@@ -222,19 +223,21 @@ class _LoginScreenState extends State<LoginScreen> {
             ),
           ),
 
-          // kereta
-          Align(
-            alignment: Alignment.bottomCenter,
-            child: Image.asset(
-              "assets/images/kereta.png",
-              fit: BoxFit.cover,
-              width: double.infinity,
+          // gambar kereta kalau keyboard gak aktif
+          if (MediaQuery.of(context).viewInsets.bottom == 0)
+            Align(
+              alignment: Alignment.bottomCenter,
+              child: Image.asset(
+                "assets/images/kereta.png",
+                fit: BoxFit.cover,
+                width: double.infinity,
+              ),
             ),
-          ),
         ],
       ),
     );
   }
+  
 
  // forgot password pakai GetX
   void _showForgotPasswordDialog() {
@@ -270,7 +273,7 @@ class _LoginScreenState extends State<LoginScreen> {
             "Success",
             "Password reset email sent ✅",
             snackPosition: SnackPosition.BOTTOM,
-            backgroundColor: Colors.green.shade600,
+            backgroundColor: Colors.green,
             colorText: Colors.white,
           );
         } catch (e) {

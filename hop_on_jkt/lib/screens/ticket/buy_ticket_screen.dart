@@ -192,18 +192,35 @@ class _BuyTicketScreenState extends State<BuyTicketScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: Colors.white, 
+      appBar: AppBar(
+        backgroundColor: Colors.white,
+        elevation: 0,
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back, color: Colors.black),
+          onPressed: () => Navigator.pop(context),
+        ),
+        centerTitle: true,
+        title: const Text(
+          "TICKET PAYMENT",
+          style: TextStyle(
+            fontSize: 20,
+            fontWeight: FontWeight.bold,
+            color: Color(0xFF1A3C6E),
+          ),
+        ),
+      ),
       body: SafeArea(
         child: Center(
           child: Stack(
-            clipBehavior: Clip.none, 
+            clipBehavior: Clip.none,
             children: [
-              // CARD PUTIH
+              // 🔹 Card abu-abu muda
               Container(
-                margin: const EdgeInsets.all(20),
+                margin: const EdgeInsets.symmetric(horizontal: 20, vertical: 40),
                 padding: const EdgeInsets.all(20),
                 decoration: BoxDecoration(
-                  color: const Color(0xFFF9F9F9),
+                  color: const Color(0xFFF9F9F9), 
                   borderRadius: BorderRadius.circular(16),
                   boxShadow: [
                     BoxShadow(
@@ -215,25 +232,30 @@ class _BuyTicketScreenState extends State<BuyTicketScreen> {
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    const SizedBox(height: 30), // space bawah header
-
-                    // RUTE
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        const Icon(Icons.train, size: 28, color: Colors.black87),
-                        const SizedBox(width: 8),
-                        Text(
-                          "${widget.fromStation} → ${widget.toStation}",
-                          style: const TextStyle(
-                            fontSize: 18,
-                            fontWeight: FontWeight.bold,
+                    // Kotak rute biru muda
+                    Container(
+                      padding: const EdgeInsets.symmetric(
+                          vertical: 10, horizontal: 16),
+                      decoration: BoxDecoration(
+                        color: const Color.fromARGB(255, 224, 240, 255), // biru muda
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                      child: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          const Icon(Icons.train,
+                              size: 28, color: Colors.black87),
+                          const SizedBox(width: 8),
+                          Text(
+                            "${widget.fromStation} → ${widget.toStation}",
+                            style: const TextStyle(
+                              fontSize: 18,
+                              fontWeight: FontWeight.bold,
+                              color: Colors.black87,
+                            ),
                           ),
-                        ),
-                        const SizedBox(width: 8),
-                        const Icon(Icons.location_on,
-                            size: 22, color: Colors.black54),
-                      ],
+                        ],
+                      ),
                     ),
 
                     const SizedBox(height: 20),
@@ -242,9 +264,9 @@ class _BuyTicketScreenState extends State<BuyTicketScreen> {
                     Text(
                       "price: ${widget.price} pts",
                       style: const TextStyle(
-                        fontSize: 20,
+                        fontSize: 18,
                         fontWeight: FontWeight.bold,
-                        color: Colors.red, // 🔹 merah
+                        color: Colors.red,
                       ),
                     ),
 
@@ -260,6 +282,7 @@ class _BuyTicketScreenState extends State<BuyTicketScreen> {
                       child: Text(
                         "Your points: $userPoints",
                         style: const TextStyle(
+                          fontSize: 18,
                           color: Color(0xFF4C8912),
                           fontWeight: FontWeight.bold,
                         ),
@@ -282,37 +305,13 @@ class _BuyTicketScreenState extends State<BuyTicketScreen> {
                       child: const Text(
                         "Pay with points",
                         style: TextStyle(
+                          fontSize: 18,
                           color: Colors.white,
                           fontWeight: FontWeight.bold,
                         ),
                       ),
                     ),
                   ],
-                ),
-              ),
-
-              // HEADER DI LUAR CARD 
-              Positioned(
-                top: 0,
-                left: 0,
-                right: 0,
-                child: Center(
-                  child: Container(
-                    padding: const EdgeInsets.symmetric(
-                        vertical: 10, horizontal: 28),
-                    decoration: BoxDecoration(
-                      color: const Color(0xFF1A3C6E),
-                      borderRadius: BorderRadius.circular(8),
-                    ),
-                    child: const Text(
-                      "TICKET PAYMENT", 
-                      style: TextStyle(
-                        fontSize: 22,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.white,
-                      ),
-                    ),
-                  ),
                 ),
               ),
             ],

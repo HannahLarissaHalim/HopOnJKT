@@ -22,7 +22,7 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
 
-  await fb_auth.FirebaseAuth.instance.signOut();
+  //await fb_auth.FirebaseAuth.instance.signOut();
   
   runApp(const MyApp());
 }
