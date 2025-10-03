@@ -43,7 +43,8 @@ class UserModel {
       points: map['points'] is int
           ? map['points']
           : int.tryParse(map['points'].toString()) ?? 100000,
-      pin: map['pin']?.toString() ?? '',
+      pin: map['pin']?.toString() ?? '', 
+      name: '',
     );
   }
 }
