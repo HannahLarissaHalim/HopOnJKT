@@ -32,21 +32,21 @@ class _OrderHistoryScreenState extends State<OrderHistoryScreen> {
   }
 
   // Memuat ulang data tiket berdasarkan tab yang dipilih
-  void _loadTickets() async {
+  void _loadTickets() {
     // Menginisialisasi future dengan status yang benar
     // Catatan: TicketService().getUserTickets harus tersedia dan mengembalikan Future<List<Map<String, dynamic>>>
     
     final service = TicketService();
-    await service.markExpiredTickets(widget.userId); // cek expired
+
+    service.markExpiredTickets(widget.userId); // cek expired
     
-    _ticketsFuture = TicketService().getUserTickets(
+     setState(() {
+    _ticketsFuture = service.getUserTickets(
       widget.userId,
       status: firestoreStatus,
     );
-
-    // Memanggil setState untuk memicu FutureBuilder memuat data baru
-    setState(() {});
-  }
+  });
+}
 
   // Fungsi untuk membuat ChoiceChip untuk tab Ongoing dan History
   Widget _buildTabChip(
