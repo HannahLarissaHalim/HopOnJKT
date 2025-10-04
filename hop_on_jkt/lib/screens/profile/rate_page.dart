@@ -76,6 +76,7 @@ class _RatePageState extends State<RatePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.white,
       appBar: AppBar(
         title: const Text("Rate This App"),
         backgroundColor: const Color(0xFF1A3C6E),
