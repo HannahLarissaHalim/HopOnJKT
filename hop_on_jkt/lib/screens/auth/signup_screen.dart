@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../../providers/auth_provider.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 
 class SignUpScreen extends StatefulWidget {
   const SignUpScreen({Key? key}) : super(key: key);
@@ -283,12 +282,18 @@ class _SignUpScreenState extends State<SignUpScreen> {
 
       if (success && mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text("Sign Up Success!")),
+          const SnackBar(
+            content: Text("Signed up successfully!"),
+            backgroundColor: Colors.green,
+            ),
         );
         Navigator.pushReplacementNamed(context, '/home');
       } else if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text("Sign up failed. Please try again.")),
+          const SnackBar(
+            content: Text("Sign up failed. Please try again."),
+            backgroundColor: Colors.red,
+            ),
         );
       }
     } catch (e) {
