@@ -30,7 +30,7 @@ class _BottomNavBarState extends State<BottomNavBar> {
       if (widget.showPaymentSuccess) {
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(
-            content: Text("Payment Successful :D"),
+            content: Text("Payment successful! :D"),
             backgroundColor: Colors.green,
           ),
         );
