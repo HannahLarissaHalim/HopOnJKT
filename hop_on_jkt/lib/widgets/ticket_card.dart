@@ -59,9 +59,10 @@ class TicketCard extends StatelessWidget {
                   Text(
                     "${ticket['fromStation'] ?? '-'} → ${ticket['toStation'] ?? '-'}",
                     style: const TextStyle(
-                      fontSize: 18,
+                      fontSize: 15,
                       fontWeight: FontWeight.bold,
                     ),
+                    overflow: TextOverflow.ellipsis,
                   ),
                   Text(
                     "${ticket['price'] ?? 0} pts",
