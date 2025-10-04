@@ -77,7 +77,7 @@ flutter:
     - assets/images/kereta.png
     - assets/images/clouds.png
     - assets/images/logo.svg
-    - assets/images/welcome.png
+    - assets/images/welcome_image.png
     - assets/images/avatar.png
 
   fonts:
