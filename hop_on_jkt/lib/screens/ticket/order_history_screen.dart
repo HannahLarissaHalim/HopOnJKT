@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 import '../../services/ticket_service.dart';
 import '../../widgets/ticket_card.dart';
 import 'ticket_detail_screen.dart';
@@ -92,10 +91,6 @@ class _OrderHistoryScreenState extends State<OrderHistoryScreen> {
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              SvgPicture.asset(
-                'assets/images/logo.svg',
-                height: 20,
-              ),
             ],
           ),
         ),
