@@ -150,7 +150,7 @@ class WelcomeScreen extends StatelessWidget {
               const Text(
                 'HopOnJKT',
                 style: TextStyle(
-                  fontFamily: "HeyComic",
+                  fontFamily: "FACEBOLF",
                   fontSize: 36,
                   color: Color.fromRGBO(42, 76, 112, 100),
                   fontWeight: FontWeight.bold,
@@ -233,5 +233,6 @@ class WelcomeScreen extends StatelessWidget {
   }
 
 }
+
 
 
