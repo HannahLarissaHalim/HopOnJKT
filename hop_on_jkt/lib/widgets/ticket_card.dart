@@ -4,16 +4,14 @@ import 'package:intl/intl.dart';
 
 class TicketCard extends StatelessWidget {
   final Map<String, dynamic> ticket;
+  final VoidCallback? onTap; // biar bisa diklik
 
-  const TicketCard({super.key, required this.ticket});
+  const TicketCard({super.key, required this.ticket, this.onTap});
 
   @override
   Widget build(BuildContext context) {
-
     final expiry = ticket['expiryTime'];
     String expiryText = "-";
-    
-    DateTime expiryTime = DateTime.now();
 
     if (expiry != null) {
       DateTime expiryTime;
@@ -24,13 +22,11 @@ class TicketCard extends StatelessWidget {
       } else {
         expiryTime = DateTime.now();
       }
-
       expiryText = DateFormat("dd MMM yyyy, HH:mm").format(expiryTime);
     }
 
     String createdText = "-";
     final created = ticket['date'];
-
     if (created != null) {
       DateTime createdTime;
       if (created is Timestamp) {
@@ -43,56 +39,60 @@ class TicketCard extends StatelessWidget {
       createdText = DateFormat("dd MMM yyyy, HH:mm").format(createdTime);
     }
 
-    return Card(
-      margin: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-      elevation: 3,
-      child: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            // FromStation → ToStation
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Text(
-                  "${ticket['fromStation'] ?? '-'} → ${ticket['toStation'] ?? '-'}",
-                  style: const TextStyle(
-                    fontSize: 18,
-                    fontWeight: FontWeight.bold,
+    return InkWell(
+      onTap: onTap,
+      borderRadius: BorderRadius.circular(12),
+      child: Card(
+        margin: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+        elevation: 3,
+        child: Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              // FromStation → ToStation + Price
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text(
+                    "${ticket['fromStation'] ?? '-'} → ${ticket['toStation'] ?? '-'}",
+                    style: const TextStyle(
+                      fontSize: 18,
+                      fontWeight: FontWeight.bold,
+                    ),
                   ),
-                ),
-                Text(
-                  "${ticket['price'] ?? 0} pts",
-                  style: const TextStyle(
-                    fontSize: 16,
-                    fontWeight: FontWeight.w600,
-                    color: Colors.blue,
+                  Text(
+                    "${ticket['price'] ?? 0} pts",
+                    style: const TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.w600,
+                      color: Colors.blue,
+                    ),
                   ),
-                ),
-              ],
-            ),
-            const SizedBox(height: 8),
-
-            // Ticket ID
-            Text("No Ticket: ${ticket['id'] ?? '-'}"),
-
-            // Date & Expired
-            Text("Date: $createdText"),
-            Text("Expired: $expiryText"),
-
-            // Status
-            Text(
-              "Status: ${ticket['status'] ?? 'unknown'}",
-              style: TextStyle(
-                fontWeight: FontWeight.bold,
-                color: (ticket['status'] == 'active')
-                    ? Colors.green
-                    : Colors.red,
+                ],
               ),
-            ),
-          ],
+              const SizedBox(height: 8),
+
+              // Ticket ID
+              Text("No Ticket: ${ticket['id'] ?? '-'}"),
+
+              // Date & Expired
+              Text("Date: $createdText"),
+              Text("Expired: $expiryText"),
+
+              // Status
+              Text(
+                "Status: ${ticket['status'] ?? 'unknown'}",
+                style: TextStyle(
+                  fontWeight: FontWeight.bold,
+                  color: (ticket['status'] == 'active')
+                      ? Colors.green
+                      : Colors.red,
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );
