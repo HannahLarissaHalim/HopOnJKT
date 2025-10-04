@@ -203,7 +203,7 @@ class _BuyTicketScreenState extends State<BuyTicketScreen> {
         title: const Text(
           "TICKET PAYMENT",
           style: TextStyle(
-            fontSize: 20,
+            fontSize: 16,
             fontWeight: FontWeight.bold,
             color: primaryColor,
             letterSpacing: 0.5,
@@ -242,7 +242,7 @@ class _BuyTicketScreenState extends State<BuyTicketScreen> {
                         ),
                         child: const Icon(
                           Icons.confirmation_number_rounded,
-                          size: 48,
+                          size: 40,
                           color: Color(0xFF248DBE),
                         ),
                       ),
@@ -250,7 +250,7 @@ class _BuyTicketScreenState extends State<BuyTicketScreen> {
                       const Text(
                         "Ticket Purchase",
                         style: TextStyle(
-                          fontSize: 24,
+                          fontSize: 20,
                           fontWeight: FontWeight.bold,
                           color: Color(0xFF248DBE),
                         ),
@@ -259,7 +259,7 @@ class _BuyTicketScreenState extends State<BuyTicketScreen> {
                       const Text(
                         "Complete your payment to get the ticket",
                         style: TextStyle(
-                          fontSize: 14,
+                          fontSize: 12,
                           color: Color(0xFF248DBE),
                         ),
                       ),
@@ -289,7 +289,7 @@ class _BuyTicketScreenState extends State<BuyTicketScreen> {
                       const Text(
                         "Journey Details",
                         style: TextStyle(
-                          fontSize: 16,
+                          fontSize: 14,
                           fontWeight: FontWeight.bold,
                           color: primaryColor,
                         ),
@@ -322,7 +322,7 @@ class _BuyTicketScreenState extends State<BuyTicketScreen> {
                                   Text(
                                     widget.fromStation,
                                     style: const TextStyle(
-                                      fontSize: 18,
+                                      fontSize: 15,
                                       fontWeight: FontWeight.bold,
                                       color:Color(0xFF248DBE),
                                     ),
@@ -339,7 +339,7 @@ class _BuyTicketScreenState extends State<BuyTicketScreen> {
                               child: const Icon(
                                 Icons.arrow_forward,
                                 color: primaryColor,
-                                size: 24,
+                                size: 20,
                               ),
                             ),
                             const SizedBox(width: 12),
@@ -360,7 +360,7 @@ class _BuyTicketScreenState extends State<BuyTicketScreen> {
                                   Text(
                                     widget.toStation,
                                     style: const TextStyle(
-                                      fontSize: 18,
+                                      fontSize: 15,
                                       fontWeight: FontWeight.bold,
                                       color: Color(0xFF248DBE),
                                     ),
@@ -385,7 +385,7 @@ class _BuyTicketScreenState extends State<BuyTicketScreen> {
                           const Text(
                             "Ticket Price",
                             style: TextStyle(
-                              fontSize: 16,
+                              fontSize: 14,
                               color: Colors.black87,
                               fontWeight: FontWeight.w600,
                             ),
@@ -406,7 +406,7 @@ class _BuyTicketScreenState extends State<BuyTicketScreen> {
                             child: Text(
                               "${widget.price} pts",
                               style: const TextStyle(
-                                fontSize: 20,
+                                fontSize: 16,
                                 fontWeight: FontWeight.bold,
                                 color: Colors.red,
                               ),
@@ -424,7 +424,7 @@ class _BuyTicketScreenState extends State<BuyTicketScreen> {
                           const Text(
                             "Your Balance",
                             style: TextStyle(
-                              fontSize: 16,
+                              fontSize: 14,
                               color: Colors.black87,
                               fontWeight: FontWeight.w600,
                             ),
@@ -447,13 +447,13 @@ class _BuyTicketScreenState extends State<BuyTicketScreen> {
                                 const Icon(
                                   Icons.account_balance_wallet,
                                   color: Color(0xFF248DBE),
-                                  size: 20,
+                                  size: 18,
                                 ),
                                 const SizedBox(width: 8),
                                 Text(
                                   "$userPoints pts",
                                   style: const TextStyle(
-                                    fontSize: 20,
+                                    fontSize: 16,
                                     fontWeight: FontWeight.bold,
                                     color: Color(0xFF248DBE),
                                   ),
@@ -563,7 +563,7 @@ class _BuyTicketScreenState extends State<BuyTicketScreen> {
                               ? "Pay with Points"
                               : "Insufficient Balance",
                           style: const TextStyle(
-                            fontSize: 18,
+                            fontSize: 15,
                             fontWeight: FontWeight.bold,
                             color: Colors.white,
                             letterSpacing: 0.5,
