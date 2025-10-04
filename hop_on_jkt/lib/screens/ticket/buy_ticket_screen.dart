@@ -4,9 +4,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:uuid/uuid.dart';
 import '../../providers/ticket_provider.dart';
-import '../../widgets/bottom_navbar.dart';
-
-//testes
+import 'ticket_detail_screen.dart';
 
 class BuyTicketScreen extends StatefulWidget {
   final String fromStation; // stasiun asal
@@ -47,8 +45,8 @@ class _BuyTicketScreenState extends State<BuyTicketScreen> {
         .get();
 
     setState(() {
-      userPoints = snapshot['points'] ?? 0; // ambil field points
-      userPin = (snapshot['pin'] ?? "").toString(); // ambil field pin
+      userPoints = snapshot['points'] ?? 0;
+      userPin = (snapshot['pin'] ?? "").toString();
     });
   }
 
@@ -56,18 +54,16 @@ class _BuyTicketScreenState extends State<BuyTicketScreen> {
   Future<void> _confirmPayment() async {
     final pinController = TextEditingController();
 
-    // tampilkan popup input pin
     final result = await showDialog<bool>(
       context: context,
       builder: (context) {
         return StatefulBuilder(
-          // biar bisa setState di dalam dialog
           builder: (context, setState) {
             return AlertDialog(
               title: const Text("Enter PIN"),
               content: TextField(
                 controller: pinController,
-                obscureText: _isObscure, // pakai state untuk hide/show
+                obscureText: _isObscure,
                 keyboardType: TextInputType.number,
                 maxLength: 6,
                 decoration: InputDecoration(
@@ -79,7 +75,7 @@ class _BuyTicketScreenState extends State<BuyTicketScreen> {
                     ),
                     onPressed: () {
                       setState(() {
-                        _isObscure = !_isObscure; // toggle
+                        _isObscure = !_isObscure;
                       });
                     },
                   ),
@@ -107,13 +103,11 @@ class _BuyTicketScreenState extends State<BuyTicketScreen> {
       },
     );
 
-    // kalau pin valid proses pembayaran
     if (result == true) {
       try {
         final user = FirebaseAuth.instance.currentUser;
         if (user == null) return;
 
-        // data tiket yang mau disimpan
         final ticketData = {
           'id': const Uuid().v4(),
           'fromStation': widget.fromStation,
@@ -121,71 +115,38 @@ class _BuyTicketScreenState extends State<BuyTicketScreen> {
           'price': widget.price,
           'userId': user.uid,
           'status': 'active',
-          'date': FieldValue.serverTimestamp(),
+          'date': Timestamp.fromDate(DateTime.now()),
           'expiryTime': Timestamp.fromDate(
             DateTime.now().add(const Duration(minutes: 120)),
           ),
+          'qrData': "TICKET-${user.uid}-${DateTime.now().millisecondsSinceEpoch}",
         };
 
-        // panggil provider utk kurangi poin + simpan tiket
+        // simpan tiket + kurangi poin
         await Provider.of<TicketProvider>(context, listen: false).buyTicket(
           userId: user.uid,
           price: widget.price,
           ticketData: ticketData,
         );
 
-        // reload saldo user setelah transaksi
         _loadUserData();
 
-        // // kasih notifikasi sukses
-        // ScaffoldMessenger.of(
-        //   context,
-        // ).showSnackBar(const SnackBar(content: Text("Payment Successful :D")));
-
-        // Future.delayed(const Duration(milliseconds: 300), () {
-        //   Navigator.pushAndRemoveUntil(
-        //     context,
-        //     MaterialPageRoute(
-        //       builder: (_) => const BottomNavBar(initialIndex: 1),
-        //     ),
-        //     (route) => false,
-        //   );
-        // });
-
-        // ScaffoldMessenger.of(context).showSnackBar(
-        //   const SnackBar(content: Text("Payment Successful :D")),
-        // );
-
-        // await Future.delayed(const Duration(seconds: 1));
-        // if (!mounted) return;
-
-        // Navigator.pushAndRemoveUntil(
-        //   context,
-        //   MaterialPageRoute(
-        //     builder: (_) => const BottomNavBar(initialIndex: 1),
-        //   ),
-        //   (route) => false,
-        // );
-
-        Future.delayed(const Duration(milliseconds: 200), () {
-          Navigator.pushAndRemoveUntil(
-            context,
-            MaterialPageRoute(
-              builder: (_) =>
-                  const BottomNavBar(initialIndex: 1, showPaymentSuccess: true),
-            ),
-            (route) => false,
-          );
-        });
-      } catch (e) {
-        ScaffoldMessenger.of(
+        // langsung ke TicketDetailScreen
+        Navigator.pushReplacement(
           context,
-        ).showSnackBar(SnackBar(content: Text("Error: $e")));
+          MaterialPageRoute(
+            builder: (_) => TicketDetailScreen(ticket: ticketData),
+          ),
+        );
+      } catch (e) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text("Error: $e")),
+        );
       }
     } else {
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(const SnackBar(content: Text("Wrong PIN :()")));
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text("Wrong PIN :()")),
+      );
     }
   }
 
@@ -215,12 +176,11 @@ class _BuyTicketScreenState extends State<BuyTicketScreen> {
           child: Stack(
             clipBehavior: Clip.none,
             children: [
-              // 🔹 Card abu-abu muda
               Container(
                 margin: const EdgeInsets.symmetric(horizontal: 20, vertical: 40),
                 padding: const EdgeInsets.all(20),
                 decoration: BoxDecoration(
-                  color: const Color(0xFFF9F9F9), 
+                  color: const Color(0xFFF9F9F9),
                   borderRadius: BorderRadius.circular(16),
                   boxShadow: [
                     BoxShadow(
@@ -232,19 +192,16 @@ class _BuyTicketScreenState extends State<BuyTicketScreen> {
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    // Kotak rute biru muda
                     Container(
-                      padding: const EdgeInsets.symmetric(
-                          vertical: 10, horizontal: 16),
+                      padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 16),
                       decoration: BoxDecoration(
-                        color: const Color.fromARGB(255, 224, 240, 255), // biru muda
+                        color: const Color.fromARGB(255, 224, 240, 255),
                         borderRadius: BorderRadius.circular(12),
                       ),
                       child: Row(
                         mainAxisSize: MainAxisSize.min,
                         children: [
-                          const Icon(Icons.train,
-                              size: 28, color: Colors.black87),
+                          const Icon(Icons.train, size: 28, color: Colors.black87),
                           const SizedBox(width: 8),
                           Text(
                             "${widget.fromStation} → ${widget.toStation}",
@@ -257,22 +214,16 @@ class _BuyTicketScreenState extends State<BuyTicketScreen> {
                         ],
                       ),
                     ),
-
                     const SizedBox(height: 20),
-
-                    // PRICE
                     Text(
-                      "price: ${widget.price} pts",
+                      "Price: ${widget.price} pts",
                       style: const TextStyle(
                         fontSize: 18,
                         fontWeight: FontWeight.bold,
                         color: Colors.red,
                       ),
                     ),
-
                     const SizedBox(height: 20),
-
-                    // BALANCE BOX
                     Container(
                       padding: const EdgeInsets.all(12),
                       decoration: BoxDecoration(
@@ -288,10 +239,7 @@ class _BuyTicketScreenState extends State<BuyTicketScreen> {
                         ),
                       ),
                     ),
-
                     const SizedBox(height: 20),
-
-                    // BUTTON
                     ElevatedButton(
                       onPressed: _confirmPayment,
                       style: ElevatedButton.styleFrom(

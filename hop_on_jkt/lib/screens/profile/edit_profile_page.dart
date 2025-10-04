@@ -36,21 +36,15 @@ class _EditProfilePageState extends State<EditProfilePage> {
     final user = Provider.of<AuthProvider>(context, listen: false).user;
     if (user != null) {
       _nameController.text = user.name;
-      
+
       // Validasi: pastikan photoPath adalah format avatar ID
       if (user.photoPath != null && user.photoPath!.startsWith('avatar_')) {
         _selectedAvatar = user.photoPath;
       } else {
-        // Set default avatar jika format tidak valid
-        _selectedAvatar = 'avatar_1';
+        _selectedAvatar = 'avatar_1'; // default avatar
       }
-      
-      print("✅ Init - User name: ${user.name}");
-      print("✅ Init - User photoPath: ${user.photoPath}");
-      print("✅ Init - Selected avatar: $_selectedAvatar");
     } else {
-      print("❌ Init - User is null!");
-      _selectedAvatar = 'avatar_1'; // Default avatar
+      _selectedAvatar = 'avatar_1';
     }
   }
 
@@ -78,10 +72,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
             children: [
               const Text(
                 "Choose Your Avatar",
-                style: TextStyle(
-                  fontSize: 18,
-                  fontWeight: FontWeight.bold,
-                ),
+                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
               ),
               const SizedBox(height: 16),
               Expanded(
@@ -95,7 +86,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
                   itemBuilder: (context, index) {
                     final avatar = _avatarList[index];
                     final isSelected = _selectedAvatar == avatar.id;
-                    
+
                     return GestureDetector(
                       onTap: () {
                         setState(() {
@@ -108,7 +99,9 @@ class _EditProfilePageState extends State<EditProfilePage> {
                           shape: BoxShape.circle,
                           color: avatar.color.withOpacity(0.2),
                           border: Border.all(
-                            color: isSelected ? Colors.blueAccent : Colors.grey[300]!,
+                            color: isSelected
+                                ? Colors.blueAccent
+                                : Colors.grey[300]!,
                             width: isSelected ? 3 : 1,
                           ),
                         ),
@@ -133,12 +126,6 @@ class _EditProfilePageState extends State<EditProfilePage> {
   Future<void> _saveProfile() async {
     final authProvider = Provider.of<AuthProvider>(context, listen: false);
 
-    print("\n=== SAVE PROFILE DEBUG ===");
-    print("Name: ${_nameController.text.trim()}");
-    print("Selected avatar: ${_selectedAvatar ?? 'null'}");
-    print("Current user photoPath: ${authProvider.user?.photoPath}");
-
-    // Validasi input
     if (_nameController.text.trim().isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text("Name cannot be empty!")),
@@ -151,15 +138,10 @@ class _EditProfilePageState extends State<EditProfilePage> {
     });
 
     try {
-      print("🔄 Calling updateProfile...");
-      
       await authProvider.updateProfile(
         name: _nameController.text.trim(),
-        photoPath: _selectedAvatar, // Ini akan berupa 'avatar_X'
+        photoPath: _selectedAvatar,
       );
-
-      print("✅ updateProfile completed");
-      print("New user photoPath: ${authProvider.user?.photoPath}");
 
       if (context.mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
@@ -168,9 +150,6 @@ class _EditProfilePageState extends State<EditProfilePage> {
         Navigator.pop(context);
       }
     } catch (e) {
-      print("❌ Error in _saveProfile: $e");
-      print("Error type: ${e.runtimeType}");
-      
       if (context.mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text("Failed to update profile: $e")),
@@ -187,7 +166,6 @@ class _EditProfilePageState extends State<EditProfilePage> {
 
   @override
   Widget build(BuildContext context) {
-    final user = Provider.of<AuthProvider>(context).user;
     final selectedAvatarOption = _getAvatarOption(_selectedAvatar);
 
     return Scaffold(
@@ -210,7 +188,8 @@ class _EditProfilePageState extends State<EditProfilePage> {
                         height: 120,
                         decoration: BoxDecoration(
                           shape: BoxShape.circle,
-                          color: selectedAvatarOption?.color.withOpacity(0.2) ?? Colors.grey[200],
+                          color: selectedAvatarOption?.color.withOpacity(0.2) ??
+                              Colors.grey[200],
                           border: Border.all(
                             color: Colors.grey[300]!,
                             width: 2,
@@ -222,7 +201,8 @@ class _EditProfilePageState extends State<EditProfilePage> {
                                   selectedAvatarOption.emoji,
                                   style: const TextStyle(fontSize: 60),
                                 )
-                              : const Icon(Icons.person, size: 60, color: Colors.grey),
+                              : const Icon(Icons.person,
+                                  size: 60, color: Colors.grey),
                         ),
                       ),
                       Positioned(
@@ -255,15 +235,6 @@ class _EditProfilePageState extends State<EditProfilePage> {
                   decoration: const InputDecoration(
                     labelText: "Username",
                     border: OutlineInputBorder(),
-                  ),
-                ),
-                const SizedBox(height: 16),
-                TextField(
-                  enabled: false,
-                  decoration: InputDecoration(
-                    labelText: "Email",
-                    border: const OutlineInputBorder(),
-                    hintText: user?.email ?? "No email available",
                   ),
                 ),
                 const SizedBox(height: 32),
