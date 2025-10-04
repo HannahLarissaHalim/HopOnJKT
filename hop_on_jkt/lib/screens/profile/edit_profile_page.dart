@@ -6,7 +6,6 @@ const Color primaryColor = Color(0xFF1E4D6E);
 const Color secondColor = Color.fromARGB(255, 123, 188, 241);
 const Color backgroundColor = Color(0xFFF5F9FD);
 const Color chipColor = Color(0xFFE0F7FA);
-const Color headerBgColor = Color(0xFFD7E7F0);
 
 class EditProfilePage extends StatefulWidget {
   const EditProfilePage({super.key});
@@ -63,49 +62,80 @@ class _EditProfilePageState extends State<EditProfilePage> {
   void _showAvatarPicker() {
     showModalBottomSheet(
       context: context,
-      shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
-      ),
+      backgroundColor: Colors.transparent,
       builder: (context) {
         return Container(
-          padding: const EdgeInsets.all(16),
-          height: 400,
-          child: GridView.builder(
-            gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-              crossAxisCount: 4,
-              crossAxisSpacing: 12,
-              mainAxisSpacing: 12,
-            ),
-            itemCount: _avatarList.length,
-            itemBuilder: (context, index) {
-              final avatar = _avatarList[index];
-              final isSelected = _selectedAvatar == avatar.id;
+          height: 450,
+          decoration: const BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
+          ),
+          child: Column(
+            children: [
+              const SizedBox(height: 12),
+              Container(
+                width: 40,
+                height: 4,
+                decoration: BoxDecoration(
+                  color: Colors.grey[300],
+                  borderRadius: BorderRadius.circular(2),
+                ),
+              ),
+              const SizedBox(height: 20),
+              Text(
+                "Choose Your Avatar",
+                style: TextStyle(
+                  fontSize: 18,
+                  fontWeight: FontWeight.bold,
+                  color: primaryColor,
+                ),
+              ),
+              const SizedBox(height: 24),
+              Expanded(
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 24),
+                  child: GridView.builder(
+                    physics: const BouncingScrollPhysics(),
+                    gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                      crossAxisCount: 4,
+                      crossAxisSpacing: 16,
+                      mainAxisSpacing: 16,
+                    ),
+                    itemCount: _avatarList.length,
+                    itemBuilder: (context, index) {
+                      final avatar = _avatarList[index];
+                      final isSelected = _selectedAvatar == avatar.id;
 
-              return GestureDetector(
-                onTap: () {
-                  setState(() {
-                    _selectedAvatar = avatar.id;
-                  });
-                  Navigator.pop(context);
-                },
-                child: Container(
-                  decoration: BoxDecoration(
-                    shape: BoxShape.circle,
-                    color: avatar.color.withOpacity(0.2),
-                    border: Border.all(
-                      color: isSelected ? primaryColor : Colors.grey[300]!,
-                      width: isSelected ? 3 : 1,
-                    ),
-                  ),
-                  child: Center(
-                    child: Text(
-                      avatar.emoji,
-                      style: const TextStyle(fontSize: 40),
-                    ),
+                      return GestureDetector(
+                        onTap: () {
+                          setState(() {
+                            _selectedAvatar = avatar.id;
+                          });
+                          Navigator.pop(context);
+                        },
+                        child: Container(
+                          decoration: BoxDecoration(
+                            shape: BoxShape.circle,
+                            color: avatar.color.withOpacity(0.15),
+                            border: Border.all(
+                              color: isSelected ? secondColor : Colors.grey[300]!,
+                              width: isSelected ? 3 : 2,
+                            ),
+                          ),
+                          child: Center(
+                            child: Text(
+                              avatar.emoji,
+                              style: const TextStyle(fontSize: 40),
+                            ),
+                          ),
+                        ),
+                      );
+                    },
                   ),
                 ),
-              );
-            },
+              ),
+              const SizedBox(height: 20),
+            ],
           ),
         );
       },
@@ -117,7 +147,12 @@ class _EditProfilePageState extends State<EditProfilePage> {
 
     if (_nameController.text.trim().isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text("Name cannot be empty!")),
+        SnackBar(
+          content: const Text("Name cannot be empty!"),
+          backgroundColor: Colors.orange[700],
+          behavior: SnackBarBehavior.floating,
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+        ),
       );
       return;
     }
@@ -134,64 +169,29 @@ class _EditProfilePageState extends State<EditProfilePage> {
 
       if (context.mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text("Profile updated successfully!")),
+          SnackBar(
+            content: const Text("Profile updated successfully!"),
+            backgroundColor: secondColor,
+            behavior: SnackBarBehavior.floating,
+            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+          ),
         );
         Navigator.pop(context);
       }
     } catch (e) {
       if (context.mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text("Failed to update profile: $e")),
+          SnackBar(
+            content: Text("Failed to update profile: $e"),
+            backgroundColor: Colors.red[700],
+            behavior: SnackBarBehavior.floating,
+            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+          ),
         );
       }
     } finally {
       if (mounted) setState(() => _isLoading = false);
     }
-  }
-
-  Widget _textField({
-    required String label,
-    required TextEditingController controller,
-    String? hint,
-  }) {
-    return Container(
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(12),
-        boxShadow: [
-          BoxShadow(
-            color: primaryColor.withOpacity(0.08),
-            blurRadius: 8,
-            offset: const Offset(0, 2),
-          ),
-        ],
-      ),
-      child: TextField(
-        controller: controller,
-        style: const TextStyle(fontSize: 16),
-        decoration: InputDecoration(
-          labelText: label,
-          floatingLabelBehavior: FloatingLabelBehavior.always, // label tetap di atas
-          hintText: hint,
-          labelStyle: TextStyle(color: primaryColor.withOpacity(0.7), fontSize: 14),
-          border: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(12),
-            borderSide: BorderSide.none,
-          ),
-          enabledBorder: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(12),
-            borderSide: BorderSide(color: chipColor, width: 1),
-          ),
-          focusedBorder: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(12),
-            borderSide: const BorderSide(color: secondColor, width: 2),
-          ),
-          filled: true,
-          fillColor: Colors.white,
-          contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12), // → kotak lebih kecil
-        ),
-      ),
-    );
   }
 
   @override
@@ -201,27 +201,30 @@ class _EditProfilePageState extends State<EditProfilePage> {
     return Scaffold(
       backgroundColor: backgroundColor,
       appBar: AppBar(
-        title: const Text("Edit Profile"),
+        title: const Text(
+          "Edit Profile",
+          style: TextStyle(fontWeight: FontWeight.w600),
+        ),
         centerTitle: true,
-        backgroundColor: primaryColor,
+        elevation: 0,
+        backgroundColor: secondColor,
+        foregroundColor: Colors.white,
       ),
       body: SingleChildScrollView(
+        physics: const BouncingScrollPhysics(),
         padding: const EdgeInsets.all(24),
         child: Column(
           children: [
+            // Avatar Section
             Container(
               width: double.infinity,
-              padding: const EdgeInsets.all(24),
+              padding: const EdgeInsets.all(32),
               decoration: BoxDecoration(
-                gradient: LinearGradient(
-                  colors: [headerBgColor, chipColor],
-                  begin: Alignment.topLeft,
-                  end: Alignment.bottomRight,
-                ),
-                borderRadius: BorderRadius.circular(16),
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(20),
                 boxShadow: [
                   BoxShadow(
-                    color: primaryColor.withOpacity(0.1),
+                    color: secondColor.withOpacity(0.1),
                     blurRadius: 10,
                     offset: const Offset(0, 4),
                   ),
@@ -238,8 +241,8 @@ class _EditProfilePageState extends State<EditProfilePage> {
                           height: 120,
                           decoration: BoxDecoration(
                             shape: BoxShape.circle,
-                            color: selectedAvatarOption?.color.withOpacity(0.2) ?? Colors.grey[200],
-                            border: Border.all(color: Colors.grey[300]!, width: 2),
+                            color: selectedAvatarOption?.color.withOpacity(0.2) ?? chipColor,
+                            border: Border.all(color: secondColor, width: 3),
                           ),
                           child: Center(
                             child: selectedAvatarOption != null
@@ -251,12 +254,13 @@ class _EditProfilePageState extends State<EditProfilePage> {
                           bottom: 0,
                           right: 0,
                           child: Container(
-                            padding: const EdgeInsets.all(8),
-                            decoration: const BoxDecoration(
-                              color: primaryColor,
+                            padding: const EdgeInsets.all(10),
+                            decoration: BoxDecoration(
+                              color: secondColor,
                               shape: BoxShape.circle,
+                              border: Border.all(color: Colors.white, width: 3),
                             ),
-                            child: const Icon(Icons.edit, color: Colors.white, size: 20),
+                            child: const Icon(Icons.edit, color: Colors.white, size: 18),
                           ),
                         ),
                       ],
@@ -264,38 +268,99 @@ class _EditProfilePageState extends State<EditProfilePage> {
                   ),
                   const SizedBox(height: 16),
                   Text(
-                    "Tap avatar to change",
-                    style: TextStyle(fontSize: 14, color: primaryColor.withOpacity(0.7)),
+                    "Tap to change avatar",
+                    style: TextStyle(
+                      fontSize: 13,
+                      color: Colors.grey[600],
+                    ),
                   ),
-                  const SizedBox(height: 16),
-                  _textField(label: "Username", controller: _nameController),
                 ],
               ),
             ),
+            const SizedBox(height: 24),
+            
+            // Username Field
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Padding(
+                  padding: const EdgeInsets.only(left: 4, bottom: 8),
+                  child: Text(
+                    "Username",
+                    style: TextStyle(
+                      fontSize: 14,
+                      fontWeight: FontWeight.w600,
+                      color: primaryColor,
+                    ),
+                  ),
+                ),
+                Container(
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(14),
+                    boxShadow: [
+                      BoxShadow(
+                        color: secondColor.withOpacity(0.08),
+                        blurRadius: 8,
+                        offset: const Offset(0, 2),
+                      ),
+                    ],
+                  ),
+                  child: TextField(
+                    controller: _nameController,
+                    style: const TextStyle(fontSize: 16),
+                    decoration: InputDecoration(
+                      hintText: "Enter your name",
+                      hintStyle: TextStyle(color: Colors.grey[400]),
+                      prefixIcon: Icon(Icons.person_outline, color: secondColor),
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(14),
+                        borderSide: BorderSide.none,
+                      ),
+                      focusedBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(14),
+                        borderSide: BorderSide(color: secondColor, width: 2),
+                      ),
+                      filled: true,
+                      fillColor: Colors.white,
+                      contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
+                    ),
+                  ),
+                ),
+              ],
+            ),
             const SizedBox(height: 32),
+            
+            // Save Button
             SizedBox(
               width: double.infinity,
               height: 54,
               child: ElevatedButton(
                 onPressed: _isLoading ? null : _saveProfile,
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: primaryColor,
+                  backgroundColor: secondColor,
                   foregroundColor: Colors.white,
                   elevation: 2,
-                  shadowColor: primaryColor.withOpacity(0.4),
+                  shadowColor: secondColor.withOpacity(0.3),
                   shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(12),
+                    borderRadius: BorderRadius.circular(14),
                   ),
                 ),
                 child: _isLoading
                     ? const SizedBox(
                         width: 24,
                         height: 24,
-                        child: CircularProgressIndicator(color: Colors.white, strokeWidth: 2.5),
+                        child: CircularProgressIndicator(
+                          color: Colors.white,
+                          strokeWidth: 2.5,
+                        ),
                       )
                     : const Text(
-                        "Save Profile",
-                        style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
+                        "Save Changes",
+                        style: TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.w600,
+                        ),
                       ),
               ),
             ),
