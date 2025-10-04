@@ -57,10 +57,9 @@ class _LoginScreenState extends State<LoginScreen> {
               child: const Text(
                 "HopOnJKT",
                 style: TextStyle(
-                  fontFamily: "HeyComic",
+                  fontFamily: "FACEBOLF",
                   fontSize: 55,
                   color: Color(0xFF1A3C6E),
-                  fontWeight: FontWeight.bold,
                 ),
               ),
             ),
@@ -184,7 +183,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     ),
                     const SizedBox(height: 12),
 
-                    // forgot password link 
+                    // forgot password link
                     GestureDetector(
                       onTap: _showForgotPasswordDialog,
                       child: const Text(
@@ -237,55 +236,84 @@ class _LoginScreenState extends State<LoginScreen> {
       ),
     );
   }
-  
 
- // forgot password pakai GetX
   void _showForgotPasswordDialog() {
     final resetEmailController = TextEditingController();
 
     Get.defaultDialog(
       title: "Reset Password",
+      titlePadding: const EdgeInsets.only(
+        top: 24,
+        bottom: 8,
+      ), // jarak title dari atas
+      contentPadding: const EdgeInsets.all(24), // padding semua sisi content
       content: Column(
+        mainAxisSize: MainAxisSize.min,
         children: [
-          const Text("Enter your email to receive a reset link."),
-          const SizedBox(height: 12),
+          const Text(
+            "Enter your email to receive a reset link.",
+            textAlign: TextAlign.center,
+          ),
+          const SizedBox(height: 20),
           TextField(
             controller: resetEmailController,
             keyboardType: TextInputType.emailAddress,
             decoration: const InputDecoration(
               hintText: "Email",
               border: OutlineInputBorder(),
+              contentPadding: EdgeInsets.symmetric(
+                horizontal: 12,
+                vertical: 16,
+              ),
             ),
           ),
+          const SizedBox(height: 24), // jarak bawah textfield ke tombol
         ],
       ),
       textCancel: "Cancel",
       textConfirm: "Send",
-      onConfirm: () async {
-        try {
-          await Provider.of<AuthProvider>(
-            Get.context!,
-            listen: false,
-          ).resetPassword(resetEmailController.text.trim());
+      confirm: Padding(
+        padding: const EdgeInsets.only(bottom: 12), // jarak tombol dari bawah
+        child: ElevatedButton(
+          onPressed: () async {
+            try {
+              await Provider.of<AuthProvider>(
+                Get.context!,
+                listen: false,
+              ).resetPassword(resetEmailController.text.trim());
 
-          Get.back(); // tutup dialog
-          Get.snackbar(
-            "Success",
-            "Password reset email sent ✅",
-            snackPosition: SnackPosition.BOTTOM,
-            backgroundColor: Colors.green,
-            colorText: Colors.white,
-          );
-        } catch (e) {
-          Get.snackbar(
-            "Error",
-            "Failed to send reset email: $e",
-            snackPosition: SnackPosition.BOTTOM,
-            backgroundColor: Colors.red.shade600,
-            colorText: Colors.white,
-          );
-        }
-      },
+              Get.back();
+              Get.snackbar(
+                "Success",
+                "Password reset email sent ✅",
+                snackPosition: SnackPosition.BOTTOM,
+                backgroundColor: Colors.green,
+                colorText: Colors.white,
+              );
+            } catch (e) {
+              Get.snackbar(
+                "Error",
+                "Failed to send reset email: $e",
+                snackPosition: SnackPosition.BOTTOM,
+                backgroundColor: Colors.red.shade600,
+                colorText: Colors.white,
+              );
+            }
+          },
+          style: ElevatedButton.styleFrom(
+            backgroundColor: const Color(0xFF1A3C6E),
+            foregroundColor: Colors.white,
+          ),
+          child: const Text("Send"),
+        ),
+      ),
+      cancel: Padding(
+        padding: const EdgeInsets.only(bottom: 12), // jarak tombol dari bawah
+        child: TextButton(
+          onPressed: () => Get.back(),
+          child: const Text("Cancel"),
+        ),
+      ),
     );
   }
 }

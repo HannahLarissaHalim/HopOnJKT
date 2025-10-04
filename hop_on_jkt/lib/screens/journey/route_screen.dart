@@ -350,7 +350,7 @@ class _RouteScreenState extends State<RouteScreen> {
                   child: Text(
                     'Where do you \nWant to go?',
                     style: TextStyle(
-                      fontSize: 32,
+                      fontSize: 30,
                       fontWeight: FontWeight.bold,
                       height: 1.2,
                       color: primaryColor,

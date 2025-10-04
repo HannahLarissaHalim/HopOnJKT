@@ -44,7 +44,7 @@ class MyApp extends StatelessWidget {
         title: 'HopOnJKT',
         theme: ThemeData(
           primarySwatch: Colors.blue,
-          fontFamily: "Coolvetica",
+          fontFamily: "Montserrat",
         ),
         home: const AuthWrapper(),
         routes: {

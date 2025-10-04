@@ -81,9 +81,15 @@ flutter:
     - assets/images/avatar.png
 
   fonts:
-    - family: HeyComic
+    - family: FACEBOLF
       fonts:
-        - asset: assets/fonts/HeyComic.ttf
+        - asset: assets/fonts/FACEBOLF.OTF
+    
+    - family: Montserrat
+      fonts:
+        - asset: assets/fonts/Montserrat-Regular.ttf
+
+        
 
   # To add assets to your application, add an assets section, like this:
   # assets:
