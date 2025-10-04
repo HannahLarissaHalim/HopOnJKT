@@ -65,6 +65,15 @@ class _BottomNavBarState extends State<BottomNavBar> {
       bottomNavigationBar: BottomNavigationBar(
         currentIndex: _currentIndex,
         onTap: (index) => setState(() => _currentIndex = index),
+
+        backgroundColor: const Color(0xFFF2F6F9), 
+        selectedItemColor: const Color(0xFF1687E3), 
+        unselectedItemColor: Colors.grey, 
+
+        type: BottomNavigationBarType.fixed,
+        showUnselectedLabels: true,
+        elevation: 8,
+
         items: const [
           BottomNavigationBarItem(icon: Icon(Icons.home), label: "Home"),
           BottomNavigationBarItem(
