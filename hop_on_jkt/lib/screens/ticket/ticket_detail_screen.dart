@@ -1,4 +1,3 @@
-// lib/screens/tickets/ticket_detail_screen.dart
 import 'package:flutter/material.dart';
 import 'package:qr_flutter/qr_flutter.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -107,25 +106,30 @@ class _TicketDetailScreenState extends State<TicketDetailScreen> {
           child: Column(
             children: [
               // Back button + Title
+              // 🔹 Header: tombol back + judul di tengah
               Padding(
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-                child: Row(
+                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                child: Stack(
+                  alignment: Alignment.center,
                   children: [
-                    IconButton(
-                      icon: const Icon(Icons.arrow_back, color: Colors.black),
-                      onPressed: () => Navigator.pop(context),
-                    ),
-                    const Spacer(),
-                    const Text(
-                      "My Tickets",
-                      style: TextStyle(
-                        fontSize: 40,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.black,
+                    Align(
+                      alignment: Alignment.centerLeft,
+                      child: IconButton(
+                        icon: const Icon(Icons.arrow_back, color: Color(0xFF1E4D6E)),
+                        onPressed: () => Navigator.pop(context),
                       ),
                     ),
-                    const Spacer(),
+                    const Center(
+                      child: Text(
+                        "My Tickets",
+                        style: TextStyle(
+                          fontSize: 28,
+                          fontWeight: FontWeight.bold,
+                          color: Color(0xFF1E4D6E), // 🔹 biru tua
+                          letterSpacing: 0.5,
+                        ),
+                      ),
+                    ),
                   ],
                 ),
               ),

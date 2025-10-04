@@ -46,6 +46,7 @@ class TicketCard extends StatelessWidget {
         margin: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
         elevation: 3,
+        color: const Color(0xFFF3F4F6),
         child: Padding(
           padding: const EdgeInsets.all(16.0),
           child: Column(

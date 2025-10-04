@@ -82,7 +82,7 @@ class _BuyTicketScreenState extends State<BuyTicketScreen> {
                   hintText: "Enter 6-digit PIN",
                   counterText: "",
                   filled: true,
-                  fillColor: chipColor,
+                  fillColor: Colors.white,
                   border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(12),
                     borderSide: BorderSide.none,
