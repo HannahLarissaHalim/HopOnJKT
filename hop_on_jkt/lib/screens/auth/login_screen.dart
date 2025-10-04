@@ -284,8 +284,8 @@ class _LoginScreenState extends State<LoginScreen> {
 
               Get.back();
               Get.snackbar(
-                "Success",
-                "Password reset email sent ✅",
+                "Reset link succesfully sent!",
+                "Check your spam.",
                 snackPosition: SnackPosition.BOTTOM,
                 backgroundColor: Colors.green,
                 colorText: Colors.white,
