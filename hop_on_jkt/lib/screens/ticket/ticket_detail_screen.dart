@@ -109,7 +109,7 @@ class _TicketDetailScreenState extends State<TicketDetailScreen> {
         backgroundColor: primaryColor,
         iconTheme: const IconThemeData(color: Colors.white),
         title: const Text(
-          "Detail Tiket",
+          "My Ticket",
           style: TextStyle(
             color: Colors.white,
             fontWeight: FontWeight.w600,
